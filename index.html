@@ -2,87 +2,140 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Spread CL vs Brent - Hyperliquid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spread WTI vs Brent | Hyperliquid</title>
   <style>
-    body { font-family: system-ui; background: #0f0f0f; color: #eee; text-align: center; padding: 40px; }
-    .card { background: #1a1a1a; padding: 30px; border-radius: 16px; max-width: 500px; margin: auto; }
-    .spread { font-size: 3rem; font-weight: bold; margin: 20px 0; }
-    .green { color: #00c853; }
-    .red { color: #ff5252; }
-    .info { font-size: 1.1rem; opacity: 0.8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0b0e11;
+      color: #eaecef;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: #1e2329;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 6px; font-weight: 600; }
+    .subtitle { font-size: 0.9rem; color: #848e9c; margin-bottom: 28px; }
+    .prices { font-size: 1.1rem; margin-bottom: 18px; color: #b7bdc6; }
+    .prices b { color: #eaecef; }
+    .spread {
+      font-size: 3.4rem;
+      font-weight: 700;
+      margin: 12px 0;
+      letter-spacing: -1px;
+    }
+    .green { color: #0ecb81; }
+    .red { color: #f6465d; }
+    .yellow { color: #f0b90b; }
+    .recommendation {
+      font-size: 1.05rem;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #2b3139;
+    }
+    .footer {
+      margin-top: 28px;
+      font-size: 0.8rem;
+      color: #5e6673;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Spread WTIOIL vs BRENTOIL</h1>
-    <div class="info" id="prices">Cargando precios...</div>
+    <div class="subtitle">Hyperliquid • Actualización cada 10s</div>
+    
+    <div class="prices" id="prices">Cargando precios...</div>
+    
     <div class="spread" id="spread">--</div>
-    <div class="info" id="recommendation"></div>
-    <p style="margin-top:30px;font-size:0.9rem;opacity:0.6">Actualiza cada 10 segundos • Hyperliquid</p>
+    
+    <div class="recommendation" id="recommendation">Esperando datos...</div>
+    
+    <div class="footer">
+      Datos en tiempo real desde la API de Hyperliquid (dex: xyz)
+    </div>
   </div>
 
   <script>
-   <script>
-  async function updateSpread() {
-    try {
-      const res = await fetch('https://api.hyperliquid.xyz/info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          type: 'allMids', 
-          dex: 'xyz'          // ← Esto es lo importante
-        })
-      });
-      const data = await res.json();
+    async function updateSpread() {
+      try {
+        const res = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            type: 'allMids', 
+            dex: 'xyz' 
+          })
+        });
 
-      console.log('Respuesta de la API:', data); // ← Déjalo temporalmente para ver los nombres exactos
+        const data = await res.json();
+        console.log('Respuesta API:', data); // Mira la consola para ver los nombres exactos
 
-      const wti = parseFloat(
-        data['WTIOIL'] || data['xyz:WTIOIL'] || data['CL'] || data['xyz:CL'] || data['WTI']
-      );
-      const brent = parseFloat(
-        data['BRENTOIL'] || data['xyz:BRENTOIL'] || data['Brent'] || data['xyz:Brent']
-      );
+        const wti = parseFloat(
+          data['WTIOIL'] || 
+          data['xyz:WTIOIL'] || 
+          data['CL'] || 
+          data['xyz:CL'] || 
+          data['WTI']
+        );
 
-      if (!wti || !brent || isNaN(wti) || isNaN(brent)) {
-        document.getElementById('prices').innerText = 'No se encontraron los símbolos';
-        console.log('Claves disponibles:', Object.keys(data));
-        return;
+        const brent = parseFloat(
+          data['BRENTOIL'] || 
+          data['xyz:BRENTOIL'] || 
+          data['Brent'] || 
+          data['xyz:Brent']
+        );
+
+        if (!wti || !brent || isNaN(wti) || isNaN(brent)) {
+          document.getElementById('prices').innerText = 'No se encontraron los símbolos';
+          console.log('Claves disponibles:', Object.keys(data));
+          return;
+        }
+
+        const diff = brent - wti;
+        const avg = (brent + wti) / 2;
+        const spreadPct = (diff / avg) * 100;
+
+        document.getElementById('prices').innerHTML = 
+          `WTI: <b>$${wti.toFixed(3)}</b> &nbsp;•&nbsp; Brent: <b>$${brent.toFixed(3)}</b>`;
+
+        const spreadEl = document.getElementById('spread');
+        spreadEl.innerText = spreadPct.toFixed(3) + '%';
+
+        let colorClass = 'yellow';
+        let rec = '🟡 Mantener / esperar';
+
+        if (spreadPct >= 3.80) {
+          colorClass = 'green';
+          rec = '🟢 Buena zona para ENTRAR (spread alto)';
+        } else if (spreadPct <= 2.30) {
+          colorClass = 'red';
+          rec = '🔴 Considera SALIR (cerca del promedio)';
+        }
+
+        spreadEl.className = 'spread ' + colorClass;
+        document.getElementById('recommendation').innerText = rec;
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('prices').innerText = 'Error al cargar datos';
       }
-
-      const diff = brent - wti;
-      const avg = (brent + wti) / 2;
-      const spreadPct = (diff / avg) * 100;
-
-      document.getElementById('prices').innerHTML = 
-        `WTI: <b>$${wti.toFixed(3)}</b> &nbsp;•&nbsp; Brent: <b>$${brent.toFixed(3)}</b>`;
-
-      const spreadEl = document.getElementById('spread');
-      spreadEl.innerText = spreadPct.toFixed(3) + '%';
-
-      let colorClass = 'yellow';
-      let rec = '🟡 Mantener / esperar';
-
-      if (spreadPct >= 3.80) {
-        colorClass = 'green';
-        rec = '🟢 Buena zona para ENTRAR (spread alto)';
-      } else if (spreadPct <= 2.30) {
-        colorClass = 'red';
-        rec = '🔴 Considera SALIR (cerca del promedio)';
-      }
-
-      spreadEl.className = 'spread ' + colorClass;
-      document.getElementById('recommendation').innerText = rec;
-
-    } catch (err) {
-      console.error(err);
-      document.getElementById('prices').innerText = 'Error al cargar datos';
     }
-  }
 
-  updateSpread();
-  setInterval(updateSpread, 10000);
-</script>
+    updateSpread();
+    setInterval(updateSpread, 10000);
   </script>
 </body>
 </html>
