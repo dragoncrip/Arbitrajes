@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spread WTI vs Brent | Hyperliquid</title>
+  <title>Spread WTI vs Brent | Multi-DEX</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -16,122 +16,171 @@
       justify-content: center;
       padding: 20px;
     }
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #848e9c;
+      margin-bottom: 24px;
+    }
+    .platforms {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .platforms { grid-template-columns: 1fr; }
+    }
     .card {
       background: #1e2329;
       border-radius: 16px;
-      padding: 28px;
-      width: 100%;
-      max-width: 520px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
-    h1 { font-size: 1.4rem; text-align: center; margin-bottom: 4px; }
-    .subtitle { text-align: center; font-size: 0.85rem; color: #848e9c; margin-bottom: 24px; }
-    
+    .card h2 {
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 16px;
+      color: #f0b90b;
+    }
     .prices {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 18px;
-      font-size: 1rem;
+      margin-bottom: 14px;
+      gap: 10px;
     }
     .price-box {
       background: #2b3139;
-      padding: 12px 16px;
+      padding: 10px;
       border-radius: 10px;
-      width: 48%;
+      flex: 1;
       text-align: center;
     }
-    .price-box .label { font-size: 0.8rem; color: #848e9c; margin-bottom: 4px; }
-    .price-box .value { font-size: 1.25rem; font-weight: 600; }
+    .price-box .label { font-size: 0.75rem; color: #848e9c; }
+    .price-box .value { font-size: 1.15rem; font-weight: 600; margin-top: 2px; }
 
-    .spread-section { text-align: center; margin: 20px 0 12px; }
     .spread {
-      font-size: 3.2rem;
+      text-align: center;
+      font-size: 2.4rem;
       font-weight: 700;
-      letter-spacing: -1px;
+      margin: 10px 0 4px;
     }
-    .diff-abs { font-size: 1.1rem; color: #b7bdc6; margin-top: 4px; }
-    
+    .diff-abs {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #b7bdc6;
+      margin-bottom: 12px;
+    }
     .green { color: #0ecb81; }
     .red { color: #f6465d; }
     .yellow { color: #f0b90b; }
 
-    .recommendation {
-      text-align: center;
-      font-size: 1.05rem;
-      padding: 14px;
-      border-radius: 10px;
-      background: #2b3139;
-      margin: 16px 0;
-    }
-
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 8px;
-      font-size: 0.9rem;
+      gap: 8px;
+      font-size: 0.85rem;
     }
     .info-item {
       background: #2b3139;
-      padding: 12px 10px;
+      padding: 10px 8px;
       border-radius: 8px;
       text-align: center;
     }
-    .info-item .label { color: #848e9c; font-size: 0.75rem; }
-    .info-item .value { font-weight: 600; margin-top: 3px; }
+    .info-item .label { color: #848e9c; font-size: 0.7rem; }
+    .info-item .value { font-weight: 600; margin-top: 2px; }
 
+    .recommendation {
+      margin-top: 20px;
+      text-align: center;
+      padding: 14px;
+      background: #1e2329;
+      border-radius: 12px;
+      font-size: 1.05rem;
+    }
     .footer {
       text-align: center;
-      margin-top: 22px;
+      margin-top: 18px;
       font-size: 0.75rem;
       color: #5e6673;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Spread WTIOIL vs BRENTOIL</h1>
-    <div class="subtitle">Hyperliquid (xyz) • Actualiza cada 30s</div>
+  <div class="container">
+    <h1>Spread WTI vs Brent</h1>
+    <div class="subtitle">Hyperliquid + Variational • Actualiza cada 30s</div>
 
-    <div class="prices">
-      <div class="price-box">
-        <div class="label">WTIOIL</div>
-        <div class="value" id="wti-price">--</div>
+    <div class="platforms">
+      <!-- Hyperliquid -->
+      <div class="card">
+        <h2>Hyperliquid (xyz)</h2>
+        <div class="prices">
+          <div class="price-box">
+            <div class="label">WTIOIL</div>
+            <div class="value" id="hl-wti">--</div>
+          </div>
+          <div class="price-box">
+            <div class="label">BRENTOIL</div>
+            <div class="value" id="hl-brent">--</div>
+          </div>
+        </div>
+        <div class="spread" id="hl-spread">--</div>
+        <div class="diff-abs" id="hl-diff">Diferencia: --</div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="label">Funding WTI (anual)</div>
+            <div class="value" id="hl-funding-wti">--</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Funding Brent (anual)</div>
+            <div class="value" id="hl-funding-brent">--</div>
+          </div>
+        </div>
       </div>
-      <div class="price-box">
-        <div class="label">BRENTOIL</div>
-        <div class="value" id="brent-price">--</div>
+
+      <!-- Variational -->
+      <div class="card">
+        <h2>Variational Omni</h2>
+        <div class="prices">
+          <div class="price-box">
+            <div class="label">CL (WTI)</div>
+            <div class="value" id="var-wti">--</div>
+          </div>
+          <div class="price-box">
+            <div class="label">BZ (Brent)</div>
+            <div class="value" id="var-brent">--</div>
+          </div>
+        </div>
+        <div class="spread" id="var-spread">--</div>
+        <div class="diff-abs" id="var-diff">Diferencia: --</div>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="label">Funding WTI (anual)</div>
+            <div class="value" id="var-funding-wti">--</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Funding Brent (anual)</div>
+            <div class="value" id="var-funding-brent">--</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="spread-section">
-      <div class="spread" id="spread">--</div>
-      <div class="diff-abs" id="diff-abs">Diferencia: --</div>
-    </div>
-
-    <div class="recommendation" id="recommendation">Cargando...</div>
-
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="label">Promedio histórico</div>
-        <div class="value">≈ 2.00%</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Rango 7 días</div>
-        <div class="value" id="range-7d">Calculando...</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Funding WTI (anual)</div>
-        <div class="value" id="funding-wti">--</div>
-      </div>
-      <div class="info-item">
-        <div class="label">Funding Brent (anual)</div>
-        <div class="value" id="funding-brent">--</div>
-      </div>
+    <div class="recommendation" id="recommendation">
+      Cargando datos...
     </div>
 
     <div class="footer">
-      Datos en tiempo real • dex: xyz
+      Datos en tiempo real • Hyperliquid (xyz) + Variational Omni
     </div>
   </div>
 
@@ -139,35 +188,24 @@
     const ENTER_ABOVE = 3.80;
     const EXIT_BELOW  = 2.30;
 
-    async function fetchCandles(coin) {
-      try {
-        const endTime = Date.now();
-        const startTime = endTime - (7 * 24 * 60 * 60 * 1000); // 7 días
-
-        const res = await fetch('https://api.hyperliquid.xyz/info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'candleSnapshot',
-            req: {
-              coin: coin,
-              interval: '1h',
-              startTime: startTime,
-              endTime: endTime
-            }
-          })
-        });
-        const data = await res.json();
-        return Array.isArray(data) ? data : null;
-      } catch (e) {
-        console.log('Error fetching candles for', coin, e);
-        return null;
-      }
+    function calcSpread(wti, brent) {
+      const diff = brent - wti;
+      const avg = (brent + wti) / 2;
+      return {
+        pct: (diff / avg) * 100,
+        abs: diff
+      };
     }
 
-    async function updateSpread() {
+    function colorClass(pct) {
+      if (pct >= ENTER_ABOVE) return 'green';
+      if (pct <= EXIT_BELOW) return 'red';
+      return 'yellow';
+    }
+
+    async function updateAll() {
       try {
-        // Precios actuales
+        // ========== HYPERLIQUID ==========
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -175,40 +213,19 @@
         });
         const mids = await resMids.json();
 
-        const wti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
-        const brent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
+        const hlWti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
+        const hlBrent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
 
-        if (!wti || !brent) {
-          document.getElementById('recommendation').innerText = 'No se encontraron los símbolos';
-          return;
+        if (hlWti && hlBrent) {
+          const s = calcSpread(hlWti, hlBrent);
+          document.getElementById('hl-wti').innerText = '$' + hlWti.toFixed(3);
+          document.getElementById('hl-brent').innerText = '$' + hlBrent.toFixed(3);
+          document.getElementById('hl-spread').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('hl-spread').className = 'spread ' + colorClass(s.pct);
+          document.getElementById('hl-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        const diff = brent - wti;
-        const avg = (brent + wti) / 2;
-        const spreadPct = (diff / avg) * 100;
-
-        document.getElementById('wti-price').innerText = '$' + wti.toFixed(3);
-        document.getElementById('brent-price').innerText = '$' + brent.toFixed(3);
-
-        const spreadEl = document.getElementById('spread');
-        spreadEl.innerText = spreadPct.toFixed(3) + '%';
-        document.getElementById('diff-abs').innerText = `Diferencia: $${diff.toFixed(3)}`;
-
-        let colorClass = 'yellow';
-        let rec = '🟡 Mantener posición / esperar';
-
-        if (spreadPct >= ENTER_ABOVE) {
-          colorClass = 'green';
-          rec = `🟢 Buena zona para ENTRAR (≥ ${ENTER_ABOVE}%)`;
-        } else if (spreadPct <= EXIT_BELOW) {
-          colorClass = 'red';
-          rec = `🔴 Considera SALIR (≤ ${EXIT_BELOW}%)`;
-        }
-
-        spreadEl.className = 'spread ' + colorClass;
-        document.getElementById('recommendation').innerText = rec;
-
-        // Funding anualizado
+        // Funding Hyperliquid
         try {
           const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
             method: 'POST',
@@ -219,72 +236,69 @@
           const universe = ctxData[0]?.universe || [];
           const ctxs = ctxData[1] || [];
 
-          let fundingWti = '--';
-          let fundingBrent = '--';
-
           universe.forEach((asset, i) => {
             const name = (asset.name || '').toUpperCase();
             const fundingHourly = parseFloat(ctxs[i]?.funding || 0);
-            const fundingAnnual = (fundingHourly * 24 * 365 * 100).toFixed(1) + '%';
-
-            if (name.includes('WTIOIL') || name.includes('CL')) fundingWti = fundingAnnual;
-            if (name.includes('BRENTOIL')) fundingBrent = fundingAnnual;
-          });
-
-          document.getElementById('funding-wti').innerText = fundingWti;
-          document.getElementById('funding-brent').innerText = fundingBrent;
-        } catch (e) {
-          console.log('Error funding', e);
-        }
-
-        // Rango 7 días (con mejor manejo de errores)
-        try {
-          // Probamos varios nombres posibles
-          const possibleWti = ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL'];
-          const possibleBrent = ['xyz:BRENTOIL', 'BRENTOIL'];
-
-          let candlesWti = null;
-          let candlesBrent = null;
-
-          for (const name of possibleWti) {
-            candlesWti = await fetchCandles(name);
-            if (candlesWti && candlesWti.length > 10) break;
-          }
-          for (const name of possibleBrent) {
-            candlesBrent = await fetchCandles(name);
-            if (candlesBrent && candlesBrent.length > 10) break;
-          }
-
-          if (candlesWti && candlesBrent && candlesWti.length && candlesBrent.length) {
-            const mapBrent = {};
-            candlesBrent.forEach(c => {
-              if (c && c.T && c.c) mapBrent[c.T] = parseFloat(c.c);
-            });
-
-            const spreads = [];
-            candlesWti.forEach(c => {
-              if (c && c.T && c.c && mapBrent[c.T]) {
-                const w = parseFloat(c.c);
-                const b = mapBrent[c.T];
-                const s = ((b - w) / ((b + w) / 2)) * 100;
-                if (!isNaN(s)) spreads.push(s);
-              }
-            });
-
-            if (spreads.length > 5) {
-              const max = Math.max(...spreads).toFixed(2);
-              const min = Math.min(...spreads).toFixed(2);
-              document.getElementById('range-7d').innerText = `${min}% → ${max}%`;
-            } else {
-              document.getElementById('range-7d').innerText = 'Pocos datos';
+            const annual = (fundingHourly * 24 * 365 * 100).toFixed(1) + '%';
+            if (name.includes('WTIOIL') || name.includes('CL')) {
+              document.getElementById('hl-funding-wti').innerText = annual;
             }
-          } else {
-            document.getElementById('range-7d').innerText = 'No disponible';
+            if (name.includes('BRENTOIL')) {
+              document.getElementById('hl-funding-brent').innerText = annual;
+            }
+          });
+        } catch(e) {}
+
+        // ========== VARIATIONAL ==========
+        const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
+        const varData = await resVar.json();
+        const listings = varData.listings || [];
+
+        let varWti = null, varBrent = null;
+        let varFundingWti = '--', varFundingBrent = '--';
+
+        listings.forEach(item => {
+          const ticker = (item.ticker || '').toUpperCase();
+          const price = parseFloat(item.mark_price);
+          const funding = parseFloat(item.funding_rate || 0);
+          const interval = parseFloat(item.funding_interval_s || 28800); // default 8h
+          const periodsPerYear = (365 * 24 * 3600) / interval;
+          const annual = (funding * periodsPerYear * 100).toFixed(1) + '%';
+
+          if (ticker === 'CL') {
+            varWti = price;
+            varFundingWti = annual;
           }
-        } catch (e) {
-          console.log('Error rango 7d:', e);
-          document.getElementById('range-7d').innerText = 'Error';
+          if (ticker === 'BZ') {
+            varBrent = price;
+            varFundingBrent = annual;
+          }
+        });
+
+        if (varWti && varBrent) {
+          const s = calcSpread(varWti, varBrent);
+          document.getElementById('var-wti').innerText = '$' + varWti.toFixed(3);
+          document.getElementById('var-brent').innerText = '$' + varBrent.toFixed(3);
+          document.getElementById('var-spread').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('var-spread').className = 'spread ' + colorClass(s.pct);
+          document.getElementById('var-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
+          document.getElementById('var-funding-wti').innerText = varFundingWti;
+          document.getElementById('var-funding-brent').innerText = varFundingBrent;
         }
+
+        // Recomendación general
+        const hlSpread = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
+        const varSpread = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
+        const best = Math.max(hlSpread, varSpread);
+
+        let rec = '🟡 Mantener / esperar';
+        if (best >= ENTER_ABOVE) {
+          const better = hlSpread > varSpread ? 'Hyperliquid' : 'Variational';
+          rec = `🟢 Buena oportunidad en <b>${better}</b> (spread ${best.toFixed(2)}%)`;
+        } else if (best <= EXIT_BELOW) {
+          rec = `🔴 Spreads bajos – considera salir`;
+        }
+        document.getElementById('recommendation').innerHTML = rec;
 
       } catch (err) {
         console.error(err);
@@ -292,8 +306,8 @@
       }
     }
 
-    updateSpread();
-    setInterval(updateSpread, 30000); // ← Ahora cada 30 segundos
+    updateAll();
+    setInterval(updateAll, 30000);
   </script>
 </body>
 </html>
