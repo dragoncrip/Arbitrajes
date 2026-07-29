@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Spread CL vs Brent - Hyperliquid</title>
+  <style>
+    body { font-family: system-ui; background: #0f0f0f; color: #eee; text-align: center; padding: 40px; }
+    .card { background: #1a1a1a; padding: 30px; border-radius: 16px; max-width: 500px; margin: auto; }
+    .spread { font-size: 3rem; font-weight: bold; margin: 20px 0; }
+    .green { color: #00c853; }
+    .red { color: #ff5252; }
+    .info { font-size: 1.1rem; opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Spread WTIOIL vs BRENTOIL</h1>
+    <div class="info" id="prices">Cargando precios...</div>
+    <div class="spread" id="spread">--</div>
+    <div class="info" id="recommendation"></div>
+    <p style="margin-top:30px;font-size:0.9rem;opacity:0.6">Actualiza cada 10 segundos • Hyperliquid</p>
+  </div>
+
+  <script>
+    async function updateSpread() {
+      try {
+        const res = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'allMids' })
+        });
+        const data = await res.json();
+
+        // Prueba diferentes nombres posibles
+        const wti = parseFloat(data['WTIOIL'] || data['xyz:WTIOIL'] || data['CL'] || data['xyz:CL']);
+        const brent = parseFloat(data['BRENTOIL'] || data['xyz:BRENTOIL'] || data['Brent']);
+
+        if (!wti || !brent) {
+          document.getElementById('prices').innerText = 'No se encontraron los símbolos';
+          return;
+        }
+
+        const diff = brent - wti;
+        const avg = (brent + wti) / 2;
+        const spreadPct = (diff / avg) * 100;
+
+        document.getElementById('prices').innerHTML = 
+          `WTI: <b>$${wti.toFixed(3)}</b> &nbsp;|&nbsp; Brent: <b>$${brent.toFixed(3)}</b>`;
+
+        const spreadEl = document.getElementById('spread');
+        spreadEl.innerText = spreadPct.toFixed(3) + '%';
+        spreadEl.className = 'spread ' + (spreadPct > 3.5 ? 'green' : 'red');
+
+        let rec = '';
+        if (spreadPct >= 3.8) rec = '🟢 Buena zona para ENTRAR (spread alto)';
+        else if (spreadPct <= 2.3) rec = '🔴 Considera SALIR (cerca del promedio histórico)';
+        else rec = '🟡 Mantener / esperar';
+
+        document.getElementById('recommendation').innerText = rec;
+
+      } catch (e) {
+        console.error(e);
+        document.getElementById('prices').innerText = 'Error al cargar datos';
+      }
+    }
+
+    updateSpread();
+    setInterval(updateSpread, 10000); // cada 10 segundos
+  </script>
+</body>
+</html>
