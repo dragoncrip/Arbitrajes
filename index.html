@@ -91,7 +91,7 @@
 <body>
   <div class="card">
     <h1>Spread WTIOIL vs BRENTOIL</h1>
-    <div class="subtitle">Hyperliquid (xyz) • Actualiza cada 8s</div>
+    <div class="subtitle">Hyperliquid (xyz) • Actualiza cada 30s</div>
 
     <div class="prices">
       <div class="price-box">
@@ -136,33 +136,38 @@
   </div>
 
   <script>
-    // === CONFIGURA TUS TARGETS AQUÍ ===
     const ENTER_ABOVE = 3.80;
     const EXIT_BELOW  = 2.30;
 
-    async function fetchCandles(coin, days = 7) {
-      const endTime = Date.now();
-      const startTime = endTime - (days * 24 * 60 * 60 * 1000);
+    async function fetchCandles(coin) {
+      try {
+        const endTime = Date.now();
+        const startTime = endTime - (7 * 24 * 60 * 60 * 1000); // 7 días
 
-      const res = await fetch('https://api.hyperliquid.xyz/info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'candleSnapshot',
-          req: {
-            coin: coin,
-            interval: '1h',
-            startTime: startTime,
-            endTime: endTime
-          }
-        })
-      });
-      return await res.json();
+        const res = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'candleSnapshot',
+            req: {
+              coin: coin,
+              interval: '1h',
+              startTime: startTime,
+              endTime: endTime
+            }
+          })
+        });
+        const data = await res.json();
+        return Array.isArray(data) ? data : null;
+      } catch (e) {
+        console.log('Error fetching candles for', coin, e);
+        return null;
+      }
     }
 
     async function updateSpread() {
       try {
-        // 1. Precios actuales
+        // Precios actuales
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -178,7 +183,6 @@
           return;
         }
 
-        // Spread actual
         const diff = brent - wti;
         const avg = (brent + wti) / 2;
         const spreadPct = (diff / avg) * 100;
@@ -190,7 +194,6 @@
         spreadEl.innerText = spreadPct.toFixed(3) + '%';
         document.getElementById('diff-abs').innerText = `Diferencia: $${diff.toFixed(3)}`;
 
-        // Recomendación
         let colorClass = 'yellow';
         let rec = '🟡 Mantener posición / esperar';
 
@@ -205,7 +208,7 @@
         spreadEl.className = 'spread ' + colorClass;
         document.getElementById('recommendation').innerText = rec;
 
-        // 2. Funding rates (anualizados)
+        // Funding anualizado
         try {
           const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
             method: 'POST',
@@ -220,53 +223,63 @@
           let fundingBrent = '--';
 
           universe.forEach((asset, i) => {
-            const name = asset.name || '';
+            const name = (asset.name || '').toUpperCase();
             const fundingHourly = parseFloat(ctxs[i]?.funding || 0);
             const fundingAnnual = (fundingHourly * 24 * 365 * 100).toFixed(1) + '%';
 
-            if (name.includes('WTIOIL') || name.includes('CL')) {
-              fundingWti = fundingAnnual;
-            }
-            if (name.includes('BRENTOIL')) {
-              fundingBrent = fundingAnnual;
-            }
+            if (name.includes('WTIOIL') || name.includes('CL')) fundingWti = fundingAnnual;
+            if (name.includes('BRENTOIL')) fundingBrent = fundingAnnual;
           });
 
           document.getElementById('funding-wti').innerText = fundingWti;
           document.getElementById('funding-brent').innerText = fundingBrent;
         } catch (e) {
-          console.log('Error funding:', e);
+          console.log('Error funding', e);
         }
 
-        // 3. Rango de los últimos 7 días (máx / mín)
+        // Rango 7 días (con mejor manejo de errores)
         try {
-          const [candlesWti, candlesBrent] = await Promise.all([
-            fetchCandles('xyz:WTIOIL', 7),
-            fetchCandles('xyz:BRENTOIL', 7)
-          ]);
+          // Probamos varios nombres posibles
+          const possibleWti = ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL'];
+          const possibleBrent = ['xyz:BRENTOIL', 'BRENTOIL'];
 
-          if (candlesWti.length && candlesBrent.length) {
-            // Emparejamos por timestamp lo más cercano posible
-            const spreads = [];
+          let candlesWti = null;
+          let candlesBrent = null;
+
+          for (const name of possibleWti) {
+            candlesWti = await fetchCandles(name);
+            if (candlesWti && candlesWti.length > 10) break;
+          }
+          for (const name of possibleBrent) {
+            candlesBrent = await fetchCandles(name);
+            if (candlesBrent && candlesBrent.length > 10) break;
+          }
+
+          if (candlesWti && candlesBrent && candlesWti.length && candlesBrent.length) {
             const mapBrent = {};
-            candlesBrent.forEach(c => mapBrent[c.T] = parseFloat(c.c));
+            candlesBrent.forEach(c => {
+              if (c && c.T && c.c) mapBrent[c.T] = parseFloat(c.c);
+            });
 
+            const spreads = [];
             candlesWti.forEach(c => {
-              const brentClose = mapBrent[c.T];
-              if (brentClose) {
-                const wtiClose = parseFloat(c.c);
-                const s = ((brentClose - wtiClose) / ((brentClose + wtiClose) / 2)) * 100;
-                spreads.push(s);
+              if (c && c.T && c.c && mapBrent[c.T]) {
+                const w = parseFloat(c.c);
+                const b = mapBrent[c.T];
+                const s = ((b - w) / ((b + w) / 2)) * 100;
+                if (!isNaN(s)) spreads.push(s);
               }
             });
 
-            if (spreads.length > 0) {
+            if (spreads.length > 5) {
               const max = Math.max(...spreads).toFixed(2);
               const min = Math.min(...spreads).toFixed(2);
               document.getElementById('range-7d').innerText = `${min}% → ${max}%`;
             } else {
-              document.getElementById('range-7d').innerText = 'Sin datos';
+              document.getElementById('range-7d').innerText = 'Pocos datos';
             }
+          } else {
+            document.getElementById('range-7d').innerText = 'No disponible';
           }
         } catch (e) {
           console.log('Error rango 7d:', e);
@@ -280,7 +293,7 @@
     }
 
     updateSpread();
-    setInterval(updateSpread, 8000);
+    setInterval(updateSpread, 30000); // ← Ahora cada 30 segundos
   </script>
 </body>
 </html>
