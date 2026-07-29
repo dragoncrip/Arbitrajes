@@ -27,7 +27,10 @@
         const res = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'allMids' })
+          body: JSON.stringify({ 
+  type: 'allMids', 
+  dex: 'xyz' 
+})
         });
         const data = await res.json();
 
