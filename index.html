@@ -43,7 +43,7 @@
     .price-box .label { font-size: 0.8rem; color: #848e9c; margin-bottom: 4px; }
     .price-box .value { font-size: 1.25rem; font-weight: 600; }
 
-    .spread-section { text-align: center; margin: 20px 0; }
+    .spread-section { text-align: center; margin: 20px 0 12px; }
     .spread {
       font-size: 3.2rem;
       font-weight: 700;
@@ -68,40 +68,21 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 8px;
       font-size: 0.9rem;
     }
     .info-item {
       background: #2b3139;
-      padding: 10px;
+      padding: 12px 10px;
       border-radius: 8px;
       text-align: center;
     }
     .info-item .label { color: #848e9c; font-size: 0.75rem; }
-    .info-item .value { font-weight: 600; margin-top: 2px; }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 8px;
-      text-align: center;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: 0.2s;
-    }
-    .btn-wti { background: #0ecb81; color: #000; }
-    .btn-brent { background: #f0b90b; color: #000; }
-    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .info-item .value { font-weight: 600; margin-top: 3px; }
 
     .footer {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 22px;
       font-size: 0.75rem;
       color: #5e6673;
     }
@@ -136,22 +117,17 @@
         <div class="value">≈ 2.00%</div>
       </div>
       <div class="info-item">
-        <div class="label">Última actualización</div>
-        <div class="value" id="last-update">--</div>
+        <div class="label">Rango 7 días</div>
+        <div class="value" id="range-7d">Calculando...</div>
       </div>
       <div class="info-item">
-        <div class="label">Funding WTI</div>
+        <div class="label">Funding WTI (anual)</div>
         <div class="value" id="funding-wti">--</div>
       </div>
       <div class="info-item">
-        <div class="label">Funding Brent</div>
+        <div class="label">Funding Brent (anual)</div>
         <div class="value" id="funding-brent">--</div>
       </div>
-    </div>
-
-    <div class="buttons">
-      <a href="https://app.hyperliquid.xyz/trade/xyz:WTIOIL" target="_blank" class="btn btn-wti">Abrir WTIOIL</a>
-      <a href="https://app.hyperliquid.xyz/trade/xyz:BRENTOIL" target="_blank" class="btn btn-brent">Abrir BRENTOIL</a>
     </div>
 
     <div class="footer">
@@ -161,12 +137,32 @@
 
   <script>
     // === CONFIGURA TUS TARGETS AQUÍ ===
-    const ENTER_ABOVE = 3.80;   // Entrar si el spread es mayor a esto
-    const EXIT_BELOW  = 2.30;   // Salir si el spread es menor a esto
+    const ENTER_ABOVE = 3.80;
+    const EXIT_BELOW  = 2.30;
+
+    async function fetchCandles(coin, days = 7) {
+      const endTime = Date.now();
+      const startTime = endTime - (days * 24 * 60 * 60 * 1000);
+
+      const res = await fetch('https://api.hyperliquid.xyz/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'candleSnapshot',
+          req: {
+            coin: coin,
+            interval: '1h',
+            startTime: startTime,
+            endTime: endTime
+          }
+        })
+      });
+      return await res.json();
+    }
 
     async function updateSpread() {
       try {
-        // 1. Precios (allMids)
+        // 1. Precios actuales
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -174,15 +170,6 @@
         });
         const mids = await resMids.json();
 
-        // 2. Contextos (funding + más info)
-        const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'metaAndAssetCtxs', dex: 'xyz' })
-        });
-        const ctxData = await resCtx.json();
-
-        // Extraer precios
         const wti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
         const brent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
 
@@ -191,16 +178,14 @@
           return;
         }
 
-        // Calcular spread
+        // Spread actual
         const diff = brent - wti;
         const avg = (brent + wti) / 2;
         const spreadPct = (diff / avg) * 100;
 
-        // Mostrar precios
         document.getElementById('wti-price').innerText = '$' + wti.toFixed(3);
         document.getElementById('brent-price').innerText = '$' + brent.toFixed(3);
 
-        // Spread
         const spreadEl = document.getElementById('spread');
         spreadEl.innerText = spreadPct.toFixed(3) + '%';
         document.getElementById('diff-abs').innerText = `Diferencia: $${diff.toFixed(3)}`;
@@ -211,41 +196,81 @@
 
         if (spreadPct >= ENTER_ABOVE) {
           colorClass = 'green';
-          rec = `🟢 Buena zona para ENTRAR (spread alto ≥ ${ENTER_ABOVE}%)`;
+          rec = `🟢 Buena zona para ENTRAR (≥ ${ENTER_ABOVE}%)`;
         } else if (spreadPct <= EXIT_BELOW) {
           colorClass = 'red';
-          rec = `🔴 Considera SALIR (spread bajo ≤ ${EXIT_BELOW}%)`;
+          rec = `🔴 Considera SALIR (≤ ${EXIT_BELOW}%)`;
         }
 
         spreadEl.className = 'spread ' + colorClass;
         document.getElementById('recommendation').innerText = rec;
 
-        // Hora
-        const now = new Date();
-        document.getElementById('last-update').innerText = now.toLocaleTimeString('es-ES');
-
-        // Funding rates (intentamos extraerlos)
+        // 2. Funding rates (anualizados)
         try {
+          const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'metaAndAssetCtxs', dex: 'xyz' })
+          });
+          const ctxData = await resCtx.json();
           const universe = ctxData[0]?.universe || [];
           const ctxs = ctxData[1] || [];
-          
+
           let fundingWti = '--';
           let fundingBrent = '--';
 
           universe.forEach((asset, i) => {
-            const name = asset.name;
+            const name = asset.name || '';
+            const fundingHourly = parseFloat(ctxs[i]?.funding || 0);
+            const fundingAnnual = (fundingHourly * 24 * 365 * 100).toFixed(1) + '%';
+
             if (name.includes('WTIOIL') || name.includes('CL')) {
-              fundingWti = (parseFloat(ctxs[i]?.funding) * 100).toFixed(4) + '%';
+              fundingWti = fundingAnnual;
             }
             if (name.includes('BRENTOIL')) {
-              fundingBrent = (parseFloat(ctxs[i]?.funding) * 100).toFixed(4) + '%';
+              fundingBrent = fundingAnnual;
             }
           });
 
           document.getElementById('funding-wti').innerText = fundingWti;
           document.getElementById('funding-brent').innerText = fundingBrent;
         } catch (e) {
-          console.log('No se pudo obtener funding', e);
+          console.log('Error funding:', e);
+        }
+
+        // 3. Rango de los últimos 7 días (máx / mín)
+        try {
+          const [candlesWti, candlesBrent] = await Promise.all([
+            fetchCandles('xyz:WTIOIL', 7),
+            fetchCandles('xyz:BRENTOIL', 7)
+          ]);
+
+          if (candlesWti.length && candlesBrent.length) {
+            // Emparejamos por timestamp lo más cercano posible
+            const spreads = [];
+            const mapBrent = {};
+            candlesBrent.forEach(c => mapBrent[c.T] = parseFloat(c.c));
+
+            candlesWti.forEach(c => {
+              const brentClose = mapBrent[c.T];
+              if (brentClose) {
+                const wtiClose = parseFloat(c.c);
+                const s = ((brentClose - wtiClose) / ((brentClose + wtiClose) / 2)) * 100;
+                spreads.push(s);
+              }
+            });
+
+            if (spreads.length > 0) {
+              const max = Math.max(...spreads).toFixed(2);
+              const min = Math.min(...spreads).toFixed(2);
+              document.getElementById('range-7d').innerText = `${min}% → ${max}%`;
+            } else {
+              document.getElementById('range-7d').innerText = 'Sin datos';
+            }
+          }
+        } catch (e) {
+          console.log('Error rango 7d:', e);
+          document.getElementById('range-7d').innerText = 'Error';
         }
 
       } catch (err) {
