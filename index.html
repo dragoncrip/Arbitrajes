@@ -22,53 +22,67 @@
   </div>
 
   <script>
-    async function updateSpread() {
-      try {
-        const res = await fetch('https://api.hyperliquid.xyz/info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-  type: 'allMids', 
-  dex: 'xyz' 
-})
-        });
-        const data = await res.json();
+   <script>
+  async function updateSpread() {
+    try {
+      const res = await fetch('https://api.hyperliquid.xyz/info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          type: 'allMids', 
+          dex: 'xyz'          // ← Esto es lo importante
+        })
+      });
+      const data = await res.json();
 
-        // Prueba diferentes nombres posibles
-        const wti = parseFloat(data['WTIOIL'] || data['xyz:WTIOIL'] || data['CL'] || data['xyz:CL']);
-        const brent = parseFloat(data['BRENTOIL'] || data['xyz:BRENTOIL'] || data['Brent']);
+      console.log('Respuesta de la API:', data); // ← Déjalo temporalmente para ver los nombres exactos
 
-        if (!wti || !brent) {
-          document.getElementById('prices').innerText = 'No se encontraron los símbolos';
-          return;
-        }
+      const wti = parseFloat(
+        data['WTIOIL'] || data['xyz:WTIOIL'] || data['CL'] || data['xyz:CL'] || data['WTI']
+      );
+      const brent = parseFloat(
+        data['BRENTOIL'] || data['xyz:BRENTOIL'] || data['Brent'] || data['xyz:Brent']
+      );
 
-        const diff = brent - wti;
-        const avg = (brent + wti) / 2;
-        const spreadPct = (diff / avg) * 100;
-
-        document.getElementById('prices').innerHTML = 
-          `WTI: <b>$${wti.toFixed(3)}</b> &nbsp;|&nbsp; Brent: <b>$${brent.toFixed(3)}</b>`;
-
-        const spreadEl = document.getElementById('spread');
-        spreadEl.innerText = spreadPct.toFixed(3) + '%';
-        spreadEl.className = 'spread ' + (spreadPct > 3.5 ? 'green' : 'red');
-
-        let rec = '';
-        if (spreadPct >= 3.8) rec = '🟢 Buena zona para ENTRAR (spread alto)';
-        else if (spreadPct <= 2.3) rec = '🔴 Considera SALIR (cerca del promedio histórico)';
-        else rec = '🟡 Mantener / esperar';
-
-        document.getElementById('recommendation').innerText = rec;
-
-      } catch (e) {
-        console.error(e);
-        document.getElementById('prices').innerText = 'Error al cargar datos';
+      if (!wti || !brent || isNaN(wti) || isNaN(brent)) {
+        document.getElementById('prices').innerText = 'No se encontraron los símbolos';
+        console.log('Claves disponibles:', Object.keys(data));
+        return;
       }
-    }
 
-    updateSpread();
-    setInterval(updateSpread, 10000); // cada 10 segundos
+      const diff = brent - wti;
+      const avg = (brent + wti) / 2;
+      const spreadPct = (diff / avg) * 100;
+
+      document.getElementById('prices').innerHTML = 
+        `WTI: <b>$${wti.toFixed(3)}</b> &nbsp;•&nbsp; Brent: <b>$${brent.toFixed(3)}</b>`;
+
+      const spreadEl = document.getElementById('spread');
+      spreadEl.innerText = spreadPct.toFixed(3) + '%';
+
+      let colorClass = 'yellow';
+      let rec = '🟡 Mantener / esperar';
+
+      if (spreadPct >= 3.80) {
+        colorClass = 'green';
+        rec = '🟢 Buena zona para ENTRAR (spread alto)';
+      } else if (spreadPct <= 2.30) {
+        colorClass = 'red';
+        rec = '🔴 Considera SALIR (cerca del promedio)';
+      }
+
+      spreadEl.className = 'spread ' + colorClass;
+      document.getElementById('recommendation').innerText = rec;
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById('prices').innerText = 'Error al cargar datos';
+    }
+  }
+
+  updateSpread();
+  setInterval(updateSpread, 10000);
+</script>
   </script>
 </body>
 </html>
