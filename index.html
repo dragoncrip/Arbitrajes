@@ -19,35 +19,90 @@
     .card {
       background: #1e2329;
       border-radius: 16px;
-      padding: 32px;
+      padding: 28px;
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+    h1 { font-size: 1.4rem; text-align: center; margin-bottom: 4px; }
+    .subtitle { text-align: center; font-size: 0.85rem; color: #848e9c; margin-bottom: 24px; }
+    
+    .prices {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      font-size: 1rem;
+    }
+    .price-box {
+      background: #2b3139;
+      padding: 12px 16px;
+      border-radius: 10px;
+      width: 48%;
       text-align: center;
     }
-    h1 { font-size: 1.5rem; margin-bottom: 6px; font-weight: 600; }
-    .subtitle { font-size: 0.9rem; color: #848e9c; margin-bottom: 28px; }
-    .prices { font-size: 1.1rem; margin-bottom: 18px; color: #b7bdc6; }
-    .prices b { color: #eaecef; }
+    .price-box .label { font-size: 0.8rem; color: #848e9c; margin-bottom: 4px; }
+    .price-box .value { font-size: 1.25rem; font-weight: 600; }
+
+    .spread-section { text-align: center; margin: 20px 0; }
     .spread {
-      font-size: 3.4rem;
+      font-size: 3.2rem;
       font-weight: 700;
-      margin: 12px 0;
       letter-spacing: -1px;
     }
+    .diff-abs { font-size: 1.1rem; color: #b7bdc6; margin-top: 4px; }
+    
     .green { color: #0ecb81; }
     .red { color: #f6465d; }
     .yellow { color: #f0b90b; }
+
     .recommendation {
+      text-align: center;
       font-size: 1.05rem;
-      margin-top: 18px;
       padding: 14px;
       border-radius: 10px;
       background: #2b3139;
+      margin: 16px 0;
     }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+      font-size: 0.9rem;
+    }
+    .info-item {
+      background: #2b3139;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .info-item .label { color: #848e9c; font-size: 0.75rem; }
+    .info-item .value { font-weight: 600; margin-top: 2px; }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+    }
+    .btn-wti { background: #0ecb81; color: #000; }
+    .btn-brent { background: #f0b90b; color: #000; }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
     .footer {
-      margin-top: 28px;
-      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.75rem;
       color: #5e6673;
     }
   </style>
@@ -55,87 +110,152 @@
 <body>
   <div class="card">
     <h1>Spread WTIOIL vs BRENTOIL</h1>
-    <div class="subtitle">Hyperliquid • Actualización cada 10s</div>
-    
-    <div class="prices" id="prices">Cargando precios...</div>
-    
-    <div class="spread" id="spread">--</div>
-    
-    <div class="recommendation" id="recommendation">Esperando datos...</div>
-    
+    <div class="subtitle">Hyperliquid (xyz) • Actualiza cada 8s</div>
+
+    <div class="prices">
+      <div class="price-box">
+        <div class="label">WTIOIL</div>
+        <div class="value" id="wti-price">--</div>
+      </div>
+      <div class="price-box">
+        <div class="label">BRENTOIL</div>
+        <div class="value" id="brent-price">--</div>
+      </div>
+    </div>
+
+    <div class="spread-section">
+      <div class="spread" id="spread">--</div>
+      <div class="diff-abs" id="diff-abs">Diferencia: --</div>
+    </div>
+
+    <div class="recommendation" id="recommendation">Cargando...</div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">Promedio histórico</div>
+        <div class="value">≈ 2.00%</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Última actualización</div>
+        <div class="value" id="last-update">--</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Funding WTI</div>
+        <div class="value" id="funding-wti">--</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Funding Brent</div>
+        <div class="value" id="funding-brent">--</div>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <a href="https://app.hyperliquid.xyz/trade/xyz:WTIOIL" target="_blank" class="btn btn-wti">Abrir WTIOIL</a>
+      <a href="https://app.hyperliquid.xyz/trade/xyz:BRENTOIL" target="_blank" class="btn btn-brent">Abrir BRENTOIL</a>
+    </div>
+
     <div class="footer">
-      Datos en tiempo real desde la API de Hyperliquid (dex: xyz)
+      Datos en tiempo real • dex: xyz
     </div>
   </div>
 
   <script>
+    // === CONFIGURA TUS TARGETS AQUÍ ===
+    const ENTER_ABOVE = 3.80;   // Entrar si el spread es mayor a esto
+    const EXIT_BELOW  = 2.30;   // Salir si el spread es menor a esto
+
     async function updateSpread() {
       try {
-        const res = await fetch('https://api.hyperliquid.xyz/info', {
+        // 1. Precios (allMids)
+        const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            type: 'allMids', 
-            dex: 'xyz' 
-          })
+          body: JSON.stringify({ type: 'allMids', dex: 'xyz' })
         });
+        const mids = await resMids.json();
 
-        const data = await res.json();
-        console.log('Respuesta API:', data); // Mira la consola para ver los nombres exactos
+        // 2. Contextos (funding + más info)
+        const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'metaAndAssetCtxs', dex: 'xyz' })
+        });
+        const ctxData = await resCtx.json();
 
-        const wti = parseFloat(
-          data['WTIOIL'] || 
-          data['xyz:WTIOIL'] || 
-          data['CL'] || 
-          data['xyz:CL'] || 
-          data['WTI']
-        );
+        // Extraer precios
+        const wti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
+        const brent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
 
-        const brent = parseFloat(
-          data['BRENTOIL'] || 
-          data['xyz:BRENTOIL'] || 
-          data['Brent'] || 
-          data['xyz:Brent']
-        );
-
-        if (!wti || !brent || isNaN(wti) || isNaN(brent)) {
-          document.getElementById('prices').innerText = 'No se encontraron los símbolos';
-          console.log('Claves disponibles:', Object.keys(data));
+        if (!wti || !brent) {
+          document.getElementById('recommendation').innerText = 'No se encontraron los símbolos';
           return;
         }
 
+        // Calcular spread
         const diff = brent - wti;
         const avg = (brent + wti) / 2;
         const spreadPct = (diff / avg) * 100;
 
-        document.getElementById('prices').innerHTML = 
-          `WTI: <b>$${wti.toFixed(3)}</b> &nbsp;•&nbsp; Brent: <b>$${brent.toFixed(3)}</b>`;
+        // Mostrar precios
+        document.getElementById('wti-price').innerText = '$' + wti.toFixed(3);
+        document.getElementById('brent-price').innerText = '$' + brent.toFixed(3);
 
+        // Spread
         const spreadEl = document.getElementById('spread');
         spreadEl.innerText = spreadPct.toFixed(3) + '%';
+        document.getElementById('diff-abs').innerText = `Diferencia: $${diff.toFixed(3)}`;
 
+        // Recomendación
         let colorClass = 'yellow';
-        let rec = '🟡 Mantener / esperar';
+        let rec = '🟡 Mantener posición / esperar';
 
-        if (spreadPct >= 3.80) {
+        if (spreadPct >= ENTER_ABOVE) {
           colorClass = 'green';
-          rec = '🟢 Buena zona para ENTRAR (spread alto)';
-        } else if (spreadPct <= 2.30) {
+          rec = `🟢 Buena zona para ENTRAR (spread alto ≥ ${ENTER_ABOVE}%)`;
+        } else if (spreadPct <= EXIT_BELOW) {
           colorClass = 'red';
-          rec = '🔴 Considera SALIR (cerca del promedio)';
+          rec = `🔴 Considera SALIR (spread bajo ≤ ${EXIT_BELOW}%)`;
         }
 
         spreadEl.className = 'spread ' + colorClass;
         document.getElementById('recommendation').innerText = rec;
 
+        // Hora
+        const now = new Date();
+        document.getElementById('last-update').innerText = now.toLocaleTimeString('es-ES');
+
+        // Funding rates (intentamos extraerlos)
+        try {
+          const universe = ctxData[0]?.universe || [];
+          const ctxs = ctxData[1] || [];
+          
+          let fundingWti = '--';
+          let fundingBrent = '--';
+
+          universe.forEach((asset, i) => {
+            const name = asset.name;
+            if (name.includes('WTIOIL') || name.includes('CL')) {
+              fundingWti = (parseFloat(ctxs[i]?.funding) * 100).toFixed(4) + '%';
+            }
+            if (name.includes('BRENTOIL')) {
+              fundingBrent = (parseFloat(ctxs[i]?.funding) * 100).toFixed(4) + '%';
+            }
+          });
+
+          document.getElementById('funding-wti').innerText = fundingWti;
+          document.getElementById('funding-brent').innerText = fundingBrent;
+        } catch (e) {
+          console.log('No se pudo obtener funding', e);
+        }
+
       } catch (err) {
         console.error(err);
-        document.getElementById('prices').innerText = 'Error al cargar datos';
+        document.getElementById('recommendation').innerText = 'Error al cargar datos';
       }
     }
 
     updateSpread();
-    setInterval(updateSpread, 10000);
+    setInterval(updateSpread, 8000);
   </script>
 </body>
 </html>
