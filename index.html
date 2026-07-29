@@ -97,28 +97,30 @@
       color: #f0b90b;
     }
 
+    /* Estilo Variational Gold (imagen de arriba) */
     .pair-row {
       background: #2b3139;
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      text-align: center;
     }
     .pair-names {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: #b7bdc6;
+      margin-bottom: 6px;
     }
     .pair-names b { color: #eaecef; }
-    .pair-values {
-      text-align: right;
-      font-weight: 600;
+    .pair-pct {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #f0b90b;
     }
-    .pair-values .pct { font-size: 1.05rem; }
-    .pair-values .usd { font-size: 0.85rem; color: #848e9c; }
+    .pair-usd {
+      font-size: 0.9rem;
+      color: #848e9c;
+      margin-top: 2px;
+    }
 
     .recommendation {
       margin-top: 18px;
@@ -143,7 +145,6 @@
 
     <!-- OIL -->
     <div class="platforms">
-      <!-- Hyperliquid -->
       <div class="card">
         <h2>Hyperliquid (xyz)</h2>
         <div class="prices">
@@ -178,7 +179,6 @@
         </div>
       </div>
 
-      <!-- Variational Oil -->
       <div class="card">
         <h2>Variational Omni</h2>
         <div class="prices">
@@ -214,52 +214,30 @@
       </div>
     </div>
 
-    <!-- GOLD VARIATIONAL -->
+    <!-- GOLD VARIATIONAL - estilo imagen de arriba -->
     <div class="section-title">Gold en Variational (XAUT • PAXG • XAU)</div>
     <div class="card">
-      <div class="prices">
-        <div class="price-box">
-          <div class="label">XAUT</div>
-          <div class="value" id="gold-xaut">--</div>
-        </div>
-        <div class="price-box">
-          <div class="label">PAXG</div>
-          <div class="value" id="gold-paxg">--</div>
-        </div>
-        <div class="price-box">
-          <div class="label">XAU</div>
-          <div class="value" id="gold-xau">--</div>
-        </div>
+      <div class="pair-row">
+        <div class="pair-names" id="pair1-names">XAUT (--) vs PAXG (--)</div>
+        <div class="pair-pct" id="pair1-pct">--</div>
+        <div class="pair-usd" id="pair1-usd">--</div>
       </div>
-
-      <div id="gold-pairs">
-        <div class="pair-row">
-          <div class="pair-names" id="pair1-names">XAUT (--) vs PAXG (--)</div>
-          <div class="pair-values">
-            <div class="pct" id="pair1-pct">--</div>
-            <div class="usd" id="pair1-usd">--</div>
-          </div>
-        </div>
-        <div class="pair-row">
-          <div class="pair-names" id="pair2-names">XAUT (--) vs XAU (--)</div>
-          <div class="pair-values">
-            <div class="pct" id="pair2-pct">--</div>
-            <div class="usd" id="pair2-usd">--</div>
-          </div>
-        </div>
-        <div class="pair-row">
-          <div class="pair-names" id="pair3-names">PAXG (--) vs XAU (--)</div>
-          <div class="pair-values">
-            <div class="pct" id="pair3-pct">--</div>
-            <div class="usd" id="pair3-usd">--</div>
-          </div>
-        </div>
+      <div class="pair-row">
+        <div class="pair-names" id="pair2-names">XAUT (--) vs XAU (--)</div>
+        <div class="pair-pct" id="pair2-pct">--</div>
+        <div class="pair-usd" id="pair2-usd">--</div>
+      </div>
+      <div class="pair-row">
+        <div class="pair-names" id="pair3-names">PAXG (--) vs XAU (--)</div>
+        <div class="pair-pct" id="pair3-pct">--</div>
+        <div class="pair-usd" id="pair3-usd">--</div>
       </div>
     </div>
 
-    <!-- PACIFICA GOLD (LIVE) -->
-    <div class="section-title">Gold en Pacifica (XAU • PAXG)</div>
+    <!-- PACIFICA - estilo imagen de abajo -->
+    <div class="section-title">Gold en Pacifica</div>
     <div class="card">
+      <h2 style="margin-bottom:14px;">Pacifica</h2>
       <div class="prices">
         <div class="price-box">
           <div class="label">XAU (GOLD)</div>
@@ -270,16 +248,9 @@
           <div class="value" id="pac-paxg">--</div>
         </div>
       </div>
-
-      <div class="pair-row">
-        <div class="pair-names" id="pac-pair-names">XAU (--) vs PAXG (--)</div>
-        <div class="pair-values">
-          <div class="pct" id="pac-pair-pct">--</div>
-          <div class="usd" id="pac-pair-usd">--</div>
-        </div>
-      </div>
-
-      <div class="info-grid" style="margin-top:12px;">
+      <div class="spread" id="pac-spread">--</div>
+      <div class="diff-abs" id="pac-diff">Diferencia: --</div>
+      <div class="info-grid">
         <div class="info-item">
           <div class="label">Funding XAU (anual)</div>
           <div class="value" id="pac-funding-xau">--</div>
@@ -288,11 +259,19 @@
           <div class="label">Funding PAXG (anual)</div>
           <div class="value" id="pac-funding-paxg">--</div>
         </div>
+        <div class="info-item">
+          <div class="label">Rango 7 días</div>
+          <div class="value">N/A</div>
+        </div>
+        <div class="info-item">
+          <div class="label">—</div>
+          <div class="value">—</div>
+        </div>
       </div>
     </div>
 
     <div class="recommendation" id="recommendation">Cargando...</div>
-    <div class="footer">Datos en tiempo real • Oil + Gold (3 plataformas)</div>
+    <div class="footer">Datos en tiempo real</div>
   </div>
 
   <script>
@@ -325,14 +304,12 @@
         });
         const data = await res.json();
         return Array.isArray(data) ? data : null;
-      } catch (e) {
-        return null;
-      }
+      } catch (e) { return null; }
     }
 
     async function updateAll() {
       try {
-        // ===== HYPERLIQUID OIL =====
+        // ===== HYPERLIQUID =====
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -352,7 +329,6 @@
           document.getElementById('hl-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        // Funding HL
         try {
           const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
             method: 'POST',
@@ -371,12 +347,11 @@
           });
         } catch(e) {}
 
-        // Rango 7 días HL
+        // Rango 7d HL
         try {
           const possibleWti = ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL'];
           const possibleBrent = ['xyz:BRENTOIL', 'BRENTOIL'];
           let candlesWti = null, candlesBrent = null;
-
           for (const name of possibleWti) {
             candlesWti = await fetchCandles(name);
             if (candlesWti && candlesWti.length > 20) break;
@@ -385,7 +360,6 @@
             candlesBrent = await fetchCandles(name);
             if (candlesBrent && candlesBrent.length > 20) break;
           }
-
           if (candlesWti && candlesBrent) {
             const mapBrent = {};
             candlesBrent.forEach(c => { if (c?.T && c?.c) mapBrent[c.T] = parseFloat(c.c); });
@@ -398,20 +372,13 @@
               }
             });
             if (spreads.length > 10) {
-              const min = Math.min(...spreads).toFixed(2);
-              const max = Math.max(...spreads).toFixed(2);
-              document.getElementById('hl-range').innerText = `${min}% → ${max}%`;
-            } else {
-              document.getElementById('hl-range').innerText = 'Pocos datos';
-            }
-          } else {
-            document.getElementById('hl-range').innerText = 'No disponible';
-          }
-        } catch (e) {
-          document.getElementById('hl-range').innerText = 'Error';
-        }
+              document.getElementById('hl-range').innerText = 
+                Math.min(...spreads).toFixed(2) + '% → ' + Math.max(...spreads).toFixed(2) + '%';
+            } else document.getElementById('hl-range').innerText = 'Pocos datos';
+          } else document.getElementById('hl-range').innerText = 'No disponible';
+        } catch(e) { document.getElementById('hl-range').innerText = 'Error'; }
 
-        // ===== VARIATIONAL (Oil + Gold) =====
+        // ===== VARIATIONAL =====
         const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
         const varData = await resVar.json();
 
@@ -436,18 +403,9 @@
             document.getElementById('var-brent').innerText = '$' + price.toFixed(3);
             document.getElementById('var-funding-brent').innerText = annual;
           }
-          if (ticker === 'XAUT') {
-            xaut = price;
-            document.getElementById('gold-xaut').innerText = '$' + price.toFixed(2);
-          }
-          if (ticker === 'PAXG') {
-            paxg = price;
-            document.getElementById('gold-paxg').innerText = '$' + price.toFixed(2);
-          }
-          if (ticker === 'XAU') {
-            xau = price;
-            document.getElementById('gold-xau').innerText = '$' + price.toFixed(2);
-          }
+          if (ticker === 'XAUT') xaut = price;
+          if (ticker === 'PAXG') paxg = price;
+          if (ticker === 'XAU') xau = price;
         });
 
         if (varWti && varBrent) {
@@ -457,7 +415,7 @@
           document.getElementById('var-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        // Gold pairs Variational
+        // Variational Gold pairs (estilo imagen de arriba)
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
           document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>) vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
@@ -477,31 +435,27 @@
           document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
 
-        // ===== PACIFICA GOLD =====
+        // ===== PACIFICA =====
         try {
           const resPac = await fetch('https://api.pacifica.fi/api/v1/info/prices');
           const pacData = await resPac.json();
           const list = pacData.data || [];
 
           let pacXau = null, pacPaxg = null;
-          let fundXau = '--', fundPaxg = '--';
 
           list.forEach(item => {
             const sym = (item.symbol || '').toUpperCase();
             const mark = parseFloat(item.mark || item.mid || 0);
             const funding = parseFloat(item.funding || 0);
-            // Funding es por hora → anualizado
             const annual = (funding * 24 * 365 * 100).toFixed(2) + '%';
 
             if (sym === 'XAU' || sym === 'GOLD') {
               pacXau = mark;
-              fundXau = annual;
               document.getElementById('pac-xau').innerText = '$' + mark.toFixed(2);
               document.getElementById('pac-funding-xau').innerText = annual;
             }
             if (sym === 'PAXG') {
               pacPaxg = mark;
-              fundPaxg = annual;
               document.getElementById('pac-paxg').innerText = '$' + mark.toFixed(2);
               document.getElementById('pac-funding-paxg').innerText = annual;
             }
@@ -509,15 +463,15 @@
 
           if (pacXau && pacPaxg) {
             const s = calcSpread(pacXau, pacPaxg);
-            document.getElementById('pac-pair-names').innerHTML = `XAU (<b>$${pacXau.toFixed(2)}</b>) vs PAXG (<b>$${pacPaxg.toFixed(2)}</b>)`;
-            document.getElementById('pac-pair-pct').innerText = s.pct.toFixed(3) + '%';
-            document.getElementById('pac-pair-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+            document.getElementById('pac-spread').innerText = s.pct.toFixed(3) + '%';
+            document.getElementById('pac-spread').className = 'spread ' + getColor(s.pct);
+            document.getElementById('pac-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
           }
         } catch (e) {
-          console.log('Error Pacifica:', e);
+          console.log('Error Pacifica', e);
         }
 
-        // Recomendación Oil
+        // Recomendación
         const hlPct = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
         const varPct = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
         const best = Math.max(hlPct, varPct);
