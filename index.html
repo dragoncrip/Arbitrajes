@@ -11,57 +11,45 @@
       background: #0b0e11;
       color: #eaecef;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       padding: 20px;
+      display: flex;
+      justify-content: center;
     }
-    .container {
-      width: 100%;
-      max-width: 900px;
-    }
-    h1 {
-      text-align: center;
-      font-size: 1.5rem;
-      margin-bottom: 6px;
-    }
-    .subtitle {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #848e9c;
-      margin-bottom: 24px;
-    }
+    .container { width: 100%; max-width: 980px; }
+    h1 { text-align: center; font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 22px; }
+
     .platforms {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
-    @media (max-width: 700px) {
+    @media (max-width: 750px) {
       .platforms { grid-template-columns: 1fr; }
     }
+
     .card {
       background: #1e2329;
       border-radius: 16px;
-      padding: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      padding: 20px;
     }
     .card h2 {
-      font-size: 1.1rem;
       text-align: center;
-      margin-bottom: 16px;
+      font-size: 1.1rem;
+      margin-bottom: 14px;
       color: #f0b90b;
     }
+
     .prices {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 14px;
       gap: 10px;
+      margin-bottom: 12px;
     }
     .price-box {
-      background: #2b3139;
-      padding: 10px;
-      border-radius: 10px;
       flex: 1;
+      background: #2b3139;
+      border-radius: 10px;
+      padding: 10px;
       text-align: center;
     }
     .price-box .label { font-size: 0.75rem; color: #848e9c; }
@@ -69,16 +57,17 @@
 
     .spread {
       text-align: center;
-      font-size: 2.4rem;
+      font-size: 2.3rem;
       font-weight: 700;
-      margin: 10px 0 4px;
+      margin: 8px 0 2px;
     }
     .diff-abs {
       text-align: center;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #b7bdc6;
       margin-bottom: 12px;
     }
+
     .green { color: #0ecb81; }
     .red { color: #f6465d; }
     .yellow { color: #f0b90b; }
@@ -87,28 +76,28 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
     }
     .info-item {
       background: #2b3139;
-      padding: 10px 8px;
       border-radius: 8px;
+      padding: 9px 6px;
       text-align: center;
     }
-    .info-item .label { color: #848e9c; font-size: 0.7rem; }
+    .info-item .label { color: #848e9c; font-size: 0.68rem; }
     .info-item .value { font-weight: 600; margin-top: 2px; }
 
     .recommendation {
-      margin-top: 20px;
-      text-align: center;
-      padding: 14px;
+      margin-top: 18px;
       background: #1e2329;
       border-radius: 12px;
+      padding: 14px;
+      text-align: center;
       font-size: 1.05rem;
     }
     .footer {
       text-align: center;
-      margin-top: 18px;
+      margin-top: 16px;
       font-size: 0.75rem;
       color: #5e6673;
     }
@@ -120,9 +109,10 @@
     <div class="subtitle">Hyperliquid + Variational • Actualiza cada 30s</div>
 
     <div class="platforms">
-      <!-- Hyperliquid -->
+      <!-- ========== HYPERLIQUID ========== -->
       <div class="card">
         <h2>Hyperliquid (xyz)</h2>
+
         <div class="prices">
           <div class="price-box">
             <div class="label">WTIOIL</div>
@@ -133,9 +123,19 @@
             <div class="value" id="hl-brent">--</div>
           </div>
         </div>
+
         <div class="spread" id="hl-spread">--</div>
         <div class="diff-abs" id="hl-diff">Diferencia: --</div>
+
         <div class="info-grid">
+          <div class="info-item">
+            <div class="label">Promedio histórico</div>
+            <div class="value">≈ 2.00%</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Rango 7 días</div>
+            <div class="value" id="hl-range">--</div>
+          </div>
           <div class="info-item">
             <div class="label">Funding WTI (anual)</div>
             <div class="value" id="hl-funding-wti">--</div>
@@ -147,9 +147,10 @@
         </div>
       </div>
 
-      <!-- Variational -->
+      <!-- ========== VARIATIONAL ========== -->
       <div class="card">
         <h2>Variational Omni</h2>
+
         <div class="prices">
           <div class="price-box">
             <div class="label">CL (WTI)</div>
@@ -160,8 +161,10 @@
             <div class="value" id="var-brent">--</div>
           </div>
         </div>
+
         <div class="spread" id="var-spread">--</div>
         <div class="diff-abs" id="var-diff">Diferencia: --</div>
+
         <div class="info-grid">
           <div class="info-item">
             <div class="label">Funding WTI (anual)</div>
@@ -171,17 +174,20 @@
             <div class="label">Funding Brent (anual)</div>
             <div class="value" id="var-funding-brent">--</div>
           </div>
+          <div class="info-item">
+            <div class="label">Intervalo Funding</div>
+            <div class="value" id="var-interval">4h</div>
+          </div>
+          <div class="info-item">
+            <div class="label">—</div>
+            <div class="value">—</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="recommendation" id="recommendation">
-      Cargando datos...
-    </div>
-
-    <div class="footer">
-      Datos en tiempo real • Hyperliquid (xyz) + Variational Omni
-    </div>
+    <div class="recommendation" id="recommendation">Cargando...</div>
+    <div class="footer">Datos en tiempo real</div>
   </div>
 
   <script>
@@ -191,21 +197,37 @@
     function calcSpread(wti, brent) {
       const diff = brent - wti;
       const avg = (brent + wti) / 2;
-      return {
-        pct: (diff / avg) * 100,
-        abs: diff
-      };
+      return { pct: (diff / avg) * 100, abs: diff };
     }
 
-    function colorClass(pct) {
+    function getColor(pct) {
       if (pct >= ENTER_ABOVE) return 'green';
       if (pct <= EXIT_BELOW) return 'red';
       return 'yellow';
     }
 
+    async function fetchCandles(coin) {
+      try {
+        const end = Date.now();
+        const start = end - 7 * 24 * 60 * 60 * 1000;
+        const res = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'candleSnapshot',
+            req: { coin, interval: '1h', startTime: start, endTime: end }
+          })
+        });
+        const data = await res.json();
+        return Array.isArray(data) ? data : null;
+      } catch {
+        return null;
+      }
+    }
+
     async function updateAll() {
       try {
-        // ========== HYPERLIQUID ==========
+        // ===== HYPERLIQUID PRECIOS =====
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -213,7 +235,7 @@
         });
         const mids = await resMids.json();
 
-        const hlWti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
+        const hlWti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL']);
         const hlBrent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
 
         if (hlWti && hlBrent) {
@@ -221,7 +243,7 @@
           document.getElementById('hl-wti').innerText = '$' + hlWti.toFixed(3);
           document.getElementById('hl-brent').innerText = '$' + hlBrent.toFixed(3);
           document.getElementById('hl-spread').innerText = s.pct.toFixed(3) + '%';
-          document.getElementById('hl-spread').className = 'spread ' + colorClass(s.pct);
+          document.getElementById('hl-spread').className = 'spread ' + getColor(s.pct);
           document.getElementById('hl-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
@@ -232,14 +254,14 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: 'metaAndAssetCtxs', dex: 'xyz' })
           });
-          const ctxData = await resCtx.json();
-          const universe = ctxData[0]?.universe || [];
-          const ctxs = ctxData[1] || [];
+          const ctx = await resCtx.json();
+          const universe = ctx[0]?.universe || [];
+          const ctxs = ctx[1] || [];
 
-          universe.forEach((asset, i) => {
-            const name = (asset.name || '').toUpperCase();
-            const fundingHourly = parseFloat(ctxs[i]?.funding || 0);
-            const annual = (fundingHourly * 24 * 365 * 100).toFixed(1) + '%';
+          universe.forEach((a, i) => {
+            const name = (a.name || '').toUpperCase();
+            const f = parseFloat(ctxs[i]?.funding || 0);
+            const annual = (f * 24 * 365 * 100).toFixed(1) + '%';
             if (name.includes('WTIOIL') || name.includes('CL')) {
               document.getElementById('hl-funding-wti').innerText = annual;
             }
@@ -249,29 +271,55 @@
           });
         } catch(e) {}
 
-        // ========== VARIATIONAL ==========
+        // Rango 7 días Hyperliquid
+        try {
+          const [cWti, cBrent] = await Promise.all([
+            fetchCandles('xyz:WTIOIL'),
+            fetchCandles('xyz:BRENTOIL')
+          ]);
+          if (cWti?.length && cBrent?.length) {
+            const map = {};
+            cBrent.forEach(c => map[c.T] = parseFloat(c.c));
+            const spreads = [];
+            cWti.forEach(c => {
+              if (map[c.T]) {
+                const w = parseFloat(c.c), b = map[c.T];
+                spreads.push(((b - w) / ((b + w) / 2)) * 100);
+              }
+            });
+            if (spreads.length > 5) {
+              const min = Math.min(...spreads).toFixed(2);
+              const max = Math.max(...spreads).toFixed(2);
+              document.getElementById('hl-range').innerText = `${min}% → ${max}%`;
+            }
+          }
+        } catch(e) {
+          document.getElementById('hl-range').innerText = 'N/A';
+        }
+
+        // ===== VARIATIONAL =====
         const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
         const varData = await resVar.json();
-        const listings = varData.listings || [];
 
         let varWti = null, varBrent = null;
-        let varFundingWti = '--', varFundingBrent = '--';
 
-        listings.forEach(item => {
+        (varData.listings || []).forEach(item => {
           const ticker = (item.ticker || '').toUpperCase();
           const price = parseFloat(item.mark_price);
-          const funding = parseFloat(item.funding_rate || 0);
-          const interval = parseFloat(item.funding_interval_s || 28800); // default 8h
-          const periodsPerYear = (365 * 24 * 3600) / interval;
-          const annual = (funding * periodsPerYear * 100).toFixed(1) + '%';
+          const funding = parseFloat(item.funding_rate || 0); // viene como -0.0158
+          const intervalSec = parseFloat(item.funding_interval_s || 14400); // 4h = 14400
+          const hours = intervalSec / 3600;
+          // Fórmula correcta según tu captura
+          const annual = (funding * (24 / hours) * 365).toFixed(2) + '%';
 
           if (ticker === 'CL') {
             varWti = price;
-            varFundingWti = annual;
+            document.getElementById('var-funding-wti').innerText = annual;
+            document.getElementById('var-interval').innerText = hours + 'h';
           }
           if (ticker === 'BZ') {
             varBrent = price;
-            varFundingBrent = annual;
+            document.getElementById('var-funding-brent').innerText = annual;
           }
         });
 
@@ -280,23 +328,21 @@
           document.getElementById('var-wti').innerText = '$' + varWti.toFixed(3);
           document.getElementById('var-brent').innerText = '$' + varBrent.toFixed(3);
           document.getElementById('var-spread').innerText = s.pct.toFixed(3) + '%';
-          document.getElementById('var-spread').className = 'spread ' + colorClass(s.pct);
+          document.getElementById('var-spread').className = 'spread ' + getColor(s.pct);
           document.getElementById('var-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
-          document.getElementById('var-funding-wti').innerText = varFundingWti;
-          document.getElementById('var-funding-brent').innerText = varFundingBrent;
         }
 
-        // Recomendación general
-        const hlSpread = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
-        const varSpread = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
-        const best = Math.max(hlSpread, varSpread);
+        // Recomendación
+        const hlPct = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
+        const varPct = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
+        const best = Math.max(hlPct, varPct);
 
         let rec = '🟡 Mantener / esperar';
         if (best >= ENTER_ABOVE) {
-          const better = hlSpread > varSpread ? 'Hyperliquid' : 'Variational';
-          rec = `🟢 Buena oportunidad en <b>${better}</b> (spread ${best.toFixed(2)}%)`;
+          const better = hlPct >= varPct ? 'Hyperliquid' : 'Variational';
+          rec = `🟢 Mejor oportunidad en <b>${better}</b> (${best.toFixed(2)}%)`;
         } else if (best <= EXIT_BELOW) {
-          rec = `🔴 Spreads bajos – considera salir`;
+          rec = '🔴 Spreads bajos – considera salir';
         }
         document.getElementById('recommendation').innerHTML = rec;
 
