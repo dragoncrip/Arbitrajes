@@ -92,10 +92,33 @@
 
     .section-title {
       text-align: center;
-      font-size: 1.2rem;
-      margin: 10px 0 14px;
+      font-size: 1.15rem;
+      margin: 18px 0 12px;
       color: #f0b90b;
     }
+
+    .pair-row {
+      background: #2b3139;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pair-names {
+      font-size: 0.9rem;
+      color: #b7bdc6;
+    }
+    .pair-names b { color: #eaecef; }
+    .pair-values {
+      text-align: right;
+      font-weight: 600;
+    }
+    .pair-values .pct { font-size: 1.05rem; }
+    .pair-values .usd { font-size: 0.85rem; color: #848e9c; }
 
     .recommendation {
       margin-top: 18px;
@@ -115,9 +138,10 @@
 </head>
 <body>
   <div class="container">
-    <h1>Spread WTI vs Brent</h1>
-    <div class="subtitle">Hyperliquid + Variational • Actualiza cada 30s</div>
+    <h1>Spread WTI vs Brent + Gold</h1>
+    <div class="subtitle">Hyperliquid + Variational + Pacifica • Actualiza cada 30s</div>
 
+    <!-- OIL -->
     <div class="platforms">
       <!-- Hyperliquid -->
       <div class="card">
@@ -190,7 +214,7 @@
       </div>
     </div>
 
-    <!-- GOLD -->
+    <!-- GOLD VARIATIONAL -->
     <div class="section-title">Gold en Variational (XAUT • PAXG • XAU)</div>
     <div class="card">
       <div class="prices">
@@ -207,24 +231,68 @@
           <div class="value" id="gold-xau">--</div>
         </div>
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px;">
+
+      <div id="gold-pairs">
+        <div class="pair-row">
+          <div class="pair-names" id="pair1-names">XAUT (--) vs PAXG (--)</div>
+          <div class="pair-values">
+            <div class="pct" id="pair1-pct">--</div>
+            <div class="usd" id="pair1-usd">--</div>
+          </div>
+        </div>
+        <div class="pair-row">
+          <div class="pair-names" id="pair2-names">XAUT (--) vs XAU (--)</div>
+          <div class="pair-values">
+            <div class="pct" id="pair2-pct">--</div>
+            <div class="usd" id="pair2-usd">--</div>
+          </div>
+        </div>
+        <div class="pair-row">
+          <div class="pair-names" id="pair3-names">PAXG (--) vs XAU (--)</div>
+          <div class="pair-values">
+            <div class="pct" id="pair3-pct">--</div>
+            <div class="usd" id="pair3-usd">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACIFICA GOLD (LIVE) -->
+    <div class="section-title">Gold en Pacifica (XAU • PAXG)</div>
+    <div class="card">
+      <div class="prices">
+        <div class="price-box">
+          <div class="label">XAU (GOLD)</div>
+          <div class="value" id="pac-xau">--</div>
+        </div>
+        <div class="price-box">
+          <div class="label">PAXG</div>
+          <div class="value" id="pac-paxg">--</div>
+        </div>
+      </div>
+
+      <div class="pair-row">
+        <div class="pair-names" id="pac-pair-names">XAU (--) vs PAXG (--)</div>
+        <div class="pair-values">
+          <div class="pct" id="pac-pair-pct">--</div>
+          <div class="usd" id="pac-pair-usd">--</div>
+        </div>
+      </div>
+
+      <div class="info-grid" style="margin-top:12px;">
         <div class="info-item">
-          <div class="label">XAUT vs PAXG</div>
-          <div class="value" id="spread-xaut-paxg">--</div>
+          <div class="label">Funding XAU (anual)</div>
+          <div class="value" id="pac-funding-xau">--</div>
         </div>
         <div class="info-item">
-          <div class="label">XAUT vs XAU</div>
-          <div class="value" id="spread-xaut-xau">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">PAXG vs XAU</div>
-          <div class="value" id="spread-paxg-xau">--</div>
+          <div class="label">Funding PAXG (anual)</div>
+          <div class="value" id="pac-funding-paxg">--</div>
         </div>
       </div>
     </div>
 
     <div class="recommendation" id="recommendation">Cargando...</div>
-    <div class="footer">Datos en tiempo real</div>
+    <div class="footer">Datos en tiempo real • Oil + Gold (3 plataformas)</div>
   </div>
 
   <script>
@@ -232,9 +300,9 @@
     const EXIT_BELOW  = 2.30;
 
     function calcSpread(a, b) {
-      const diff = Math.abs(b - a);
+      const diff = b - a;
       const avg = (a + b) / 2;
-      return { pct: (diff / avg) * 100, abs: b - a };
+      return { pct: (Math.abs(diff) / avg) * 100, abs: diff };
     }
 
     function getColor(pct) {
@@ -303,13 +371,11 @@
           });
         } catch(e) {}
 
-        // ===== RANGO 7 DÍAS HYPERLIQUID (restaurado) =====
+        // Rango 7 días HL
         try {
           const possibleWti = ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL'];
           const possibleBrent = ['xyz:BRENTOIL', 'BRENTOIL'];
-
-          let candlesWti = null;
-          let candlesBrent = null;
+          let candlesWti = null, candlesBrent = null;
 
           for (const name of possibleWti) {
             candlesWti = await fetchCandles(name);
@@ -323,17 +389,14 @@
           if (candlesWti && candlesBrent) {
             const mapBrent = {};
             candlesBrent.forEach(c => { if (c?.T && c?.c) mapBrent[c.T] = parseFloat(c.c); });
-
             const spreads = [];
             candlesWti.forEach(c => {
               if (c?.T && c?.c && mapBrent[c.T]) {
-                const w = parseFloat(c.c);
-                const b = mapBrent[c.T];
+                const w = parseFloat(c.c), b = mapBrent[c.T];
                 const s = ((b - w) / ((b + w) / 2)) * 100;
                 if (!isNaN(s)) spreads.push(s);
               }
             });
-
             if (spreads.length > 10) {
               const min = Math.min(...spreads).toFixed(2);
               const max = Math.max(...spreads).toFixed(2);
@@ -394,21 +457,67 @@
           document.getElementById('var-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        // Gold spreads
+        // Gold pairs Variational
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
-          document.getElementById('spread-xaut-paxg').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>) vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
+          document.getElementById('pair1-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
         if (xaut && xau) {
           const s = calcSpread(xaut, xau);
-          document.getElementById('spread-xaut-xau').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair2-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>) vs XAU (<b>$${xau.toFixed(2)}</b>)`;
+          document.getElementById('pair2-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair2-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
         if (paxg && xau) {
           const s = calcSpread(paxg, xau);
-          document.getElementById('spread-paxg-xau').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair3-names').innerHTML = `PAXG (<b>$${paxg.toFixed(2)}</b>) vs XAU (<b>$${xau.toFixed(2)}</b>)`;
+          document.getElementById('pair3-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
 
-        // Recomendación
+        // ===== PACIFICA GOLD =====
+        try {
+          const resPac = await fetch('https://api.pacifica.fi/api/v1/info/prices');
+          const pacData = await resPac.json();
+          const list = pacData.data || [];
+
+          let pacXau = null, pacPaxg = null;
+          let fundXau = '--', fundPaxg = '--';
+
+          list.forEach(item => {
+            const sym = (item.symbol || '').toUpperCase();
+            const mark = parseFloat(item.mark || item.mid || 0);
+            const funding = parseFloat(item.funding || 0);
+            // Funding es por hora → anualizado
+            const annual = (funding * 24 * 365 * 100).toFixed(2) + '%';
+
+            if (sym === 'XAU' || sym === 'GOLD') {
+              pacXau = mark;
+              fundXau = annual;
+              document.getElementById('pac-xau').innerText = '$' + mark.toFixed(2);
+              document.getElementById('pac-funding-xau').innerText = annual;
+            }
+            if (sym === 'PAXG') {
+              pacPaxg = mark;
+              fundPaxg = annual;
+              document.getElementById('pac-paxg').innerText = '$' + mark.toFixed(2);
+              document.getElementById('pac-funding-paxg').innerText = annual;
+            }
+          });
+
+          if (pacXau && pacPaxg) {
+            const s = calcSpread(pacXau, pacPaxg);
+            document.getElementById('pac-pair-names').innerHTML = `XAU (<b>$${pacXau.toFixed(2)}</b>) vs PAXG (<b>$${pacPaxg.toFixed(2)}</b>)`;
+            document.getElementById('pac-pair-pct').innerText = s.pct.toFixed(3) + '%';
+            document.getElementById('pac-pair-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+          }
+        } catch (e) {
+          console.log('Error Pacifica:', e);
+        }
+
+        // Recomendación Oil
         const hlPct = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
         const varPct = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
         const best = Math.max(hlPct, varPct);
@@ -416,9 +525,9 @@
         let rec = '🟡 Mantener / esperar';
         if (best >= ENTER_ABOVE) {
           const better = hlPct >= varPct ? 'Hyperliquid' : 'Variational';
-          rec = `🟢 Mejor oportunidad en <b>${better}</b> (${best.toFixed(2)}%)`;
+          rec = `🟢 Mejor oportunidad Oil en <b>${better}</b> (${best.toFixed(2)}%)`;
         } else if (best <= EXIT_BELOW) {
-          rec = '🔴 Spreads bajos – considera salir';
+          rec = '🔴 Spreads Oil bajos – considera salir';
         }
         document.getElementById('recommendation').innerHTML = rec;
 
