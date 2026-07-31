@@ -124,6 +124,62 @@
       letter-spacing: 0.3px;
     }
 
+    /* ===== BARRA VISUAL ===== */
+    .range-bar-container {
+      grid-column: 1 / -1;
+      margin: 6px 0 2px;
+      padding: 10px 8px 6px;
+      background: #2b3139;
+      border-radius: 10px;
+    }
+    .range-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #848e9c;
+      margin-bottom: 6px;
+    }
+    .range-bar {
+      position: relative;
+      height: 10px;
+      background: #1e2329;
+      border-radius: 6px;
+      overflow: visible;
+    }
+    .range-bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #f6465d 0%, #f0b90b 50%, #0ecb81 100%);
+      border-radius: 6px;
+      opacity: 0.35;
+    }
+    .range-marker {
+      position: absolute;
+      top: 50%;
+      width: 3px;
+      height: 18px;
+      background: #eaecef;
+      border-radius: 2px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      box-shadow: 0 0 4px rgba(0,0,0,0.6);
+    }
+    .range-marker.current {
+      width: 4px;
+      height: 22px;
+      background: #f0b90b;
+      box-shadow: 0 0 6px rgba(240,185,11,0.7);
+    }
+    .range-current-label {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #f0b90b;
+      margin-top: 6px;
+    }
+
     .note {
       margin-top: 10px;
       background: #2b3139;
@@ -217,6 +273,21 @@
           <div class="value" id="hl-dist-7">--</div>
         </div>
 
+        <!-- Barra visual 7d -->
+        <div class="range-bar-container" id="bar-7-container" style="display:none;">
+          <div class="range-bar-labels">
+            <span id="bar-7-exit">Sal</span>
+            <span id="bar-7-enter">Ent</span>
+          </div>
+          <div class="range-bar">
+            <div class="range-bar-fill" id="bar-7-fill"></div>
+            <div class="range-marker" id="bar-7-exit-marker" style="left:0%"></div>
+            <div class="range-marker" id="bar-7-enter-marker" style="left:100%"></div>
+            <div class="range-marker current" id="bar-7-current" style="left:50%"></div>
+          </div>
+          <div class="range-current-label" id="bar-7-label">Actual: --</div>
+        </div>
+
         <!-- ========== 30 DÍAS ========== -->
         <div class="section-label">—— 30 días ——</div>
 
@@ -241,10 +312,19 @@
           <div class="value" id="hl-dist-30">--</div>
         </div>
 
-        <!-- Franjas -->
-        <div class="info-item full-width" style="margin-top:4px;">
-          <div class="label">Tiempo en franjas (30d)</div>
-          <div class="value" id="hl-franjas">Calculando...</div>
+        <!-- Barra visual 30d -->
+        <div class="range-bar-container" id="bar-30-container" style="display:none;">
+          <div class="range-bar-labels">
+            <span id="bar-30-exit">Sal</span>
+            <span id="bar-30-enter">Ent</span>
+          </div>
+          <div class="range-bar">
+            <div class="range-bar-fill" id="bar-30-fill"></div>
+            <div class="range-marker" id="bar-30-exit-marker" style="left:0%"></div>
+            <div class="range-marker" id="bar-30-enter-marker" style="left:100%"></div>
+            <div class="range-marker current" id="bar-30-current" style="left:50%"></div>
+          </div>
+          <div class="range-current-label" id="bar-30-label">Actual: --</div>
         </div>
       </div>
 
@@ -289,12 +369,42 @@
       return '#b7bdc6';
     }
 
+    // INVERTIDO: primero Salida, después Entrada
     function formatDist(current, enter, exit) {
       const dEnter = enter - current;
       const dExit  = exit - current;
       const eStr = (dEnter > 0 ? '+' : '') + dEnter.toFixed(2) + '%';
       const xStr = (dExit  > 0 ? '+' : '') + dExit.toFixed(2) + '%';
-      return `Ent ${eStr}  ·  Sal ${xStr}`;
+      return `Sal ${xStr}  ·  Ent ${eStr}`;
+    }
+
+    // Dibuja la barra visual
+    function updateRangeBar(prefix, current, exit, enter) {
+      const container = document.getElementById(`bar-${prefix}-container`);
+      if (!container) return;
+
+      // Ampliamos un poco el rango visual para que se vea bien
+      const padding = (enter - exit) * 0.25;
+      const min = exit - padding;
+      const max = enter + padding;
+      const range = max - min;
+
+      const pct = Math.max(0, Math.min(100, ((current - min) / range) * 100));
+      const exitPct = ((exit - min) / range) * 100;
+      const enterPct = ((enter - min) / range) * 100;
+
+      document.getElementById(`bar-${prefix}-exit`).innerText = `Sal ${exit.toFixed(2)}%`;
+      document.getElementById(`bar-${prefix}-enter`).innerText = `Ent ${enter.toFixed(2)}%`;
+      document.getElementById(`bar-${prefix}-exit-marker`).style.left = exitPct + '%';
+      document.getElementById(`bar-${prefix}-enter-marker`).style.left = enterPct + '%';
+      document.getElementById(`bar-${prefix}-current`).style.left = pct + '%';
+      document.getElementById(`bar-${prefix}-label`).innerText = `Actual: ${current.toFixed(2)}%`;
+
+      // Color del fill según posición
+      const fill = document.getElementById(`bar-${prefix}-fill`);
+      fill.style.width = '100%';
+
+      container.style.display = 'block';
     }
 
     async function fetchCandlesHL(coin, days = 7) {
@@ -441,6 +551,7 @@
               if (th7) {
                 document.getElementById('hl-umbral-7').innerText = th7.exit.toFixed(2) + '% – ' + th7.enter.toFixed(2) + '%';
                 document.getElementById('hl-dist-7').innerText = formatDist(currentPct, th7.enter, th7.exit);
+                updateRangeBar('7', currentPct, th7.exit, th7.enter);
               }
             }
           }
@@ -476,17 +587,7 @@
 
               document.getElementById('hl-umbral-30').innerText = EXIT_BELOW.toFixed(2) + '% – ' + ENTER_ABOVE.toFixed(2) + '%';
               document.getElementById('hl-dist-30').innerText = formatDist(currentPct, ENTER_ABOVE, EXIT_BELOW);
-
-              // Franjas
-              let bajo = 0, medio = 0, alto = 0;
-              spreads30.forEach(s => {
-                if (s <= EXIT_BELOW) bajo++;
-                else if (s >= ENTER_ABOVE) alto++;
-                else medio++;
-              });
-              const total = spreads30.length;
-              document.getElementById('hl-franjas').innerText =
-                `Bajo ${((bajo/total)*100).toFixed(0)}% · Medio ${((medio/total)*100).toFixed(0)}% · Alto ${((alto/total)*100).toFixed(0)}%`;
+              updateRangeBar('30', currentPct, EXIT_BELOW, ENTER_ABOVE);
             }
           }
         } catch (e) {
