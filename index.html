@@ -32,24 +32,22 @@
     .card {
       background: #1e2329;
       border-radius: 16px;
-      padding: 20px;
+      padding: 18px;
     }
     .card h2 {
       text-align: center;
       font-size: 1.1rem;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       color: #f0b90b;
     }
 
     .prices {
       display: flex;
       gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
+      margin-bottom: 10px;
     }
     .price-box {
       flex: 1;
-      min-width: 90px;
       background: #2b3139;
       border-radius: 10px;
       padding: 10px 6px;
@@ -62,13 +60,13 @@
       text-align: center;
       font-size: 2.1rem;
       font-weight: 700;
-      margin: 8px 0 2px;
+      margin: 6px 0 2px;
     }
     .diff-abs {
       text-align: center;
       font-size: 0.9rem;
       color: #b7bdc6;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .green { color: #0ecb81; }
@@ -78,39 +76,38 @@
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      font-size: 0.82rem;
+      gap: 7px;
+      font-size: 0.8rem;
     }
     .info-item {
       background: #2b3139;
       border-radius: 8px;
-      padding: 9px 6px;
+      padding: 8px 6px;
       text-align: center;
     }
-    .info-item .label { color: #848e9c; font-size: 0.68rem; }
-    .info-item .value { font-weight: 600; margin-top: 2px; }
+    .info-item .label { color: #848e9c; font-size: 0.66rem; }
+    .info-item .value { font-weight: 600; margin-top: 2px; font-size: 0.84rem; }
 
-    .full-width {
-      grid-column: 1 / -1;
-    }
+    .full-width { grid-column: 1 / -1; }
 
     .section-label {
       grid-column: 1 / -1;
       text-align: center;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #f0b90b;
-      margin: 6px 0 2px;
+      margin: 8px 0 2px;
       font-weight: 600;
+      letter-spacing: 0.3px;
     }
 
     .note {
       margin-top: 12px;
       background: #2b3139;
       border-radius: 8px;
-      padding: 10px;
-      font-size: 0.72rem;
+      padding: 9px;
+      font-size: 0.7rem;
       color: #b7bdc6;
-      line-height: 1.5;
+      line-height: 1.45;
       text-align: center;
     }
 
@@ -142,21 +139,10 @@
       line-height: 1.3;
     }
     .pair-names b { color: #eaecef; }
-    .pair-pct {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #f0b90b;
-    }
-    .pair-usd {
-      font-size: 0.85rem;
-      color: #848e9c;
-      margin-top: 2px;
-    }
+    .pair-pct { font-size: 1.25rem; font-weight: 700; color: #f0b90b; }
+    .pair-usd { font-size: 0.85rem; color: #848e9c; margin-top: 2px; }
 
-    .pacifica-card {
-      max-width: 480px;
-      margin: 0 auto;
-    }
+    .pacifica-card { max-width: 480px; margin: 0 auto; }
 
     .recommendation {
       margin-top: 18px;
@@ -179,8 +165,8 @@
     <h1>Spread WTI vs Brent + Gold</h1>
     <div class="subtitle">Hyperliquid + Variational + Pacifica • Actualiza cada 30s</div>
 
-    <!-- OIL -->
     <div class="platforms">
+      <!-- ==================== HYPERLIQUID ==================== -->
       <div class="card">
         <h2>Hyperliquid (xyz)</h2>
 
@@ -200,7 +186,7 @@
         <div class="diff-abs" id="hl-diff">Diferencia: --</div>
 
         <!-- Fundings -->
-        <div class="info-grid" style="margin-bottom:10px;">
+        <div class="info-grid" style="margin-bottom:4px;">
           <div class="info-item">
             <div class="label">Funding WTI (anual)</div>
             <div class="value" id="hl-funding-wti">--</div>
@@ -211,20 +197,8 @@
           </div>
         </div>
 
-        <!-- Umbrales -->
-        <div class="info-grid" style="margin-bottom:6px;">
-          <div class="info-item">
-            <div class="label">Umbral Entrada</div>
-            <div class="value" id="hl-enter">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Umbral Salida</div>
-            <div class="value" id="hl-exit">--</div>
-          </div>
-        </div>
-
-        <!-- ===== 30 DÍAS ===== -->
         <div class="info-grid">
+          <!-- ========== 30 DÍAS ========== -->
           <div class="section-label">—— 30 días ——</div>
 
           <div class="info-item">
@@ -244,7 +218,17 @@
             <div class="value" id="hl-franjas">Calculando...</div>
           </div>
 
-          <!-- ===== 7 DÍAS ===== -->
+          <!-- Umbrales 30d -->
+          <div class="info-item">
+            <div class="label">Umbral Entrada (30d)</div>
+            <div class="value" id="hl-enter-30">--</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Umbral Salida (30d)</div>
+            <div class="value" id="hl-exit-30">--</div>
+          </div>
+
+          <!-- ========== 7 DÍAS ========== -->
           <div class="section-label">—— 7 días ——</div>
 
           <div class="info-item">
@@ -263,18 +247,28 @@
             <div class="label">—</div>
             <div class="value">—</div>
           </div>
+
+          <!-- Umbrales 7d -->
+          <div class="info-item">
+            <div class="label">Umbral Entrada (7d)</div>
+            <div class="value" id="hl-enter-7">--</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Umbral Salida (7d)</div>
+            <div class="value" id="hl-exit-7">--</div>
+          </div>
         </div>
 
-        <!-- Nota Z-Score -->
+        <!-- Nota -->
         <div class="note">
-          <b>Z-Score:</b><br>
+          <b>Interpretación Z-Score</b><br>
           Z > +1.5 → Estirado<br>
           Z entre -1 y +1 → Rango habitual<br>
           Z < -1.5 → Comprimido
         </div>
       </div>
 
-      <!-- VARIATIONAL (sin cambios) -->
+      <!-- ==================== VARIATIONAL ==================== -->
       <div class="card">
         <h2>Variational Omni</h2>
         <div class="prices">
@@ -330,7 +324,6 @@
           <div style="font-size:0.7rem;color:#848e9c;margin-top:4px;" id="fund-xau">Fund: --</div>
         </div>
       </div>
-
       <div class="gold-grid">
         <div class="pair-card">
           <div class="pair-names" id="pair1-names">XAUT vs PAXG</div>
@@ -415,9 +408,10 @@
     }
 
     function colorZ(z) {
-      if (z >= 1.5) return '#0ecb81';
-      if (z <= -1.5) return '#f6465d';
-      return '#f0b90b';
+      if (z >= 1.5) return '#0ecb81';      // verde = estirado
+      if (z <= -1.5) return '#f6465d';     // rojo = comprimido
+      if (z >= 0.8 || z <= -0.8) return '#f0b90b'; // amarillo = acercándose
+      return '#b7bdc6';                    // gris = normal
     }
 
     async function fetchCandlesHL(coin, days = 7) {
@@ -471,8 +465,8 @@
       }));
     }
 
-    function calculateDynamicThresholds(spreads) {
-      if (!spreads || spreads.length < 50) return null;
+    function calcThresholds(spreads) {
+      if (!spreads || spreads.length < 20) return null;
       const sorted = [...spreads].sort((a, b) => a - b);
       const p20 = sorted[Math.floor(sorted.length * 0.20)];
       const p80 = sorted[Math.floor(sorted.length * 0.80)];
@@ -484,7 +478,7 @@
 
     async function updateAll() {
       try {
-        // ===== HYPERLIQUID =====
+        // ===== HYPERLIQUID Precios =====
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -561,16 +555,21 @@
 
             if (spreads7.length > 10) {
               const stats7 = calcStats(spreads7);
-              document.getElementById('hl-range-7').innerText =
-                stats7.min.toFixed(2) + '% → ' + stats7.max.toFixed(2) + '%';
-              document.getElementById('hl-mean-7').innerText =
-                stats7.mean.toFixed(2) + '% ± ' + stats7.std.toFixed(2) + '%';
+              document.getElementById('hl-range-7').innerText = stats7.min.toFixed(2) + '% → ' + stats7.max.toFixed(2) + '%';
+              document.getElementById('hl-mean-7').innerText = stats7.mean.toFixed(2) + '% ± ' + stats7.std.toFixed(2) + '%';
 
               if (currentPct > 0 && stats7.std > 0) {
                 const z7 = (currentPct - stats7.mean) / stats7.std;
                 const el = document.getElementById('hl-zscore-7');
                 el.innerText = z7.toFixed(2) + 'σ';
                 el.style.color = colorZ(z7);
+              }
+
+              // Umbrales 7d
+              const th7 = calcThresholds(spreads7);
+              if (th7) {
+                document.getElementById('hl-enter-7').innerText = th7.enter.toFixed(2) + '%';
+                document.getElementById('hl-exit-7').innerText = th7.exit.toFixed(2) + '%';
               }
             }
           }
@@ -589,11 +588,8 @@
 
             if (spreads30.length > 50) {
               const stats30 = calcStats(spreads30);
-
-              document.getElementById('hl-range-30').innerText =
-                stats30.min.toFixed(2) + '% → ' + stats30.max.toFixed(2) + '%';
-              document.getElementById('hl-mean-30').innerText =
-                stats30.mean.toFixed(2) + '% ± ' + stats30.std.toFixed(2) + '%';
+              document.getElementById('hl-range-30').innerText = stats30.min.toFixed(2) + '% → ' + stats30.max.toFixed(2) + '%';
+              document.getElementById('hl-mean-30').innerText = stats30.mean.toFixed(2) + '% ± ' + stats30.std.toFixed(2) + '%';
 
               if (currentPct > 0 && stats30.std > 0) {
                 const z30 = (currentPct - stats30.mean) / stats30.std;
@@ -602,11 +598,13 @@
                 el.style.color = colorZ(z30);
               }
 
-              // Umbrales dinámicos
+              // Umbrales 30d (y los principales del sistema)
               if (!loadThresholds()) {
-                const th = calculateDynamicThresholds(spreads30);
+                const th = calcThresholds(spreads30);
                 if (th) saveThresholds(th.enter, th.exit);
               }
+              document.getElementById('hl-enter-30').innerText = ENTER_ABOVE.toFixed(2) + '%';
+              document.getElementById('hl-exit-30').innerText = EXIT_BELOW.toFixed(2) + '%';
 
               // Franjas
               let bajo = 0, medio = 0, alto = 0;
@@ -623,9 +621,6 @@
         } catch (e) {
           console.log('Error histórico HL', e);
         }
-
-        document.getElementById('hl-enter').innerText = ENTER_ABOVE.toFixed(2) + '%';
-        document.getElementById('hl-exit').innerText = EXIT_BELOW.toFixed(2) + '%';
 
         // ===== VARIATIONAL =====
         const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
@@ -702,13 +697,11 @@
           const list = pacData.data || [];
 
           let pacXau = null, pacPaxg = null;
-
           list.forEach(item => {
             const sym = (item.symbol || '').toUpperCase();
             const mark = parseFloat(item.mark || item.mid || 0);
             const funding = parseFloat(item.funding || 0);
             const annual = (funding * 24 * 365 * 100).toFixed(2) + '%';
-
             if (sym === 'XAU' || sym === 'GOLD') {
               pacXau = mark;
               document.getElementById('pac-xau').innerText = '$' + mark.toFixed(2);
@@ -728,11 +721,7 @@
             document.getElementById('pac-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
           }
 
-          const [cXau, cPaxg] = await Promise.all([
-            fetchCandlesPac('XAU'),
-            fetchCandlesPac('PAXG')
-          ]);
-
+          const [cXau, cPaxg] = await Promise.all([fetchCandlesPac('XAU'), fetchCandlesPac('PAXG')]);
           if (cXau?.length && cPaxg?.length) {
             const map = {};
             cPaxg.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
@@ -746,27 +735,18 @@
             if (spreads.length > 5) {
               document.getElementById('pac-range').innerText =
                 Math.min(...spreads).toFixed(2) + '% → ' + Math.max(...spreads).toFixed(2) + '%';
-            } else {
-              document.getElementById('pac-range').innerText = 'Pocos datos';
-            }
-          } else {
-            document.getElementById('pac-range').innerText = 'N/A';
-          }
+            } else document.getElementById('pac-range').innerText = 'Pocos datos';
+          } else document.getElementById('pac-range').innerText = 'N/A';
         } catch (e) {
           console.log('Error Pacifica', e);
         }
 
-        // Recomendación
-        const hlPct = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
-        const varPct = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
-        const best = Math.max(hlPct, varPct);
-
+        // Recomendación (solo Hyperliquid)
         let rec = '🟡 Mantener / esperar';
-        if (best >= ENTER_ABOVE) {
-          const better = hlPct >= varPct ? 'Hyperliquid' : 'Variational';
-          rec = `🟢 Mejor oportunidad Oil en <b>${better}</b> (${best.toFixed(2)}%)`;
-        } else if (best <= EXIT_BELOW) {
-          rec = '🔴 Spreads Oil bajos – considera salir';
+        if (currentPct >= ENTER_ABOVE) {
+          rec = `🟢 Oportunidad de entrada en Hyperliquid (${currentPct.toFixed(2)}%)`;
+        } else if (currentPct <= EXIT_BELOW) {
+          rec = '🔴 Spread bajo – considera salir';
         }
         document.getElementById('recommendation').innerHTML = rec;
 
