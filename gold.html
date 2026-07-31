@@ -252,4 +252,123 @@
       } catch { return null; }
     }
 
-    async function
+    async function updateGold() {
+      try {
+        // ===== VARIATIONAL (exactamente igual que la versión vieja que funcionaba) =====
+        const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
+        const varData = await resVar.json();
+
+        let xaut = null, paxg = null, xau = null;
+
+        (varData.listings || []).forEach(item => {
+          const ticker = (item.ticker || '').toUpperCase();
+          const price = parseFloat(item.mark_price);
+          const rawFunding = parseFloat(item.funding_rate || 0);
+          const intervalSec = parseFloat(item.funding_interval_s || 14400);
+          const hours = intervalSec / 3600;
+          const annual = (rawFunding * (24 / hours) * 365 / 22).toFixed(2) + '%';
+
+          if (ticker === 'XAUT') {
+            xaut = price;
+            document.getElementById('gold-xaut').innerText = '$' + price.toFixed(2);
+            document.getElementById('fund-xaut').innerText = 'Fund: ' + annual;
+          }
+          if (ticker === 'PAXG') {
+            paxg = price;
+            document.getElementById('gold-paxg').innerText = '$' + price.toFixed(2);
+            document.getElementById('fund-paxg').innerText = 'Fund: ' + annual;
+          }
+          if (ticker === 'XAU') {
+            xau = price;
+            document.getElementById('gold-xau').innerText = '$' + price.toFixed(2);
+            document.getElementById('fund-xau').innerText = 'Fund: ' + annual;
+          }
+        });
+
+        // Gold pairs
+        if (xaut && paxg) {
+          const s = calcSpread(xaut, paxg);
+          document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
+          document.getElementById('pair1-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+        }
+        if (xaut && xau) {
+          const s = calcSpread(xaut, xau);
+          document.getElementById('pair2-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
+          document.getElementById('pair2-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair2-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+        }
+        if (paxg && xau) {
+          const s = calcSpread(paxg, xau);
+          document.getElementById('pair3-names').innerHTML = `PAXG (<b>$${paxg.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
+          document.getElementById('pair3-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+        }
+
+        // ===== PACIFICA =====
+        try {
+          const resPac = await fetch('https://api.pacifica.fi/api/v1/info/prices');
+          const pacData = await resPac.json();
+          const list = pacData.data || [];
+
+          let pacXau = null, pacPaxg = null;
+          list.forEach(item => {
+            const sym = (item.symbol || '').toUpperCase();
+            const mark = parseFloat(item.mark || item.mid || 0);
+            const funding = parseFloat(item.funding || 0);
+            const annual = (funding * 24 * 365 * 100).toFixed(2) + '%';
+            if (sym === 'XAU' || sym === 'GOLD') {
+              pacXau = mark;
+              document.getElementById('pac-xau').innerText = '$' + mark.toFixed(2);
+              document.getElementById('pac-funding-xau').innerText = annual;
+            }
+            if (sym === 'PAXG') {
+              pacPaxg = mark;
+              document.getElementById('pac-paxg').innerText = '$' + mark.toFixed(2);
+              document.getElementById('pac-funding-paxg').innerText = annual;
+            }
+          });
+
+          if (pacXau && pacPaxg) {
+            const s = calcSpread(pacXau, pacPaxg);
+            document.getElementById('pac-spread').innerText = s.pct.toFixed(3) + '%';
+            document.getElementById('pac-spread').className = 'spread ' + getColor(s.pct);
+            document.getElementById('pac-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
+          }
+
+          // Rango 7 días
+          const [cXau, cPaxg] = await Promise.all([fetchCandlesPac('XAU'), fetchCandlesPac('PAXG')]);
+          if (cXau?.length && cPaxg?.length) {
+            const map = {};
+            cPaxg.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
+            const spreads = [];
+            cXau.forEach(c => {
+              if (c?.t && c?.c && map[c.t]) {
+                const x = parseFloat(c.c), p = map[c.t];
+                spreads.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+              }
+            });
+            if (spreads.length > 5) {
+              document.getElementById('pac-range').innerText =
+                Math.min(...spreads).toFixed(2) + '% → ' + Math.max(...spreads).toFixed(2) + '%';
+            } else {
+              document.getElementById('pac-range').innerText = 'Pocos datos';
+            }
+          } else {
+            document.getElementById('pac-range').innerText = 'N/A';
+          }
+        } catch (e) {
+          console.log('Error Pacifica', e);
+          document.getElementById('pac-range').innerText = 'Error';
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    updateGold();
+    setInterval(updateGold, 30000);
+  </script>
+</body>
+</html>
