@@ -11,28 +11,28 @@
       background: #0b0e11;
       color: #eaecef;
       min-height: 100vh;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       justify-content: center;
     }
-    .container { width: 100%; max-width: 620px; }
+    .container { width: 100%; max-width: 560px; }
 
-    h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; letter-spacing: -0.3px; }
-    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 18px; }
+    h1 { text-align: center; font-size: 1.45rem; margin-bottom: 2px; letter-spacing: -0.3px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.8rem; margin-bottom: 14px; }
 
     .nav {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin-bottom: 16px;
     }
     .nav a {
       background: #1e2329;
       color: #f0b90b;
-      padding: 8px 18px;
-      border-radius: 20px;
+      padding: 7px 16px;
+      border-radius: 18px;
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       border: 1px solid #2b3139;
       transition: all 0.2s;
@@ -45,103 +45,110 @@
 
     .card {
       background: #1e2329;
-      border-radius: 18px;
-      padding: 22px;
+      border-radius: 16px;
+      padding: 16px;
       border: 1px solid #2b3139;
     }
     .card h2 {
       text-align: center;
-      font-size: 1.2rem;
-      margin-bottom: 16px;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
       color: #f0b90b;
       font-weight: 600;
     }
 
     .prices {
       display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
     .price-box {
       flex: 1;
       background: #2b3139;
-      border-radius: 12px;
-      padding: 12px 8px;
+      border-radius: 10px;
+      padding: 10px 6px;
       text-align: center;
     }
-    .price-box .label { font-size: 0.72rem; color: #848e9c; letter-spacing: 0.3px; }
-    .price-box .value { font-size: 1.2rem; font-weight: 700; margin-top: 4px; }
+    .price-box .label { font-size: 0.68rem; color: #848e9c; }
+    .price-box .value { font-size: 1.15rem; font-weight: 700; margin-top: 2px; }
 
     .spread {
       text-align: center;
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       font-weight: 800;
-      margin: 8px 0 2px;
+      margin: 4px 0 0;
       letter-spacing: -0.5px;
     }
     .diff-abs {
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #b7bdc6;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .green { color: #0ecb81; }
     .red { color: #f6465d; }
     .yellow { color: #f0b90b; }
 
+    .fundings {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .fundings .info-item { flex: 1; }
+
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      font-size: 0.8rem;
+      gap: 6px;
+      font-size: 0.78rem;
     }
     .info-item {
       background: #2b3139;
-      border-radius: 10px;
-      padding: 10px 8px;
+      border-radius: 9px;
+      padding: 8px 6px;
       text-align: center;
     }
-    .info-item .label { color: #848e9c; font-size: 0.68rem; }
-    .info-item .value { font-weight: 600; margin-top: 3px; font-size: 0.88rem; }
+    .info-item .label { color: #848e9c; font-size: 0.65rem; }
+    .info-item .value { font-weight: 600; margin-top: 2px; font-size: 0.84rem; }
 
     .full-width { grid-column: 1 / -1; }
 
     .section-label {
       grid-column: 1 / -1;
       text-align: center;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #f0b90b;
-      margin: 12px 0 4px;
+      margin: 8px 0 2px;
       font-weight: 600;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
     }
 
     .note {
-      margin-top: 14px;
+      margin-top: 10px;
       background: #2b3139;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 0.72rem;
+      border-radius: 9px;
+      padding: 8px;
+      font-size: 0.68rem;
       color: #b7bdc6;
-      line-height: 1.5;
+      line-height: 1.4;
       text-align: center;
     }
 
     .recommendation {
-      margin-top: 18px;
+      margin-top: 12px;
       background: #1e2329;
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 12px;
+      padding: 12px;
       text-align: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       border: 1px solid #2b3139;
     }
     .footer {
       text-align: center;
-      margin-top: 18px;
-      font-size: 0.75rem;
+      margin-top: 12px;
+      font-size: 0.7rem;
       color: #5e6673;
     }
   </style>
@@ -173,92 +180,76 @@
       <div class="spread" id="hl-spread">--</div>
       <div class="diff-abs" id="hl-diff">Diferencia: --</div>
 
-      <div class="info-grid" style="margin-bottom:4px;">
+      <!-- Fundings -->
+      <div class="fundings">
         <div class="info-item">
-          <div class="label">Funding WTI (anual)</div>
+          <div class="label">Funding WTI</div>
           <div class="value" id="hl-funding-wti">--</div>
         </div>
         <div class="info-item">
-          <div class="label">Funding Brent (anual)</div>
+          <div class="label">Funding Brent</div>
           <div class="value" id="hl-funding-brent">--</div>
         </div>
       </div>
 
       <div class="info-grid">
+        <!-- ========== 7 DÍAS ========== -->
         <div class="section-label">—— 7 días ——</div>
 
         <div class="info-item">
-          <div class="label">Rango 7 días</div>
-          <div class="value" id="hl-range-7">Calculando...</div>
+          <div class="label">Rango</div>
+          <div class="value" id="hl-range-7">--</div>
         </div>
         <div class="info-item">
-          <div class="label">Media 7d ± σ</div>
+          <div class="label">Media ± σ</div>
           <div class="value" id="hl-mean-7">--</div>
         </div>
         <div class="info-item">
-          <div class="label">Z-Score (7d)</div>
+          <div class="label">Z-Score</div>
           <div class="value" id="hl-zscore-7">--</div>
         </div>
         <div class="info-item">
-          <div class="label">Umbral Entrada (7d)</div>
-          <div class="value" id="hl-enter-7">--</div>
+          <div class="label">Umbral (7d)</div>
+          <div class="value" id="hl-umbral-7">--</div>
         </div>
-        <div class="info-item">
-          <div class="label">Umbral Salida (7d)</div>
-          <div class="value" id="hl-exit-7">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Falta a Entrada (7d)</div>
-          <div class="value" id="hl-dist-enter-7">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Falta a Salida (7d)</div>
-          <div class="value" id="hl-dist-exit-7">--</div>
+        <div class="info-item full-width">
+          <div class="label">Falta a Entrada / Salida</div>
+          <div class="value" id="hl-dist-7">--</div>
         </div>
 
+        <!-- ========== 30 DÍAS ========== -->
         <div class="section-label">—— 30 días ——</div>
 
         <div class="info-item">
-          <div class="label">Rango 30 días</div>
-          <div class="value" id="hl-range-30">Calculando...</div>
+          <div class="label">Rango</div>
+          <div class="value" id="hl-range-30">--</div>
         </div>
         <div class="info-item">
-          <div class="label">Media 30d ± σ</div>
+          <div class="label">Media ± σ</div>
           <div class="value" id="hl-mean-30">--</div>
         </div>
         <div class="info-item">
-          <div class="label">Z-Score (30d)</div>
+          <div class="label">Z-Score</div>
           <div class="value" id="hl-zscore-30">--</div>
         </div>
         <div class="info-item">
-          <div class="label">Umbral Entrada (30d)</div>
-          <div class="value" id="hl-enter-30">--</div>
+          <div class="label">Umbral (30d)</div>
+          <div class="value" id="hl-umbral-30">--</div>
         </div>
-        <div class="info-item">
-          <div class="label">Umbral Salida (30d)</div>
-          <div class="value" id="hl-exit-30">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Falta a Entrada (30d)</div>
-          <div class="value" id="hl-dist-enter-30">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Falta a Salida (30d)</div>
-          <div class="value" id="hl-dist-exit-30">--</div>
+        <div class="info-item full-width">
+          <div class="label">Falta a Entrada / Salida</div>
+          <div class="value" id="hl-dist-30">--</div>
         </div>
 
-        <!-- Franjas abajo de todo -->
-        <div class="info-item full-width" style="margin-top:8px;">
+        <!-- Franjas -->
+        <div class="info-item full-width" style="margin-top:4px;">
           <div class="label">Tiempo en franjas (30d)</div>
           <div class="value" id="hl-franjas">Calculando...</div>
         </div>
       </div>
 
       <div class="note">
-        <b>Interpretación Z-Score</b><br>
-        Z > +1.5 → Estirado<br>
-        Z entre -1 y +1 → Rango habitual<br>
-        Z < -1.5 → Comprimido
+        <b>Z-Score</b> → Z > +1.5 Estirado · entre -1/+1 Normal · < -1.5 Comprimido
       </div>
     </div>
 
@@ -298,15 +289,12 @@
       return '#b7bdc6';
     }
 
-    function formatDist(current, threshold, isEntry) {
-      const diff = threshold - current;
-      if (isEntry) {
-        if (diff > 0) return '+' + diff.toFixed(2) + '%';
-        return diff.toFixed(2) + '%';
-      } else {
-        if (diff < 0) return diff.toFixed(2) + '%';
-        return '+' + diff.toFixed(2) + '%';
-      }
+    function formatDist(current, enter, exit) {
+      const dEnter = enter - current;
+      const dExit  = exit - current;
+      const eStr = (dEnter > 0 ? '+' : '') + dEnter.toFixed(2) + '%';
+      const xStr = (dExit  > 0 ? '+' : '') + dExit.toFixed(2) + '%';
+      return `Ent ${eStr}  ·  Sal ${xStr}`;
     }
 
     async function fetchCandlesHL(coin, days = 7) {
@@ -425,7 +413,7 @@
             if (candlesBrent30?.length > 50) break;
           }
 
-          // 7 días
+          // --- 7 días ---
           if (candlesWti7 && candlesBrent7) {
             const map = {};
             candlesBrent7.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
@@ -440,7 +428,7 @@
             if (spreads7.length > 10) {
               const stats7 = calcStats(spreads7);
               document.getElementById('hl-range-7').innerText = stats7.min.toFixed(2) + '% → ' + stats7.max.toFixed(2) + '%';
-              document.getElementById('hl-mean-7').innerText = stats7.mean.toFixed(2) + '% ± ' + stats7.std.toFixed(2) + '%';
+              document.getElementById('hl-mean-7').innerText = stats7.mean.toFixed(2) + '% ± ' + stats7.std.toFixed(2);
 
               if (currentPct > 0 && stats7.std > 0) {
                 const z7 = (currentPct - stats7.mean) / stats7.std;
@@ -451,15 +439,13 @@
 
               const th7 = calcThresholds(spreads7);
               if (th7) {
-                document.getElementById('hl-enter-7').innerText = th7.enter.toFixed(2) + '%';
-                document.getElementById('hl-exit-7').innerText = th7.exit.toFixed(2) + '%';
-                document.getElementById('hl-dist-enter-7').innerText = formatDist(currentPct, th7.enter, true);
-                document.getElementById('hl-dist-exit-7').innerText = formatDist(currentPct, th7.exit, false);
+                document.getElementById('hl-umbral-7').innerText = th7.exit.toFixed(2) + '% – ' + th7.enter.toFixed(2) + '%';
+                document.getElementById('hl-dist-7').innerText = formatDist(currentPct, th7.enter, th7.exit);
               }
             }
           }
 
-          // 30 días
+          // --- 30 días ---
           if (candlesWti30 && candlesBrent30) {
             const map30 = {};
             candlesBrent30.forEach(c => { if (c?.T && c?.c) map30[c.T] = parseFloat(c.c); });
@@ -474,7 +460,7 @@
             if (spreads30.length > 50) {
               const stats30 = calcStats(spreads30);
               document.getElementById('hl-range-30').innerText = stats30.min.toFixed(2) + '% → ' + stats30.max.toFixed(2) + '%';
-              document.getElementById('hl-mean-30').innerText = stats30.mean.toFixed(2) + '% ± ' + stats30.std.toFixed(2) + '%';
+              document.getElementById('hl-mean-30').innerText = stats30.mean.toFixed(2) + '% ± ' + stats30.std.toFixed(2);
 
               if (currentPct > 0 && stats30.std > 0) {
                 const z30 = (currentPct - stats30.mean) / stats30.std;
@@ -488,10 +474,8 @@
                 if (th) saveThresholds(th.enter, th.exit);
               }
 
-              document.getElementById('hl-enter-30').innerText = ENTER_ABOVE.toFixed(2) + '%';
-              document.getElementById('hl-exit-30').innerText = EXIT_BELOW.toFixed(2) + '%';
-              document.getElementById('hl-dist-enter-30').innerText = formatDist(currentPct, ENTER_ABOVE, true);
-              document.getElementById('hl-dist-exit-30').innerText = formatDist(currentPct, EXIT_BELOW, false);
+              document.getElementById('hl-umbral-30').innerText = EXIT_BELOW.toFixed(2) + '% – ' + ENTER_ABOVE.toFixed(2) + '%';
+              document.getElementById('hl-dist-30').innerText = formatDist(currentPct, ENTER_ABOVE, EXIT_BELOW);
 
               // Franjas
               let bajo = 0, medio = 0, alto = 0;
@@ -502,7 +486,7 @@
               });
               const total = spreads30.length;
               document.getElementById('hl-franjas').innerText =
-                `Bajo ${((bajo/total)*100).toFixed(0)}% | Medio ${((medio/total)*100).toFixed(0)}% | Alto ${((alto/total)*100).toFixed(0)}%`;
+                `Bajo ${((bajo/total)*100).toFixed(0)}% · Medio ${((medio/total)*100).toFixed(0)}% · Alto ${((alto/total)*100).toFixed(0)}%`;
             }
           }
         } catch (e) {
@@ -512,7 +496,7 @@
         // Recomendación
         let rec = '🟡 Mantener / esperar';
         if (currentPct >= ENTER_ABOVE) {
-          rec = `🟢 Oportunidad de entrada en Hyperliquid (${currentPct.toFixed(2)}%)`;
+          rec = `🟢 Oportunidad de entrada (${currentPct.toFixed(2)}%)`;
         } else if (currentPct <= EXIT_BELOW) {
           rec = '🔴 Spread bajo – considera salir';
         }
