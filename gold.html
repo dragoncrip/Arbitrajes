@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gold Arbitrage | Multi-DEX</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0b0e11;
+      color: #eaecef;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container { width: 100%; max-width: 1100px; }
+
+    h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 18px; }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .nav a {
+      background: #1e2329;
+      color: #f0b90b;
+      padding: 8px 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid #2b3139;
+      transition: all 0.2s;
+    }
+    .nav a:hover, .nav a.active {
+      background: #f0b90b;
+      color: #0b0e11;
+      border-color: #f0b90b;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 8px 0 14px;
+      color: #f0b90b;
+      font-weight: 600;
+    }
+
+    .card {
+      background: #1e2329;
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid #2b3139;
+      margin-bottom: 20px;
+    }
+
+    .prices {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .price-box {
+      flex: 1;
+      background: #2b3139;
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+    }
+    .price-box .label { font-size: 0.75rem; color: #848e9c; }
+    .price-box .value { font-size: 1.2rem; font-weight: 700; margin-top: 4px; }
+    .price-box .fund { font-size: 0.7rem; color: #848e9c; margin-top: 6px; }
+
+    .gold-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 800px) {
+      .gold-grid { grid-template-columns: 1fr; }
+    }
+    .pair-card {
+      background: #2b3139;
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .pair-names {
+      font-size: 0.82rem;
+      color: #b7bdc6;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .pair-names b { color: #eaecef; }
+    .pair-pct { font-size: 1.35rem; font-weight: 800; color: #f0b90b; }
+    .pair-usd { font-size: 0.85rem; color: #848e9c; margin-top: 4px; }
+
+    .pacifica-card { max-width: 520px; margin: 0 auto; }
+
+    .spread {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 10px 0 4px;
+    }
+    .diff-abs {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #b7bdc6;
+      margin-bottom: 14px;
+    }
+
+    .green { color: #0ecb81; }
+    .red { color: #f6465d; }
+    .yellow { color: #f0b90b; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+    .info-item {
+      background: #2b3139;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .info-item .label { color: #848e9c; font-size: 0.68rem; }
+    .info-item .value { font-weight: 600; margin-top: 3px; font-size: 0.88rem; }
+
+    .footer {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: #5e6673;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gold Arbitrage</h1>
+    <div class="subtitle">Variational + Pacifica • Actualiza cada 30s</div>
+
+    <div class="nav">
+      <a href="index.html">Oil Spreads</a>
+      <a href="gold.html" class="active">Gold Arbitrage</a>
+    </div>
+
+    <!-- GOLD VARIATIONAL -->
+    <div class="section-title">Gold en Variational (XAUT • PAXG • XAU)</div>
+    <div class="card">
+      <div class="prices">
+        <div class="price-box">
+          <div class="label">XAUT</div>
+          <div class="value" id="gold-xaut">--</div>
+          <div class="fund" id="fund-xaut">Fund: --</div>
+        </div>
+        <div class="price-box">
+          <div class="label">PAXG</div>
+          <div class="value" id="gold-paxg">--</div>
+          <div class="fund" id="fund-paxg">Fund: --</div>
+        </div>
+        <div class="price-box">
+          <div class="label">XAU</div>
+          <div class="value" id="gold-xau">--</div>
+          <div class="fund" id="fund-xau">Fund: --</div>
+        </div>
+      </div>
+      <div class="gold-grid">
+        <div class="pair-card">
+          <div class="pair-names" id="pair1-names">XAUT vs PAXG</div>
+          <div class="pair-pct" id="pair1-pct">--</div>
+          <div class="pair-usd" id="pair1-usd">--</div>
+        </div>
+        <div class="pair-card">
+          <div class="pair-names" id="pair2-names">XAUT vs XAU</div>
+          <div class="pair-pct" id="pair2-pct">--</div>
+          <div class="pair-usd" id="pair2-usd">--</div>
+        </div>
+        <div class="pair-card">
+          <div class="pair-names" id="pair3-names">PAXG vs XAU</div>
+          <div class="pair-pct" id="pair3-pct">--</div>
+          <div class="pair-usd" id="pair3-usd">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACIFICA -->
+    <div class="section-title">Gold en Pacifica</div>
+    <div class="card pacifica-card">
+      <div class="prices">
+        <div class="price-box">
+          <div class="label">XAU (GOLD)</div>
+          <div class="value" id="pac-xau">--</div>
+        </div>
+        <div class="price-box">
+          <div class="label">PAXG</div>
+          <div class="value" id="pac-paxg">--</div>
+        </div>
+      </div>
+      <div class="spread" id="pac-spread">--</div>
+      <div class="diff-abs" id="pac-diff">Diferencia: --</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="label">Funding XAU</div>
+          <div class="value" id="pac-funding-xau">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Funding PAXG</div>
+          <div class="value" id="pac-funding-paxg">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Rango 7 días</div>
+          <div class="value" id="pac-range">Calculando...</div>
+        </div>
+        <div class="info-item">
+          <div class="label">—</div>
+          <div class="value">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Datos en tiempo real</div>
+  </div>
+
+  <script>
+    function calcSpread(a, b) {
+      const diff = b - a;
+      const avg = (a + b) / 2;
+      return { pct: (Math.abs(diff) / avg) * 100, abs: diff };
+    }
+
+    function getColor(pct) {
+      if (pct >= 0.15) return 'green';
+      if (pct <= 0.05) return 'red';
+      return 'yellow';
+    }
+
+    async function fetchCandlesPac(symbol) {
+      try {
+        const end = Date.now();
+        const start = end - 7 * 24 * 60 * 60 * 1000;
+        const url = `https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return (data.success && Array.isArray(data.data)) ? data.data : null;
+      } catch { return null; }
+    }
+
+    async function
