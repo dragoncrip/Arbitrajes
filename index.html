@@ -90,6 +90,10 @@
     .info-item .label { color: #848e9c; font-size: 0.68rem; }
     .info-item .value { font-weight: 600; margin-top: 2px; }
 
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
     .section-title {
       text-align: center;
       font-size: 1.15rem;
@@ -148,17 +152,6 @@
       font-size: 0.75rem;
       color: #5e6673;
     }
-
-    .franjas {
-      grid-column: 1 / -1;
-      background: #2b3139;
-      border-radius: 8px;
-      padding: 10px 8px;
-      text-align: center;
-      font-size: 0.8rem;
-    }
-    .franjas .label { color: #848e9c; font-size: 0.68rem; margin-bottom: 4px; }
-    .franjas .values { font-weight: 600; }
   </style>
 </head>
 <body>
@@ -182,6 +175,7 @@
         </div>
         <div class="spread" id="hl-spread">--</div>
         <div class="diff-abs" id="hl-diff">Diferencia: --</div>
+
         <div class="info-grid">
           <div class="info-item">
             <div class="label">Umbral Entrada</div>
@@ -191,6 +185,7 @@
             <div class="label">Umbral Salida</div>
             <div class="value" id="hl-exit">--</div>
           </div>
+
           <div class="info-item">
             <div class="label">Rango 7 días</div>
             <div class="value" id="hl-range">Calculando...</div>
@@ -199,17 +194,32 @@
             <div class="label">Rango 30 días</div>
             <div class="value" id="hl-range-30">Calculando...</div>
           </div>
+
           <div class="info-item">
-            <div class="label">Funding WTI (anual)</div>
+            <div class="label">Media 7d ± σ</div>
+            <div class="value" id="hl-mean-7">--</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Media 30d ± σ</div>
+            <div class="value" id="hl-mean-30">--</div>
+          </div>
+
+          <div class="info-item">
+            <div class="label">Z-Score (30d)</div>
+            <div class="value" id="hl-zscore">--</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Funding WTI</div>
             <div class="value" id="hl-funding-wti">--</div>
           </div>
+
           <div class="info-item">
-            <div class="label">Funding Brent (anual)</div>
+            <div class="label">Funding Brent</div>
             <div class="value" id="hl-funding-brent">--</div>
           </div>
-          <div class="franjas">
+          <div class="info-item full-width">
             <div class="label">Tiempo en franjas (30d)</div>
-            <div class="values" id="hl-franjas">Calculando...</div>
+            <div class="value" id="hl-franjas">Calculando...</div>
           </div>
         </div>
       </div>
@@ -329,7 +339,6 @@
   </div>
 
   <script>
-    // Umbrales por defecto (se actualizan solos 1 vez al día)
     let ENTER_ABOVE = 3.80;
     let EXIT_BELOW  = 2.30;
 
@@ -343,6 +352,15 @@
       if (pct >= ENTER_ABOVE) return 'green';
       if (pct <= EXIT_BELOW) return 'red';
       return 'yellow';
+    }
+
+    function calcStats(spreads) {
+      if (!spreads || spreads.length < 5) return null;
+      const n = spreads.length;
+      const mean = spreads.reduce((a, b) => a + b, 0) / n;
+      const variance = spreads.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+      const std = Math.sqrt(variance);
+      return { mean, std, min: Math.min(...spreads), max: Math.max(...spreads) };
     }
 
     async function fetchCandlesHL(coin, days = 7) {
@@ -373,7 +391,7 @@
       } catch { return null; }
     }
 
-    // ========== Umbrales dinámicos (1 vez al día) ==========
+    // Umbrales dinámicos
     function loadThresholds() {
       try {
         const saved = JSON.parse(localStorage.getItem('hl_thresholds') || 'null');
@@ -393,9 +411,7 @@
       ENTER_ABOVE = enter;
       EXIT_BELOW = exit;
       localStorage.setItem('hl_thresholds', JSON.stringify({
-        enter,
-        exit,
-        timestamp: Date.now()
+        enter, exit, timestamp: Date.now()
       }));
     }
 
@@ -423,8 +439,10 @@
         const hlWti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
         const hlBrent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
 
+        let currentPct = 0;
         if (hlWti && hlBrent) {
           const s = calcSpread(hlWti, hlBrent);
+          currentPct = s.pct;
           document.getElementById('hl-wti').innerText = '$' + hlWti.toFixed(3);
           document.getElementById('hl-brent').innerText = '$' + hlBrent.toFixed(3);
           document.getElementById('hl-spread').innerText = s.pct.toFixed(3) + '%';
@@ -432,7 +450,7 @@
           document.getElementById('hl-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        // Funding HL
+        // Funding
         try {
           const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
             method: 'POST',
@@ -451,7 +469,7 @@
           });
         } catch {}
 
-        // ===== Rango 7d + 30d + Franjas + Umbrales dinámicos =====
+        // ===== Históricos 7d + 30d =====
         try {
           let candlesWti7 = null, candlesBrent7 = null;
           let candlesWti30 = null, candlesBrent30 = null;
@@ -474,53 +492,65 @@
             if (candlesBrent30?.length > 50) break;
           }
 
-          // Rango 7 días
+          // --- 7 días ---
           if (candlesWti7 && candlesBrent7) {
             const map = {};
-            candlesBrent7.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
+            candlesBrent7.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
             const spreads7 = [];
             candlesWti7.forEach(c => {
-              if (c?.t && c?.c && map[c.t]) {
-                const w = parseFloat(c.c), b = map[c.t];
+              if (c?.T && c?.c && map[c.T]) {
+                const w = parseFloat(c.c), b = map[c.T];
                 spreads7.push(((b - w) / ((b + w) / 2)) * 100);
               }
             });
-            if (spreads7.length > 10) {
-              document.getElementById('hl-range').innerText =
-                Math.min(...spreads7).toFixed(2) + '% → ' + Math.max(...spreads7).toFixed(2) + '%';
-            } else document.getElementById('hl-range').innerText = 'Pocos datos';
-          } else document.getElementById('hl-range').innerText = 'No disponible';
 
-          // Rango 30 días + Franjas + Umbrales
+            if (spreads7.length > 10) {
+              const stats7 = calcStats(spreads7);
+              document.getElementById('hl-range').innerText =
+                stats7.min.toFixed(2) + '% → ' + stats7.max.toFixed(2) + '%';
+              document.getElementById('hl-mean-7').innerText =
+                stats7.mean.toFixed(2) + '% ± ' + stats7.std.toFixed(2) + '%';
+            } else {
+              document.getElementById('hl-range').innerText = 'Pocos datos';
+              document.getElementById('hl-mean-7').innerText = '--';
+            }
+          }
+
+          // --- 30 días ---
           if (candlesWti30 && candlesBrent30) {
             const map30 = {};
-            candlesBrent30.forEach(c => { if (c?.t && c?.c) map30[c.t] = parseFloat(c.c); });
+            candlesBrent30.forEach(c => { if (c?.T && c?.c) map30[c.T] = parseFloat(c.c); });
             const spreads30 = [];
             candlesWti30.forEach(c => {
-              if (c?.t && c?.c && map30[c.t]) {
-                const w = parseFloat(c.c), b = map30[c.t];
+              if (c?.T && c?.c && map30[c.T]) {
+                const w = parseFloat(c.c), b = map30[c.T];
                 spreads30.push(((b - w) / ((b + w) / 2)) * 100);
               }
             });
 
             if (spreads30.length > 50) {
-              // Rango 30d
-              document.getElementById('hl-range-30').innerText =
-                Math.min(...spreads30).toFixed(2) + '% → ' + Math.max(...spreads30).toFixed(2) + '%';
+              const stats30 = calcStats(spreads30);
 
-              // Umbrales dinámicos (solo si pasaron 24h)
-              if (!loadThresholds()) {
-                const th = calculateDynamicThresholds(spreads30);
-                if (th) {
-                  saveThresholds(th.enter, th.exit);
-                }
+              document.getElementById('hl-range-30').innerText =
+                stats30.min.toFixed(2) + '% → ' + stats30.max.toFixed(2) + '%';
+              document.getElementById('hl-mean-30').innerText =
+                stats30.mean.toFixed(2) + '% ± ' + stats30.std.toFixed(2) + '%';
+
+              // Z-Score
+              if (currentPct > 0 && stats30.std > 0) {
+                const z = (currentPct - stats30.mean) / stats30.std;
+                document.getElementById('hl-zscore').innerText = z.toFixed(2) + 'σ';
+                document.getElementById('hl-zscore').style.color =
+                  z >= 1.5 ? '#0ecb81' : z <= -1.5 ? '#f6465d' : '#f0b90b';
               }
 
-              // Mostrar umbrales activos
-              document.getElementById('hl-enter').innerText = ENTER_ABOVE.toFixed(2) + '%';
-              document.getElementById('hl-exit').innerText = EXIT_BELOW.toFixed(2) + '%';
+              // Umbrales dinámicos
+              if (!loadThresholds()) {
+                const th = calculateDynamicThresholds(spreads30);
+                if (th) saveThresholds(th.enter, th.exit);
+              }
 
-              // % tiempo en franjas
+              // Franjas
               let bajo = 0, medio = 0, alto = 0;
               spreads30.forEach(s => {
                 if (s <= EXIT_BELOW) bajo++;
@@ -528,27 +558,19 @@
                 else medio++;
               });
               const total = spreads30.length;
-              const pctBajo = ((bajo / total) * 100).toFixed(0);
-              const pctMedio = ((medio / total) * 100).toFixed(0);
-              const pctAlto = ((alto / total) * 100).toFixed(0);
-
               document.getElementById('hl-franjas').innerText =
-                `Bajo ${pctBajo}% | Medio ${pctMedio}% | Alto ${pctAlto}%`;
+                `Bajo ${((bajo/total)*100).toFixed(0)}% | Medio ${((medio/total)*100).toFixed(0)}% | Alto ${((alto/total)*100).toFixed(0)}%`;
             } else {
               document.getElementById('hl-range-30').innerText = 'Pocos datos';
+              document.getElementById('hl-mean-30').innerText = '--';
               document.getElementById('hl-franjas').innerText = 'Pocos datos';
             }
-          } else {
-            document.getElementById('hl-range-30').innerText = 'No disponible';
-            document.getElementById('hl-franjas').innerText = 'No disponible';
           }
         } catch (e) {
           console.log('Error histórico HL', e);
-          document.getElementById('hl-range').innerText = 'Error';
-          document.getElementById('hl-range-30').innerText = 'Error';
         }
 
-        // Mostrar umbrales aunque falle el histórico
+        // Mostrar umbrales
         document.getElementById('hl-enter').innerText = ENTER_ABOVE.toFixed(2) + '%';
         document.getElementById('hl-exit').innerText = EXIT_BELOW.toFixed(2) + '%';
 
@@ -601,7 +623,6 @@
           document.getElementById('var-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        // Gold pairs
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
           document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
@@ -683,7 +704,7 @@
           document.getElementById('pac-range').innerText = 'Error';
         }
 
-        // Recomendación (usa los umbrales dinámicos)
+        // Recomendación
         const hlPct = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
         const varPct = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
         const best = Math.max(hlPct, varPct);
@@ -703,7 +724,6 @@
       }
     }
 
-    // Cargar umbrales guardados al inicio
     loadThresholds();
     updateAll();
     setInterval(updateAll, 30000);
