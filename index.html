@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spread WTI vs Brent + Gold | Multi-DEX</title>
+  <title>Spread WTI vs Brent | Hyperliquid</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -15,58 +15,75 @@
       display: flex;
       justify-content: center;
     }
-    .container { width: 100%; max-width: 1100px; }
-    h1 { text-align: center; font-size: 1.5rem; margin-bottom: 4px; }
-    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 22px; }
+    .container { width: 100%; max-width: 620px; }
 
-    .platforms {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+    h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 18px; }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
       margin-bottom: 24px;
     }
-    @media (max-width: 750px) {
-      .platforms { grid-template-columns: 1fr; }
+    .nav a {
+      background: #1e2329;
+      color: #f0b90b;
+      padding: 8px 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid #2b3139;
+      transition: all 0.2s;
+    }
+    .nav a:hover, .nav a.active {
+      background: #f0b90b;
+      color: #0b0e11;
+      border-color: #f0b90b;
     }
 
     .card {
       background: #1e2329;
-      border-radius: 16px;
-      padding: 18px;
+      border-radius: 18px;
+      padding: 22px;
+      border: 1px solid #2b3139;
     }
     .card h2 {
       text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 12px;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
       color: #f0b90b;
+      font-weight: 600;
     }
 
     .prices {
       display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 12px;
     }
     .price-box {
       flex: 1;
       background: #2b3139;
-      border-radius: 10px;
-      padding: 10px 6px;
+      border-radius: 12px;
+      padding: 12px 8px;
       text-align: center;
     }
-    .price-box .label { font-size: 0.72rem; color: #848e9c; }
-    .price-box .value { font-size: 1.05rem; font-weight: 600; margin-top: 2px; }
+    .price-box .label { font-size: 0.72rem; color: #848e9c; letter-spacing: 0.3px; }
+    .price-box .value { font-size: 1.2rem; font-weight: 700; margin-top: 4px; }
 
     .spread {
       text-align: center;
-      font-size: 2.1rem;
-      font-weight: 700;
-      margin: 6px 0 2px;
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin: 8px 0 2px;
+      letter-spacing: -0.5px;
     }
     .diff-abs {
       text-align: center;
       font-size: 0.9rem;
       color: #b7bdc6;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .green { color: #0ecb81; }
@@ -76,85 +93,54 @@
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 7px;
+      gap: 8px;
       font-size: 0.8rem;
     }
     .info-item {
       background: #2b3139;
-      border-radius: 8px;
-      padding: 8px 6px;
+      border-radius: 10px;
+      padding: 10px 8px;
       text-align: center;
     }
-    .info-item .label { color: #848e9c; font-size: 0.66rem; }
-    .info-item .value { font-weight: 600; margin-top: 2px; font-size: 0.84rem; }
+    .info-item .label { color: #848e9c; font-size: 0.68rem; }
+    .info-item .value { font-weight: 600; margin-top: 3px; font-size: 0.88rem; }
 
     .full-width { grid-column: 1 / -1; }
 
     .section-label {
       grid-column: 1 / -1;
       text-align: center;
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       color: #f0b90b;
-      margin: 8px 0 2px;
+      margin: 12px 0 4px;
       font-weight: 600;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
     }
 
     .note {
-      margin-top: 12px;
+      margin-top: 14px;
       background: #2b3139;
-      border-radius: 8px;
-      padding: 9px;
-      font-size: 0.7rem;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 0.72rem;
       color: #b7bdc6;
-      line-height: 1.45;
+      line-height: 1.5;
       text-align: center;
     }
-
-    .section-title {
-      text-align: center;
-      font-size: 1.15rem;
-      margin: 18px 0 12px;
-      color: #f0b90b;
-    }
-
-    .gold-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-    @media (max-width: 800px) {
-      .gold-grid { grid-template-columns: 1fr; }
-    }
-    .pair-card {
-      background: #2b3139;
-      border-radius: 12px;
-      padding: 14px 10px;
-      text-align: center;
-    }
-    .pair-names {
-      font-size: 0.82rem;
-      color: #b7bdc6;
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-    .pair-names b { color: #eaecef; }
-    .pair-pct { font-size: 1.25rem; font-weight: 700; color: #f0b90b; }
-    .pair-usd { font-size: 0.85rem; color: #848e9c; margin-top: 2px; }
-
-    .pacifica-card { max-width: 480px; margin: 0 auto; }
 
     .recommendation {
       margin-top: 18px;
       background: #1e2329;
-      border-radius: 12px;
-      padding: 14px;
+      border-radius: 14px;
+      padding: 16px;
       text-align: center;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: 1px solid #2b3139;
     }
     .footer {
       text-align: center;
-      margin-top: 16px;
+      margin-top: 18px;
       font-size: 0.75rem;
       color: #5e6673;
     }
@@ -162,231 +148,117 @@
 </head>
 <body>
   <div class="container">
-    <h1>Spread WTI vs Brent + Gold</h1>
-    <div class="subtitle">Hyperliquid + Variational + Pacifica • Actualiza cada 30s</div>
+    <h1>Spread WTI vs Brent</h1>
+    <div class="subtitle">Hyperliquid • Actualiza cada 30s</div>
 
-    <div class="platforms">
-      <!-- ==================== HYPERLIQUID ==================== -->
-      <div class="card">
-        <h2>Hyperliquid (xyz)</h2>
-
-        <div class="prices">
-          <div class="price-box">
-            <div class="label">WTIOIL</div>
-            <div class="value" id="hl-wti">--</div>
-          </div>
-          <div class="price-box">
-            <div class="label">BRENTOIL</div>
-            <div class="value" id="hl-brent">--</div>
-          </div>
-        </div>
-
-        <div class="spread" id="hl-spread">--</div>
-        <div class="diff-abs" id="hl-diff">Diferencia: --</div>
-
-        <!-- Fundings -->
-        <div class="info-grid" style="margin-bottom:4px;">
-          <div class="info-item">
-            <div class="label">Funding WTI (anual)</div>
-            <div class="value" id="hl-funding-wti">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Funding Brent (anual)</div>
-            <div class="value" id="hl-funding-brent">--</div>
-          </div>
-        </div>
-
-        <div class="info-grid">
-          <!-- ========== 7 DÍAS (arriba) ========== -->
-          <div class="section-label">—— 7 días ——</div>
-
-          <div class="info-item">
-            <div class="label">Rango 7 días</div>
-            <div class="value" id="hl-range-7">Calculando...</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Media 7d ± σ</div>
-            <div class="value" id="hl-mean-7">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Z-Score (7d)</div>
-            <div class="value" id="hl-zscore-7">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">—</div>
-            <div class="value">—</div>
-          </div>
-
-          <div class="info-item">
-            <div class="label">Umbral Entrada (7d)</div>
-            <div class="value" id="hl-enter-7">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Umbral Salida (7d)</div>
-            <div class="value" id="hl-exit-7">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Falta a Entrada (7d)</div>
-            <div class="value" id="hl-dist-enter-7">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Falta a Salida (7d)</div>
-            <div class="value" id="hl-dist-exit-7">--</div>
-          </div>
-
-          <!-- ========== 30 DÍAS (abajo) ========== -->
-          <div class="section-label">—— 30 días ——</div>
-
-          <div class="info-item">
-            <div class="label">Rango 30 días</div>
-            <div class="value" id="hl-range-30">Calculando...</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Media 30d ± σ</div>
-            <div class="value" id="hl-mean-30">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Z-Score (30d)</div>
-            <div class="value" id="hl-zscore-30">--</div>
-          </div>
-          <div class="info-item full-width">
-            <div class="label">Tiempo en franjas (30d)</div>
-            <div class="value" id="hl-franjas">Calculando...</div>
-          </div>
-
-          <div class="info-item">
-            <div class="label">Umbral Entrada (30d)</div>
-            <div class="value" id="hl-enter-30">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Umbral Salida (30d)</div>
-            <div class="value" id="hl-exit-30">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Falta a Entrada (30d)</div>
-            <div class="value" id="hl-dist-enter-30">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Falta a Salida (30d)</div>
-            <div class="value" id="hl-dist-exit-30">--</div>
-          </div>
-        </div>
-
-        <div class="note">
-          <b>Interpretación Z-Score</b><br>
-          Z > +1.5 → Estirado<br>
-          Z entre -1 y +1 → Rango habitual<br>
-          Z < -1.5 → Comprimido
-        </div>
-      </div>
-
-      <!-- ==================== VARIATIONAL ==================== -->
-      <div class="card">
-        <h2>Variational Omni</h2>
-        <div class="prices">
-          <div class="price-box">
-            <div class="label">CL (WTI)</div>
-            <div class="value" id="var-wti">--</div>
-          </div>
-          <div class="price-box">
-            <div class="label">BZ (Brent)</div>
-            <div class="value" id="var-brent">--</div>
-          </div>
-        </div>
-        <div class="spread" id="var-spread">--</div>
-        <div class="diff-abs" id="var-diff">Diferencia: --</div>
-        <div class="info-grid">
-          <div class="info-item">
-            <div class="label">Funding WTI (anual)</div>
-            <div class="value" id="var-funding-wti">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Funding Brent (anual)</div>
-            <div class="value" id="var-funding-brent">--</div>
-          </div>
-          <div class="info-item">
-            <div class="label">Intervalo</div>
-            <div class="value">4h</div>
-          </div>
-          <div class="info-item">
-            <div class="label">—</div>
-            <div class="value">—</div>
-          </div>
-        </div>
-      </div>
+    <div class="nav">
+      <a href="index.html" class="active">Oil Spreads</a>
+      <a href="gold.html">Gold Arbitrage</a>
     </div>
 
-    <!-- GOLD VARIATIONAL -->
-    <div class="section-title">Gold en Variational (XAUT • PAXG • XAU)</div>
     <div class="card">
-      <div class="prices" style="margin-bottom:14px;">
-        <div class="price-box">
-          <div class="label">XAUT</div>
-          <div class="value" id="gold-xaut">--</div>
-          <div style="font-size:0.7rem;color:#848e9c;margin-top:4px;" id="fund-xaut">Fund: --</div>
-        </div>
-        <div class="price-box">
-          <div class="label">PAXG</div>
-          <div class="value" id="gold-paxg">--</div>
-          <div style="font-size:0.7rem;color:#848e9c;margin-top:4px;" id="fund-paxg">Fund: --</div>
-        </div>
-        <div class="price-box">
-          <div class="label">XAU</div>
-          <div class="value" id="gold-xau">--</div>
-          <div style="font-size:0.7rem;color:#848e9c;margin-top:4px;" id="fund-xau">Fund: --</div>
-        </div>
-      </div>
-      <div class="gold-grid">
-        <div class="pair-card">
-          <div class="pair-names" id="pair1-names">XAUT vs PAXG</div>
-          <div class="pair-pct" id="pair1-pct">--</div>
-          <div class="pair-usd" id="pair1-usd">--</div>
-        </div>
-        <div class="pair-card">
-          <div class="pair-names" id="pair2-names">XAUT vs XAU</div>
-          <div class="pair-pct" id="pair2-pct">--</div>
-          <div class="pair-usd" id="pair2-usd">--</div>
-        </div>
-        <div class="pair-card">
-          <div class="pair-names" id="pair3-names">PAXG vs XAU</div>
-          <div class="pair-pct" id="pair3-pct">--</div>
-          <div class="pair-usd" id="pair3-usd">--</div>
-        </div>
-      </div>
-    </div>
+      <h2>Hyperliquid (xyz)</h2>
 
-    <!-- PACIFICA -->
-    <div class="section-title">Gold en Pacifica</div>
-    <div class="card pacifica-card">
       <div class="prices">
         <div class="price-box">
-          <div class="label">XAU (GOLD)</div>
-          <div class="value" id="pac-xau">--</div>
+          <div class="label">WTIOIL</div>
+          <div class="value" id="hl-wti">--</div>
         </div>
         <div class="price-box">
-          <div class="label">PAXG</div>
-          <div class="value" id="pac-paxg">--</div>
+          <div class="label">BRENTOIL</div>
+          <div class="value" id="hl-brent">--</div>
         </div>
       </div>
-      <div class="spread" id="pac-spread" style="font-size:1.8rem;">--</div>
-      <div class="diff-abs" id="pac-diff">Diferencia: --</div>
+
+      <div class="spread" id="hl-spread">--</div>
+      <div class="diff-abs" id="hl-diff">Diferencia: --</div>
+
+      <div class="info-grid" style="margin-bottom:4px;">
+        <div class="info-item">
+          <div class="label">Funding WTI (anual)</div>
+          <div class="value" id="hl-funding-wti">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Funding Brent (anual)</div>
+          <div class="value" id="hl-funding-brent">--</div>
+        </div>
+      </div>
+
       <div class="info-grid">
-        <div class="info-item">
-          <div class="label">Funding XAU</div>
-          <div class="value" id="pac-funding-xau">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Funding PAXG</div>
-          <div class="value" id="pac-funding-paxg">--</div>
-        </div>
+        <div class="section-label">—— 7 días ——</div>
+
         <div class="info-item">
           <div class="label">Rango 7 días</div>
-          <div class="value" id="pac-range">Calculando...</div>
+          <div class="value" id="hl-range-7">Calculando...</div>
         </div>
         <div class="info-item">
-          <div class="label">—</div>
-          <div class="value">—</div>
+          <div class="label">Media 7d ± σ</div>
+          <div class="value" id="hl-mean-7">--</div>
         </div>
+        <div class="info-item">
+          <div class="label">Z-Score (7d)</div>
+          <div class="value" id="hl-zscore-7">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Umbral Entrada (7d)</div>
+          <div class="value" id="hl-enter-7">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Umbral Salida (7d)</div>
+          <div class="value" id="hl-exit-7">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Falta a Entrada (7d)</div>
+          <div class="value" id="hl-dist-enter-7">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Falta a Salida (7d)</div>
+          <div class="value" id="hl-dist-exit-7">--</div>
+        </div>
+
+        <div class="section-label">—— 30 días ——</div>
+
+        <div class="info-item">
+          <div class="label">Rango 30 días</div>
+          <div class="value" id="hl-range-30">Calculando...</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Media 30d ± σ</div>
+          <div class="value" id="hl-mean-30">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Z-Score (30d)</div>
+          <div class="value" id="hl-zscore-30">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Umbral Entrada (30d)</div>
+          <div class="value" id="hl-enter-30">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Umbral Salida (30d)</div>
+          <div class="value" id="hl-exit-30">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Falta a Entrada (30d)</div>
+          <div class="value" id="hl-dist-enter-30">--</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Falta a Salida (30d)</div>
+          <div class="value" id="hl-dist-exit-30">--</div>
+        </div>
+
+        <!-- Franjas abajo de todo -->
+        <div class="info-item full-width" style="margin-top:8px;">
+          <div class="label">Tiempo en franjas (30d)</div>
+          <div class="value" id="hl-franjas">Calculando...</div>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>Interpretación Z-Score</b><br>
+        Z > +1.5 → Estirado<br>
+        Z entre -1 y +1 → Rango habitual<br>
+        Z < -1.5 → Comprimido
       </div>
     </div>
 
@@ -429,11 +301,9 @@
     function formatDist(current, threshold, isEntry) {
       const diff = threshold - current;
       if (isEntry) {
-        // Entrada: positivo = falta subir, negativo = ya superó
         if (diff > 0) return '+' + diff.toFixed(2) + '%';
         return diff.toFixed(2) + '%';
       } else {
-        // Salida: positivo = todavía arriba, negativo = ya bajó de salida
         if (diff < 0) return diff.toFixed(2) + '%';
         return '+' + diff.toFixed(2) + '%';
       }
@@ -453,17 +323,6 @@
         });
         const data = await res.json();
         return Array.isArray(data) ? data : null;
-      } catch { return null; }
-    }
-
-    async function fetchCandlesPac(symbol) {
-      try {
-        const end = Date.now();
-        const start = end - 7 * 24 * 60 * 60 * 1000;
-        const url = `https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`;
-        const res = await fetch(url);
-        const data = await res.json();
-        return (data.success && Array.isArray(data.data)) ? data.data : null;
       } catch { return null; }
     }
 
@@ -503,7 +362,7 @@
 
     async function updateAll() {
       try {
-        // ===== HYPERLIQUID Precios =====
+        // Precios
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -544,7 +403,7 @@
           });
         } catch {}
 
-        // ===== Históricos =====
+        // Históricos
         try {
           let candlesWti7 = null, candlesBrent7 = null;
           let candlesWti30 = null, candlesBrent30 = null;
@@ -566,7 +425,7 @@
             if (candlesBrent30?.length > 50) break;
           }
 
-          // --- 7 días ---
+          // 7 días
           if (candlesWti7 && candlesBrent7) {
             const map = {};
             candlesBrent7.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
@@ -600,7 +459,7 @@
             }
           }
 
-          // --- 30 días ---
+          // 30 días
           if (candlesWti30 && candlesBrent30) {
             const map30 = {};
             candlesBrent30.forEach(c => { if (c?.T && c?.c) map30[c.T] = parseFloat(c.c); });
@@ -650,126 +509,7 @@
           console.log('Error histórico HL', e);
         }
 
-        // ===== VARIATIONAL =====
-        const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
-        const varData = await resVar.json();
-
-        let varWti = null, varBrent = null;
-        let xaut = null, paxg = null, xau = null;
-
-        (varData.listings || []).forEach(item => {
-          const ticker = (item.ticker || '').toUpperCase();
-          const price = parseFloat(item.mark_price);
-          const rawFunding = parseFloat(item.funding_rate || 0);
-          const intervalSec = parseFloat(item.funding_interval_s || 14400);
-          const hours = intervalSec / 3600;
-          const annual = (rawFunding * (24 / hours) * 365 / 22).toFixed(2) + '%';
-
-          if (ticker === 'CL') {
-            varWti = price;
-            document.getElementById('var-wti').innerText = '$' + price.toFixed(3);
-            document.getElementById('var-funding-wti').innerText = annual;
-          }
-          if (ticker === 'BZ') {
-            varBrent = price;
-            document.getElementById('var-brent').innerText = '$' + price.toFixed(3);
-            document.getElementById('var-funding-brent').innerText = annual;
-          }
-          if (ticker === 'XAUT') {
-            xaut = price;
-            document.getElementById('gold-xaut').innerText = '$' + price.toFixed(2);
-            document.getElementById('fund-xaut').innerText = 'Fund: ' + annual;
-          }
-          if (ticker === 'PAXG') {
-            paxg = price;
-            document.getElementById('gold-paxg').innerText = '$' + price.toFixed(2);
-            document.getElementById('fund-paxg').innerText = 'Fund: ' + annual;
-          }
-          if (ticker === 'XAU') {
-            xau = price;
-            document.getElementById('gold-xau').innerText = '$' + price.toFixed(2);
-            document.getElementById('fund-xau').innerText = 'Fund: ' + annual;
-          }
-        });
-
-        if (varWti && varBrent) {
-          const s = calcSpread(varWti, varBrent);
-          document.getElementById('var-spread').innerText = s.pct.toFixed(3) + '%';
-          document.getElementById('var-spread').className = 'spread ' + getColor(s.pct);
-          document.getElementById('var-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
-        }
-
-        if (xaut && paxg) {
-          const s = calcSpread(xaut, paxg);
-          document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
-          document.getElementById('pair1-pct').innerText = s.pct.toFixed(3) + '%';
-          document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
-        }
-        if (xaut && xau) {
-          const s = calcSpread(xaut, xau);
-          document.getElementById('pair2-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
-          document.getElementById('pair2-pct').innerText = s.pct.toFixed(3) + '%';
-          document.getElementById('pair2-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
-        }
-        if (paxg && xau) {
-          const s = calcSpread(paxg, xau);
-          document.getElementById('pair3-names').innerHTML = `PAXG (<b>$${paxg.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
-          document.getElementById('pair3-pct').innerText = s.pct.toFixed(3) + '%';
-          document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
-        }
-
-        // ===== PACIFICA =====
-        try {
-          const resPac = await fetch('https://api.pacifica.fi/api/v1/info/prices');
-          const pacData = await resPac.json();
-          const list = pacData.data || [];
-
-          let pacXau = null, pacPaxg = null;
-          list.forEach(item => {
-            const sym = (item.symbol || '').toUpperCase();
-            const mark = parseFloat(item.mark || item.mid || 0);
-            const funding = parseFloat(item.funding || 0);
-            const annual = (funding * 24 * 365 * 100).toFixed(2) + '%';
-            if (sym === 'XAU' || sym === 'GOLD') {
-              pacXau = mark;
-              document.getElementById('pac-xau').innerText = '$' + mark.toFixed(2);
-              document.getElementById('pac-funding-xau').innerText = annual;
-            }
-            if (sym === 'PAXG') {
-              pacPaxg = mark;
-              document.getElementById('pac-paxg').innerText = '$' + mark.toFixed(2);
-              document.getElementById('pac-funding-paxg').innerText = annual;
-            }
-          });
-
-          if (pacXau && pacPaxg) {
-            const s = calcSpread(pacXau, pacPaxg);
-            document.getElementById('pac-spread').innerText = s.pct.toFixed(3) + '%';
-            document.getElementById('pac-spread').className = 'spread ' + getColor(s.pct);
-            document.getElementById('pac-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
-          }
-
-          const [cXau, cPaxg] = await Promise.all([fetchCandlesPac('XAU'), fetchCandlesPac('PAXG')]);
-          if (cXau?.length && cPaxg?.length) {
-            const map = {};
-            cPaxg.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
-            const spreads = [];
-            cXau.forEach(c => {
-              if (c?.t && c?.c && map[c.t]) {
-                const x = parseFloat(c.c), p = map[c.t];
-                spreads.push(Math.abs((p - x) / ((p + x) / 2) * 100));
-              }
-            });
-            if (spreads.length > 5) {
-              document.getElementById('pac-range').innerText =
-                Math.min(...spreads).toFixed(2) + '% → ' + Math.max(...spreads).toFixed(2) + '%';
-            } else document.getElementById('pac-range').innerText = 'Pocos datos';
-          } else document.getElementById('pac-range').innerText = 'N/A';
-        } catch (e) {
-          console.log('Error Pacifica', e);
-        }
-
-        // Recomendación (solo Hyperliquid)
+        // Recomendación
         let rec = '🟡 Mantener / esperar';
         if (currentPct >= ENTER_ABOVE) {
           rec = `🟢 Oportunidad de entrada en Hyperliquid (${currentPct.toFixed(2)}%)`;
