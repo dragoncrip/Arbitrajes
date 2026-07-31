@@ -11,28 +11,28 @@
       background: #0b0e11;
       color: #eaecef;
       min-height: 100vh;
-      padding: 16px;
+      padding: 12px;
       display: flex;
       justify-content: center;
     }
-    .container { width: 100%; max-width: 560px; }
+    .container { width: 100%; max-width: 680px; }
 
-    h1 { text-align: center; font-size: 1.45rem; margin-bottom: 2px; letter-spacing: -0.3px; }
-    .subtitle { text-align: center; color: #848e9c; font-size: 0.8rem; margin-bottom: 14px; }
+    h1 { text-align: center; font-size: 1.35rem; margin-bottom: 2px; letter-spacing: -0.3px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.78rem; margin-bottom: 12px; }
 
     .nav {
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .nav a {
       background: #1e2329;
       color: #f0b90b;
-      padding: 7px 16px;
-      border-radius: 18px;
+      padding: 6px 14px;
+      border-radius: 16px;
       text-decoration: none;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       border: 1px solid #2b3139;
       transition: all 0.2s;
@@ -45,14 +45,14 @@
 
     .card {
       background: #1e2329;
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 14px;
       border: 1px solid #2b3139;
     }
     .card h2 {
       text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 12px;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
       color: #f0b90b;
       font-weight: 600;
     }
@@ -60,30 +60,30 @@
     .prices {
       display: flex;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .price-box {
       flex: 1;
       background: #2b3139;
       border-radius: 10px;
-      padding: 10px 6px;
+      padding: 8px 6px;
       text-align: center;
     }
-    .price-box .label { font-size: 0.68rem; color: #848e9c; }
-    .price-box .value { font-size: 1.15rem; font-weight: 700; margin-top: 2px; }
+    .price-box .label { font-size: 0.65rem; color: #848e9c; }
+    .price-box .value { font-size: 1.1rem; font-weight: 700; margin-top: 2px; }
 
     .spread {
       text-align: center;
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 800;
-      margin: 4px 0 0;
+      margin: 2px 0 0;
       letter-spacing: -0.5px;
     }
     .diff-abs {
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #b7bdc6;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .green { color: #0ecb81; }
@@ -93,57 +93,70 @@
     .fundings {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .fundings .info-item { flex: 1; }
+
+    /* ===== LAYOUT 2 COLUMNAS ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 520px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+
+    .stats-col {
+      background: #252a31;
+      border-radius: 12px;
+      padding: 10px 8px;
+    }
+    .stats-col .section-title {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #f0b90b;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
 
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      font-size: 0.78rem;
+      gap: 5px;
+      font-size: 0.74rem;
     }
     .info-item {
       background: #2b3139;
-      border-radius: 9px;
-      padding: 8px 6px;
+      border-radius: 8px;
+      padding: 6px 4px;
       text-align: center;
     }
-    .info-item .label { color: #848e9c; font-size: 0.65rem; }
-    .info-item .value { font-weight: 600; margin-top: 2px; font-size: 0.84rem; }
+    .info-item .label { color: #848e9c; font-size: 0.62rem; }
+    .info-item .value { font-weight: 600; margin-top: 1px; font-size: 0.8rem; }
 
     .full-width { grid-column: 1 / -1; }
 
-    .section-label {
-      grid-column: 1 / -1;
-      text-align: center;
-      font-size: 0.72rem;
-      color: #f0b90b;
-      margin: 8px 0 2px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-    }
-
-    /* ===== BARRA VISUAL ===== */
+    /* ===== BARRA VISUAL GRANDE ===== */
     .range-bar-container {
-      grid-column: 1 / -1;
-      margin: 6px 0 2px;
-      padding: 10px 8px 6px;
+      margin-top: 8px;
+      padding: 8px 6px 6px;
       background: #2b3139;
-      border-radius: 10px;
+      border-radius: 8px;
     }
     .range-bar-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       color: #848e9c;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
     .range-bar {
       position: relative;
-      height: 10px;
+      height: 14px;
       background: #1e2329;
-      border-radius: 6px;
+      border-radius: 7px;
       overflow: visible;
     }
     .range-bar-fill {
@@ -152,14 +165,14 @@
       left: 0;
       height: 100%;
       background: linear-gradient(90deg, #f6465d 0%, #f0b90b 50%, #0ecb81 100%);
-      border-radius: 6px;
-      opacity: 0.35;
+      border-radius: 7px;
+      opacity: 0.4;
     }
     .range-marker {
       position: absolute;
       top: 50%;
       width: 3px;
-      height: 18px;
+      height: 22px;
       background: #eaecef;
       border-radius: 2px;
       transform: translate(-50%, -50%);
@@ -167,44 +180,44 @@
       box-shadow: 0 0 4px rgba(0,0,0,0.6);
     }
     .range-marker.current {
-      width: 4px;
-      height: 22px;
+      width: 5px;
+      height: 26px;
       background: #f0b90b;
-      box-shadow: 0 0 6px rgba(240,185,11,0.7);
+      box-shadow: 0 0 8px rgba(240,185,11,0.8);
     }
     .range-current-label {
       text-align: center;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
       color: #f0b90b;
-      margin-top: 6px;
+      margin-top: 5px;
     }
 
     .note {
       margin-top: 10px;
       background: #2b3139;
-      border-radius: 9px;
-      padding: 8px;
-      font-size: 0.68rem;
+      border-radius: 8px;
+      padding: 7px;
+      font-size: 0.65rem;
       color: #b7bdc6;
-      line-height: 1.4;
+      line-height: 1.35;
       text-align: center;
     }
 
     .recommendation {
-      margin-top: 12px;
+      margin-top: 10px;
       background: #1e2329;
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 10px;
+      padding: 10px;
       text-align: center;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border: 1px solid #2b3139;
     }
     .footer {
       text-align: center;
-      margin-top: 12px;
-      font-size: 0.7rem;
+      margin-top: 10px;
+      font-size: 0.68rem;
       color: #5e6673;
     }
   </style>
@@ -236,7 +249,6 @@
       <div class="spread" id="hl-spread">--</div>
       <div class="diff-abs" id="hl-diff">Diferencia: --</div>
 
-      <!-- Fundings -->
       <div class="fundings">
         <div class="info-item">
           <div class="label">Funding WTI</div>
@@ -248,83 +260,88 @@
         </div>
       </div>
 
-      <div class="info-grid">
-        <!-- ========== 7 DÍAS ========== -->
-        <div class="section-label">—— 7 días ——</div>
-
-        <div class="info-item">
-          <div class="label">Rango</div>
-          <div class="value" id="hl-range-7">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Media ± σ</div>
-          <div class="value" id="hl-mean-7">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Z-Score</div>
-          <div class="value" id="hl-zscore-7">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Umbral (7d)</div>
-          <div class="value" id="hl-umbral-7">--</div>
-        </div>
-        <div class="info-item full-width">
-          <div class="label">Falta a Entrada / Salida</div>
-          <div class="value" id="hl-dist-7">--</div>
-        </div>
-
-        <!-- Barra visual 7d -->
-        <div class="range-bar-container" id="bar-7-container" style="display:none;">
-          <div class="range-bar-labels">
-            <span id="bar-7-exit">Sal</span>
-            <span id="bar-7-enter">Ent</span>
+      <!-- ===== 7d IZQUIERDA | 30d DERECHA ===== -->
+      <div class="stats-row">
+        <!-- 7 DÍAS -->
+        <div class="stats-col">
+          <div class="section-title">—— 7 días ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="hl-range-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="hl-mean-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="hl-zscore-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="hl-umbral-7">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="hl-dist-7">--</div>
+            </div>
           </div>
-          <div class="range-bar">
-            <div class="range-bar-fill" id="bar-7-fill"></div>
-            <div class="range-marker" id="bar-7-exit-marker" style="left:0%"></div>
-            <div class="range-marker" id="bar-7-enter-marker" style="left:100%"></div>
-            <div class="range-marker current" id="bar-7-current" style="left:50%"></div>
+
+          <div class="range-bar-container" id="bar-7-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="bar-7-exit">Sal</span>
+              <span id="bar-7-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill" id="bar-7-fill"></div>
+              <div class="range-marker" id="bar-7-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="bar-7-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="bar-7-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="bar-7-label">Actual: --</div>
           </div>
-          <div class="range-current-label" id="bar-7-label">Actual: --</div>
         </div>
 
-        <!-- ========== 30 DÍAS ========== -->
-        <div class="section-label">—— 30 días ——</div>
-
-        <div class="info-item">
-          <div class="label">Rango</div>
-          <div class="value" id="hl-range-30">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Media ± σ</div>
-          <div class="value" id="hl-mean-30">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Z-Score</div>
-          <div class="value" id="hl-zscore-30">--</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Umbral (30d)</div>
-          <div class="value" id="hl-umbral-30">--</div>
-        </div>
-        <div class="info-item full-width">
-          <div class="label">Falta a Entrada / Salida</div>
-          <div class="value" id="hl-dist-30">--</div>
-        </div>
-
-        <!-- Barra visual 30d -->
-        <div class="range-bar-container" id="bar-30-container" style="display:none;">
-          <div class="range-bar-labels">
-            <span id="bar-30-exit">Sal</span>
-            <span id="bar-30-enter">Ent</span>
+        <!-- 30 DÍAS -->
+        <div class="stats-col">
+          <div class="section-title">—— 30 días ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="hl-range-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="hl-mean-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="hl-zscore-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="hl-umbral-30">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="hl-dist-30">--</div>
+            </div>
           </div>
-          <div class="range-bar">
-            <div class="range-bar-fill" id="bar-30-fill"></div>
-            <div class="range-marker" id="bar-30-exit-marker" style="left:0%"></div>
-            <div class="range-marker" id="bar-30-enter-marker" style="left:100%"></div>
-            <div class="range-marker current" id="bar-30-current" style="left:50%"></div>
+
+          <div class="range-bar-container" id="bar-30-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="bar-30-exit">Sal</span>
+              <span id="bar-30-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill" id="bar-30-fill"></div>
+              <div class="range-marker" id="bar-30-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="bar-30-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="bar-30-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="bar-30-label">Actual: --</div>
           </div>
-          <div class="range-current-label" id="bar-30-label">Actual: --</div>
         </div>
       </div>
 
@@ -369,22 +386,20 @@
       return '#b7bdc6';
     }
 
-    // INVERTIDO: primero Salida, después Entrada
+    // Invertido: Sal primero
     function formatDist(current, enter, exit) {
       const dEnter = enter - current;
       const dExit  = exit - current;
       const eStr = (dEnter > 0 ? '+' : '') + dEnter.toFixed(2) + '%';
       const xStr = (dExit  > 0 ? '+' : '') + dExit.toFixed(2) + '%';
-      return `Sal ${xStr}  ·  Ent ${eStr}`;
+      return `Sal ${xStr} · Ent ${eStr}`;
     }
 
-    // Dibuja la barra visual
     function updateRangeBar(prefix, current, exit, enter) {
       const container = document.getElementById(`bar-${prefix}-container`);
       if (!container) return;
 
-      // Ampliamos un poco el rango visual para que se vea bien
-      const padding = (enter - exit) * 0.25;
+      const padding = (enter - exit) * 0.3;
       const min = exit - padding;
       const max = enter + padding;
       const range = max - min;
@@ -399,10 +414,6 @@
       document.getElementById(`bar-${prefix}-enter-marker`).style.left = enterPct + '%';
       document.getElementById(`bar-${prefix}-current`).style.left = pct + '%';
       document.getElementById(`bar-${prefix}-label`).innerText = `Actual: ${current.toFixed(2)}%`;
-
-      // Color del fill según posición
-      const fill = document.getElementById(`bar-${prefix}-fill`);
-      fill.style.width = '100%';
 
       container.style.display = 'block';
     }
@@ -460,7 +471,6 @@
 
     async function updateAll() {
       try {
-        // Precios
         const resMids = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -482,7 +492,6 @@
           document.getElementById('hl-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        // Funding
         try {
           const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
             method: 'POST',
@@ -501,7 +510,6 @@
           });
         } catch {}
 
-        // Históricos
         try {
           let candlesWti7 = null, candlesBrent7 = null;
           let candlesWti30 = null, candlesBrent30 = null;
@@ -523,7 +531,7 @@
             if (candlesBrent30?.length > 50) break;
           }
 
-          // --- 7 días ---
+          // 7 días
           if (candlesWti7 && candlesBrent7) {
             const map = {};
             candlesBrent7.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
@@ -537,8 +545,8 @@
 
             if (spreads7.length > 10) {
               const stats7 = calcStats(spreads7);
-              document.getElementById('hl-range-7').innerText = stats7.min.toFixed(2) + '% → ' + stats7.max.toFixed(2) + '%';
-              document.getElementById('hl-mean-7').innerText = stats7.mean.toFixed(2) + '% ± ' + stats7.std.toFixed(2);
+              document.getElementById('hl-range-7').innerText = stats7.min.toFixed(2) + '→' + stats7.max.toFixed(2);
+              document.getElementById('hl-mean-7').innerText = stats7.mean.toFixed(2) + '±' + stats7.std.toFixed(2);
 
               if (currentPct > 0 && stats7.std > 0) {
                 const z7 = (currentPct - stats7.mean) / stats7.std;
@@ -549,14 +557,14 @@
 
               const th7 = calcThresholds(spreads7);
               if (th7) {
-                document.getElementById('hl-umbral-7').innerText = th7.exit.toFixed(2) + '% – ' + th7.enter.toFixed(2) + '%';
+                document.getElementById('hl-umbral-7').innerText = th7.exit.toFixed(2) + '–' + th7.enter.toFixed(2);
                 document.getElementById('hl-dist-7').innerText = formatDist(currentPct, th7.enter, th7.exit);
                 updateRangeBar('7', currentPct, th7.exit, th7.enter);
               }
             }
           }
 
-          // --- 30 días ---
+          // 30 días
           if (candlesWti30 && candlesBrent30) {
             const map30 = {};
             candlesBrent30.forEach(c => { if (c?.T && c?.c) map30[c.T] = parseFloat(c.c); });
@@ -570,8 +578,8 @@
 
             if (spreads30.length > 50) {
               const stats30 = calcStats(spreads30);
-              document.getElementById('hl-range-30').innerText = stats30.min.toFixed(2) + '% → ' + stats30.max.toFixed(2) + '%';
-              document.getElementById('hl-mean-30').innerText = stats30.mean.toFixed(2) + '% ± ' + stats30.std.toFixed(2);
+              document.getElementById('hl-range-30').innerText = stats30.min.toFixed(2) + '→' + stats30.max.toFixed(2);
+              document.getElementById('hl-mean-30').innerText = stats30.mean.toFixed(2) + '±' + stats30.std.toFixed(2);
 
               if (currentPct > 0 && stats30.std > 0) {
                 const z30 = (currentPct - stats30.mean) / stats30.std;
@@ -585,7 +593,7 @@
                 if (th) saveThresholds(th.enter, th.exit);
               }
 
-              document.getElementById('hl-umbral-30').innerText = EXIT_BELOW.toFixed(2) + '% – ' + ENTER_ABOVE.toFixed(2) + '%';
+              document.getElementById('hl-umbral-30').innerText = EXIT_BELOW.toFixed(2) + '–' + ENTER_ABOVE.toFixed(2);
               document.getElementById('hl-dist-30').innerText = formatDist(currentPct, ENTER_ABOVE, EXIT_BELOW);
               updateRangeBar('30', currentPct, EXIT_BELOW, ENTER_ABOVE);
             }
@@ -594,7 +602,6 @@
           console.log('Error histórico HL', e);
         }
 
-        // Recomendación
         let rec = '🟡 Mantener / esperar';
         if (currentPct >= ENTER_ABOVE) {
           rec = `🟢 Oportunidad de entrada (${currentPct.toFixed(2)}%)`;
