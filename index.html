@@ -97,7 +97,6 @@
     }
     .fundings .info-item { flex: 1; }
 
-    /* ===== LAYOUT 2 COLUMNAS ===== */
     .stats-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -138,7 +137,6 @@
 
     .full-width { grid-column: 1 / -1; }
 
-    /* ===== BARRA VISUAL GRANDE ===== */
     .range-bar-container {
       margin-top: 8px;
       padding: 8px 6px 6px;
@@ -204,16 +202,38 @@
       text-align: center;
     }
 
-    .recommendation {
-      margin-top: 10px;
-      background: #1e2329;
-      border-radius: 10px;
-      padding: 10px;
+    /* ===== SEÑAL DE TRADING ===== */
+    .signal {
+      margin-top: 12px;
+      border-radius: 12px;
+      padding: 14px 12px;
       text-align: center;
-      font-size: 0.95rem;
-      font-weight: 600;
       border: 1px solid #2b3139;
     }
+    .signal.long {
+      background: linear-gradient(135deg, #0a2e1f, #1e2329);
+      border-color: #0ecb81;
+    }
+    .signal.short {
+      background: linear-gradient(135deg, #2e0a14, #1e2329);
+      border-color: #f6465d;
+    }
+    .signal.wait {
+      background: #1e2329;
+      border-color: #2b3139;
+    }
+    .signal-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .signal-legs {
+      font-size: 0.85rem;
+      color: #b7bdc6;
+      margin-top: 2px;
+    }
+    .signal-legs b { color: #eaecef; }
+
     .footer {
       text-align: center;
       margin-top: 10px;
@@ -260,7 +280,6 @@
         </div>
       </div>
 
-      <!-- ===== 7d IZQUIERDA | 30d DERECHA ===== -->
       <div class="stats-row">
         <!-- 7 DÍAS -->
         <div class="stats-col">
@@ -350,7 +369,12 @@
       </div>
     </div>
 
-    <div class="recommendation" id="recommendation">Cargando...</div>
+    <!-- SEÑAL DE TRADING -->
+    <div class="signal wait" id="signal">
+      <div class="signal-title" id="signal-title">Cargando...</div>
+      <div class="signal-legs" id="signal-legs"></div>
+    </div>
+
     <div class="footer">Datos en tiempo real • Umbrales se actualizan 1 vez al día</div>
   </div>
 
@@ -386,7 +410,6 @@
       return '#b7bdc6';
     }
 
-    // Invertido: Sal primero
     function formatDist(current, enter, exit) {
       const dEnter = enter - current;
       const dExit  = exit - current;
@@ -602,17 +625,34 @@
           console.log('Error histórico HL', e);
         }
 
-        let rec = '🟡 Mantener / esperar';
+        // ===== SEÑAL SHORT / LONG =====
+        const signalEl = document.getElementById('signal');
+        const titleEl = document.getElementById('signal-title');
+        const legsEl = document.getElementById('signal-legs');
+
         if (currentPct >= ENTER_ABOVE) {
-          rec = `🟢 Oportunidad de entrada (${currentPct.toFixed(2)}%)`;
+          // Spread alto → SHORT
+          signalEl.className = 'signal short';
+          titleEl.innerHTML = '🔴 SHORT SPREAD';
+          titleEl.style.color = '#f6465d';
+          legsEl.innerHTML = `Vender <b>BRENTOIL</b> + Comprar <b>WTIOIL</b><br><span style="font-size:0.75rem;opacity:0.8">Spread estirado (${currentPct.toFixed(2)}%)</span>`;
         } else if (currentPct <= EXIT_BELOW) {
-          rec = '🔴 Spread bajo – considera salir';
+          // Spread bajo → LONG
+          signalEl.className = 'signal long';
+          titleEl.innerHTML = '🟢 LONG SPREAD';
+          titleEl.style.color = '#0ecb81';
+          legsEl.innerHTML = `Comprar <b>BRENTOIL</b> + Vender <b>WTIOIL</b><br><span style="font-size:0.75rem;opacity:0.8">Spread comprimido (${currentPct.toFixed(2)}%)</span>`;
+        } else {
+          // Zona media
+          signalEl.className = 'signal wait';
+          titleEl.innerHTML = '🟡 ESPERAR';
+          titleEl.style.color = '#f0b90b';
+          legsEl.innerHTML = `Spread en zona neutral (${currentPct.toFixed(2)}%)`;
         }
-        document.getElementById('recommendation').innerHTML = rec;
 
       } catch (err) {
         console.error(err);
-        document.getElementById('recommendation').innerText = 'Error al cargar datos';
+        document.getElementById('signal-title').innerText = 'Error al cargar datos';
       }
     }
 
