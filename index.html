@@ -97,7 +97,6 @@
       color: #f0b90b;
     }
 
-    /* Variational Gold - lado a lado */
     .gold-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -130,7 +129,6 @@
       margin-top: 2px;
     }
 
-    /* Pacifica más chico */
     .pacifica-card {
       max-width: 480px;
       margin: 0 auto;
@@ -150,6 +148,17 @@
       font-size: 0.75rem;
       color: #5e6673;
     }
+
+    .franjas {
+      grid-column: 1 / -1;
+      background: #2b3139;
+      border-radius: 8px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .franjas .label { color: #848e9c; font-size: 0.68rem; margin-bottom: 4px; }
+    .franjas .values { font-weight: 600; }
   </style>
 </head>
 <body>
@@ -175,12 +184,20 @@
         <div class="diff-abs" id="hl-diff">Diferencia: --</div>
         <div class="info-grid">
           <div class="info-item">
-            <div class="label">Promedio histórico</div>
-            <div class="value">≈ 2.00%</div>
+            <div class="label">Umbral Entrada</div>
+            <div class="value" id="hl-enter">--</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Umbral Salida</div>
+            <div class="value" id="hl-exit">--</div>
           </div>
           <div class="info-item">
             <div class="label">Rango 7 días</div>
             <div class="value" id="hl-range">Calculando...</div>
+          </div>
+          <div class="info-item">
+            <div class="label">Rango 30 días</div>
+            <div class="value" id="hl-range-30">Calculando...</div>
           </div>
           <div class="info-item">
             <div class="label">Funding WTI (anual)</div>
@@ -189,6 +206,10 @@
           <div class="info-item">
             <div class="label">Funding Brent (anual)</div>
             <div class="value" id="hl-funding-brent">--</div>
+          </div>
+          <div class="franjas">
+            <div class="label">Tiempo en franjas (30d)</div>
+            <div class="values" id="hl-franjas">Calculando...</div>
           </div>
         </div>
       </div>
@@ -228,7 +249,7 @@
       </div>
     </div>
 
-    <!-- GOLD VARIATIONAL - lado a lado + funding -->
+    <!-- GOLD VARIATIONAL -->
     <div class="section-title">Gold en Variational (XAUT • PAXG • XAU)</div>
     <div class="card">
       <div class="prices" style="margin-bottom:14px;">
@@ -268,7 +289,7 @@
       </div>
     </div>
 
-    <!-- PACIFICA más chico -->
+    <!-- PACIFICA -->
     <div class="section-title">Gold en Pacifica</div>
     <div class="card pacifica-card">
       <div class="prices">
@@ -304,12 +325,13 @@
     </div>
 
     <div class="recommendation" id="recommendation">Cargando...</div>
-    <div class="footer">Datos en tiempo real</div>
+    <div class="footer">Datos en tiempo real • Umbrales HL se actualizan 1 vez al día</div>
   </div>
 
   <script>
-    const ENTER_ABOVE = 3.80;
-    const EXIT_BELOW  = 2.30;
+    // Umbrales por defecto (se actualizan solos 1 vez al día)
+    let ENTER_ABOVE = 3.80;
+    let EXIT_BELOW  = 2.30;
 
     function calcSpread(a, b) {
       const diff = b - a;
@@ -323,10 +345,10 @@
       return 'yellow';
     }
 
-    async function fetchCandlesHL(coin) {
+    async function fetchCandlesHL(coin, days = 7) {
       try {
         const end = Date.now();
-        const start = end - 7 * 24 * 60 * 60 * 1000;
+        const start = end - days * 24 * 60 * 60 * 1000;
         const res = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -351,6 +373,43 @@
       } catch { return null; }
     }
 
+    // ========== Umbrales dinámicos (1 vez al día) ==========
+    function loadThresholds() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('hl_thresholds') || 'null');
+        if (saved && saved.timestamp) {
+          const hours = (Date.now() - saved.timestamp) / (1000 * 60 * 60);
+          if (hours < 24) {
+            ENTER_ABOVE = saved.enter;
+            EXIT_BELOW = saved.exit;
+            return true;
+          }
+        }
+      } catch {}
+      return false;
+    }
+
+    function saveThresholds(enter, exit) {
+      ENTER_ABOVE = enter;
+      EXIT_BELOW = exit;
+      localStorage.setItem('hl_thresholds', JSON.stringify({
+        enter,
+        exit,
+        timestamp: Date.now()
+      }));
+    }
+
+    function calculateDynamicThresholds(spreads) {
+      if (!spreads || spreads.length < 50) return null;
+      const sorted = [...spreads].sort((a, b) => a - b);
+      const p20 = sorted[Math.floor(sorted.length * 0.20)];
+      const p80 = sorted[Math.floor(sorted.length * 0.80)];
+      return {
+        exit: Math.round(p20 * 100) / 100,
+        enter: Math.round(p80 * 100) / 100
+      };
+    }
+
     async function updateAll() {
       try {
         // ===== HYPERLIQUID =====
@@ -373,6 +432,7 @@
           document.getElementById('hl-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
+        // Funding HL
         try {
           const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
             method: 'POST',
@@ -391,33 +451,106 @@
           });
         } catch {}
 
-        // Rango 7d HL
+        // ===== Rango 7d + 30d + Franjas + Umbrales dinámicos =====
         try {
-          let candlesWti = null, candlesBrent = null;
+          let candlesWti7 = null, candlesBrent7 = null;
+          let candlesWti30 = null, candlesBrent30 = null;
+
           for (const name of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
-            candlesWti = await fetchCandlesHL(name);
-            if (candlesWti?.length > 20) break;
+            candlesWti7 = await fetchCandlesHL(name, 7);
+            if (candlesWti7?.length > 20) break;
           }
           for (const name of ['xyz:BRENTOIL', 'BRENTOIL']) {
-            candlesBrent = await fetchCandlesHL(name);
-            if (candlesBrent?.length > 20) break;
+            candlesBrent7 = await fetchCandlesHL(name, 7);
+            if (candlesBrent7?.length > 20) break;
           }
-          if (candlesWti && candlesBrent) {
+
+          for (const name of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
+            candlesWti30 = await fetchCandlesHL(name, 30);
+            if (candlesWti30?.length > 50) break;
+          }
+          for (const name of ['xyz:BRENTOIL', 'BRENTOIL']) {
+            candlesBrent30 = await fetchCandlesHL(name, 30);
+            if (candlesBrent30?.length > 50) break;
+          }
+
+          // Rango 7 días
+          if (candlesWti7 && candlesBrent7) {
             const map = {};
-            candlesBrent.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
-            const spreads = [];
-            candlesWti.forEach(c => {
-              if (c?.T && c?.c && map[c.T]) {
-                const w = parseFloat(c.c), b = map[c.T];
-                spreads.push(((b - w) / ((b + w) / 2)) * 100);
+            candlesBrent7.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
+            const spreads7 = [];
+            candlesWti7.forEach(c => {
+              if (c?.t && c?.c && map[c.t]) {
+                const w = parseFloat(c.c), b = map[c.t];
+                spreads7.push(((b - w) / ((b + w) / 2)) * 100);
               }
             });
-            if (spreads.length > 10) {
+            if (spreads7.length > 10) {
               document.getElementById('hl-range').innerText =
-                Math.min(...spreads).toFixed(2) + '% → ' + Math.max(...spreads).toFixed(2) + '%';
+                Math.min(...spreads7).toFixed(2) + '% → ' + Math.max(...spreads7).toFixed(2) + '%';
             } else document.getElementById('hl-range').innerText = 'Pocos datos';
           } else document.getElementById('hl-range').innerText = 'No disponible';
-        } catch { document.getElementById('hl-range').innerText = 'Error'; }
+
+          // Rango 30 días + Franjas + Umbrales
+          if (candlesWti30 && candlesBrent30) {
+            const map30 = {};
+            candlesBrent30.forEach(c => { if (c?.t && c?.c) map30[c.t] = parseFloat(c.c); });
+            const spreads30 = [];
+            candlesWti30.forEach(c => {
+              if (c?.t && c?.c && map30[c.t]) {
+                const w = parseFloat(c.c), b = map30[c.t];
+                spreads30.push(((b - w) / ((b + w) / 2)) * 100);
+              }
+            });
+
+            if (spreads30.length > 50) {
+              // Rango 30d
+              document.getElementById('hl-range-30').innerText =
+                Math.min(...spreads30).toFixed(2) + '% → ' + Math.max(...spreads30).toFixed(2) + '%';
+
+              // Umbrales dinámicos (solo si pasaron 24h)
+              if (!loadThresholds()) {
+                const th = calculateDynamicThresholds(spreads30);
+                if (th) {
+                  saveThresholds(th.enter, th.exit);
+                }
+              }
+
+              // Mostrar umbrales activos
+              document.getElementById('hl-enter').innerText = ENTER_ABOVE.toFixed(2) + '%';
+              document.getElementById('hl-exit').innerText = EXIT_BELOW.toFixed(2) + '%';
+
+              // % tiempo en franjas
+              let bajo = 0, medio = 0, alto = 0;
+              spreads30.forEach(s => {
+                if (s <= EXIT_BELOW) bajo++;
+                else if (s >= ENTER_ABOVE) alto++;
+                else medio++;
+              });
+              const total = spreads30.length;
+              const pctBajo = ((bajo / total) * 100).toFixed(0);
+              const pctMedio = ((medio / total) * 100).toFixed(0);
+              const pctAlto = ((alto / total) * 100).toFixed(0);
+
+              document.getElementById('hl-franjas').innerText =
+                `Bajo ${pctBajo}% | Medio ${pctMedio}% | Alto ${pctAlto}%`;
+            } else {
+              document.getElementById('hl-range-30').innerText = 'Pocos datos';
+              document.getElementById('hl-franjas').innerText = 'Pocos datos';
+            }
+          } else {
+            document.getElementById('hl-range-30').innerText = 'No disponible';
+            document.getElementById('hl-franjas').innerText = 'No disponible';
+          }
+        } catch (e) {
+          console.log('Error histórico HL', e);
+          document.getElementById('hl-range').innerText = 'Error';
+          document.getElementById('hl-range-30').innerText = 'Error';
+        }
+
+        // Mostrar umbrales aunque falle el histórico
+        document.getElementById('hl-enter').innerText = ENTER_ABOVE.toFixed(2) + '%';
+        document.getElementById('hl-exit').innerText = EXIT_BELOW.toFixed(2) + '%';
 
         // ===== VARIATIONAL =====
         const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
@@ -468,7 +601,7 @@
           document.getElementById('var-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
         }
 
-        // Gold pairs lado a lado
+        // Gold pairs
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
           document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
@@ -521,7 +654,6 @@
             document.getElementById('pac-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
           }
 
-          // Rango 7 días Pacifica
           const [cXau, cPaxg] = await Promise.all([
             fetchCandlesPac('XAU'),
             fetchCandlesPac('PAXG')
@@ -551,7 +683,7 @@
           document.getElementById('pac-range').innerText = 'Error';
         }
 
-        // Recomendación
+        // Recomendación (usa los umbrales dinámicos)
         const hlPct = hlWti && hlBrent ? calcSpread(hlWti, hlBrent).pct : 0;
         const varPct = varWti && varBrent ? calcSpread(varWti, varBrent).pct : 0;
         const best = Math.max(hlPct, varPct);
@@ -571,6 +703,8 @@
       }
     }
 
+    // Cargar umbrales guardados al inicio
+    loadThresholds();
     updateAll();
     setInterval(updateAll, 30000);
   </script>
