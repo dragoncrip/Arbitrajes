@@ -357,7 +357,7 @@
       </div>
 
       <div class="note">
-        <b>Histórico = proxy Binance</b> (XAUTUSDT + XAUUSDT).<br>
+        <b>Histórico = proxy Binance</b> (XAUTUSDT Spot + XAUUSDT Futures).<br>
         Variational no expone velas públicas. Los spreads actuales sí son de Variational.<br>
         Z-Score → Z > +1.5 Estirado · entre -1/+1 Normal · &lt; -1.5 Comprimido
       </div>
@@ -498,14 +498,24 @@
       };
     }
 
-    async function fetchBinanceKlines(symbol, days = 7) {
+    // XAUT → Spot | XAU → Futures
+    async function fetchBinanceKlines(symbol, days = 7, futures = false) {
       try {
         const end = Date.now();
         const start = end - days * 24 * 60 * 60 * 1000;
-        const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
+        const base = futures
+          ? 'https://fapi.binance.com/fapi/v1/klines'
+          : 'https://api.binance.com/api/v3/klines';
+
+        const url = `${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
         const res = await fetch(url);
         const data = await res.json();
-        if (!Array.isArray(data)) return null;
+
+        if (!Array.isArray(data)) {
+          console.log('Binance no array', symbol, data);
+          return null;
+        }
+
         return data.map(c => ({
           t: c[0],
           c: parseFloat(c[4])
@@ -569,7 +579,7 @@
           document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
 
-        // XAUT vs XAU → este es el principal (currentPct)
+        // XAUT vs XAU → principal (currentPct)
         if (xaut && xau) {
           const s = calcSpread(xaut, xau);
           currentPct = s.pct;
@@ -585,13 +595,13 @@
           document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
 
-        // ===== HISTÓRICO BINANCE (proxy XAUT vs XAU) =====
+        // ===== HISTÓRICO BINANCE (XAUT Spot + XAU Futures) =====
         try {
           const [klXaut7, klXau7, klXaut30, klXau30] = await Promise.all([
-            fetchBinanceKlines('XAUTUSDT', 7),
-            fetchBinanceKlines('XAUUSDT', 7),
-            fetchBinanceKlines('XAUTUSDT', 30),
-            fetchBinanceKlines('XAUUSDT', 30)
+            fetchBinanceKlines('XAUTUSDT', 7, false),  // Spot
+            fetchBinanceKlines('XAUUSDT', 7, true),    // Futures
+            fetchBinanceKlines('XAUTUSDT', 30, false), // Spot
+            fetchBinanceKlines('XAUUSDT', 30, true)    // Futures
           ]);
 
           // 7 días
