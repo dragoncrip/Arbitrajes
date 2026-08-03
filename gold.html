@@ -133,7 +133,6 @@
     .info-item .label { color: #848e9c; font-size: 0.68rem; }
     .info-item .value { font-weight: 600; margin-top: 3px; font-size: 0.88rem; }
 
-    /* Stats style (igual que oil) */
     .stats-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -276,10 +275,10 @@
         </div>
       </div>
 
-      <!-- STATS XAUT vs PAXG (proxy Binance) -->
+      <!-- STATS XAUT vs XAU (proxy Binance) -->
       <div class="stats-row">
         <div class="stats-col">
-          <div class="section-title">—— 7 días (XAUT/PAXG) ——</div>
+          <div class="section-title">—— 7 días (XAUT/XAU) ——</div>
           <div class="info-grid">
             <div class="info-item">
               <div class="label">Rango</div>
@@ -318,7 +317,7 @@
         </div>
 
         <div class="stats-col">
-          <div class="section-title">—— 30 días (XAUT/PAXG) ——</div>
+          <div class="section-title">—— 30 días (XAUT/XAU) ——</div>
           <div class="info-grid">
             <div class="info-item">
               <div class="label">Rango</div>
@@ -358,7 +357,7 @@
       </div>
 
       <div class="note">
-        <b>Histórico = proxy Binance</b> (XAUTUSDT + PAXGUSDT).<br>
+        <b>Histórico = proxy Binance</b> (XAUTUSDT + XAUUSDT).<br>
         Variational no expone velas públicas. Los spreads actuales sí son de Variational.<br>
         Z-Score → Z > +1.5 Estirado · entre -1/+1 Normal · &lt; -1.5 Comprimido
       </div>
@@ -403,7 +402,6 @@
   </div>
 
   <script>
-    // ===== Thresholds (guardados 24h) =====
     let ENTER_ABOVE = 0.25;
     let EXIT_BELOW  = 0.08;
 
@@ -500,17 +498,14 @@
       };
     }
 
-    // ===== Binance Klines (proxy) =====
     async function fetchBinanceKlines(symbol, days = 7) {
       try {
         const end = Date.now();
         const start = end - days * 24 * 60 * 60 * 1000;
-        // limit max 1000 → usamos 1h
         const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
         const res = await fetch(url);
         const data = await res.json();
         if (!Array.isArray(data)) return null;
-        // [openTime, open, high, low, close, ...]
         return data.map(c => ({
           t: c[0],
           c: parseFloat(c[4])
@@ -534,7 +529,7 @@
 
     async function updateGold() {
       try {
-        // ===== VARIATIONAL actual =====
+        // ===== VARIATIONAL =====
         const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
         const varData = await resVar.json();
 
@@ -566,20 +561,23 @@
           }
         });
 
-        // Spreads actuales (Variational real)
+        // Spreads actuales
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
-          currentPct = s.pct;
           document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
           document.getElementById('pair1-pct').innerText = s.pct.toFixed(3) + '%';
           document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
+
+        // XAUT vs XAU → este es el principal (currentPct)
         if (xaut && xau) {
           const s = calcSpread(xaut, xau);
+          currentPct = s.pct;
           document.getElementById('pair2-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
           document.getElementById('pair2-pct').innerText = s.pct.toFixed(3) + '%';
           document.getElementById('pair2-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
+
         if (paxg && xau) {
           const s = calcSpread(paxg, xau);
           document.getElementById('pair3-names').innerHTML = `PAXG (<b>$${paxg.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
@@ -587,24 +585,24 @@
           document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
 
-        // ===== HISTÓRICO BINANCE (proxy XAUT vs PAXG) =====
+        // ===== HISTÓRICO BINANCE (proxy XAUT vs XAU) =====
         try {
-          const [klXaut7, klPaxg7, klXaut30, klPaxg30] = await Promise.all([
+          const [klXaut7, klXau7, klXaut30, klXau30] = await Promise.all([
             fetchBinanceKlines('XAUTUSDT', 7),
-            fetchBinanceKlines('PAXGUSDT', 7),
+            fetchBinanceKlines('XAUUSDT', 7),
             fetchBinanceKlines('XAUTUSDT', 30),
-            fetchBinanceKlines('PAXGUSDT', 30)
+            fetchBinanceKlines('XAUUSDT', 30)
           ]);
 
           // 7 días
-          if (klXaut7?.length && klPaxg7?.length) {
+          if (klXaut7?.length && klXau7?.length) {
             const map = {};
-            klPaxg7.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
+            klXau7.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
             const spreads7 = [];
             klXaut7.forEach(c => {
               if (c?.t && c?.c && map[c.t]) {
-                const x = c.c, p = map[c.t];
-                spreads7.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+                const xautP = c.c, xauP = map[c.t];
+                spreads7.push(Math.abs((xauP - xautP) / ((xauP + xautP) / 2) * 100));
               }
             });
 
@@ -630,14 +628,14 @@
           }
 
           // 30 días
-          if (klXaut30?.length && klPaxg30?.length) {
+          if (klXaut30?.length && klXau30?.length) {
             const map30 = {};
-            klPaxg30.forEach(c => { if (c?.t && c?.c) map30[c.t] = c.c; });
+            klXau30.forEach(c => { if (c?.t && c?.c) map30[c.t] = c.c; });
             const spreads30 = [];
             klXaut30.forEach(c => {
               if (c?.t && c?.c && map30[c.t]) {
-                const x = c.c, p = map30[c.t];
-                spreads30.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+                const xautP = c.c, xauP = map30[c.t];
+                spreads30.push(Math.abs((xauP - xautP) / ((xauP + xautP) / 2) * 100));
               }
             });
 
