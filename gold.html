@@ -218,6 +218,17 @@
     }
     .note b { color: #f0b90b; }
 
+    .counter {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #848e9c;
+      margin-top: 10px;
+      padding: 8px;
+      background: #252a31;
+      border-radius: 10px;
+    }
+    .counter b { color: #f0b90b; }
+
     .footer {
       text-align: center;
       margin-top: 10px;
@@ -275,90 +286,118 @@
         </div>
       </div>
 
-      <!-- STATS XAUT vs XAU (proxy Binance) -->
+      <!-- Contador de datos propios -->
+      <div class="counter" id="data-counter">
+        Datos propios: <b id="count-xaut-paxg">0</b> pts (XAUT/PAXG) · 
+        <b id="count-xaut-xau">0</b> pts (XAUT/XAU)<br>
+        <span id="counter-status">Recolectando… (necesita ~100 pts para stats propias)</span>
+      </div>
+
+      <!-- STATS XAUT vs PAXG -->
       <div class="stats-row">
         <div class="stats-col">
-          <div class="section-title">—— 7 días (XAUT/XAU) ——</div>
+          <div class="section-title">—— 7d XAUT/PAXG ——</div>
           <div class="info-grid">
-            <div class="info-item">
-              <div class="label">Rango</div>
-              <div class="value" id="var-range-7">--</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Media ± σ</div>
-              <div class="value" id="var-mean-7">--</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Z-Score</div>
-              <div class="value" id="var-zscore-7">--</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Umbral</div>
-              <div class="value" id="var-umbral-7">--</div>
-            </div>
-            <div class="info-item full-width">
-              <div class="label">Falta a Entrada / Salida</div>
-              <div class="value" id="var-dist-7">--</div>
-            </div>
+            <div class="info-item"><div class="label">Rango</div><div class="value" id="xp-range-7">--</div></div>
+            <div class="info-item"><div class="label">Media ± σ</div><div class="value" id="xp-mean-7">--</div></div>
+            <div class="info-item"><div class="label">Z-Score</div><div class="value" id="xp-zscore-7">--</div></div>
+            <div class="info-item"><div class="label">Umbral</div><div class="value" id="xp-umbral-7">--</div></div>
+            <div class="info-item full-width"><div class="label">Falta a Entrada / Salida</div><div class="value" id="xp-dist-7">--</div></div>
           </div>
-          <div class="range-bar-container" id="var-bar-7-container" style="display:none;">
+          <div class="range-bar-container" id="xp-bar-7-container" style="display:none;">
             <div class="range-bar-labels">
-              <span id="var-bar-7-exit">Sal</span>
-              <span id="var-bar-7-enter">Ent</span>
+              <span id="xp-bar-7-exit">Sal</span>
+              <span id="xp-bar-7-enter">Ent</span>
             </div>
             <div class="range-bar">
               <div class="range-bar-fill"></div>
-              <div class="range-marker" id="var-bar-7-exit-marker" style="left:0%"></div>
-              <div class="range-marker" id="var-bar-7-enter-marker" style="left:100%"></div>
-              <div class="range-marker current" id="var-bar-7-current" style="left:50%"></div>
+              <div class="range-marker" id="xp-bar-7-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="xp-bar-7-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="xp-bar-7-current" style="left:50%"></div>
             </div>
-            <div class="range-current-label" id="var-bar-7-label">Actual: --</div>
+            <div class="range-current-label" id="xp-bar-7-label">Actual: --</div>
           </div>
         </div>
 
         <div class="stats-col">
-          <div class="section-title">—— 30 días (XAUT/XAU) ——</div>
+          <div class="section-title">—— 30d XAUT/PAXG ——</div>
           <div class="info-grid">
-            <div class="info-item">
-              <div class="label">Rango</div>
-              <div class="value" id="var-range-30">--</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Media ± σ</div>
-              <div class="value" id="var-mean-30">--</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Z-Score</div>
-              <div class="value" id="var-zscore-30">--</div>
-            </div>
-            <div class="info-item">
-              <div class="label">Umbral</div>
-              <div class="value" id="var-umbral-30">--</div>
-            </div>
-            <div class="info-item full-width">
-              <div class="label">Falta a Entrada / Salida</div>
-              <div class="value" id="var-dist-30">--</div>
-            </div>
+            <div class="info-item"><div class="label">Rango</div><div class="value" id="xp-range-30">--</div></div>
+            <div class="info-item"><div class="label">Media ± σ</div><div class="value" id="xp-mean-30">--</div></div>
+            <div class="info-item"><div class="label">Z-Score</div><div class="value" id="xp-zscore-30">--</div></div>
+            <div class="info-item"><div class="label">Umbral</div><div class="value" id="xp-umbral-30">--</div></div>
+            <div class="info-item full-width"><div class="label">Falta a Entrada / Salida</div><div class="value" id="xp-dist-30">--</div></div>
           </div>
-          <div class="range-bar-container" id="var-bar-30-container" style="display:none;">
+          <div class="range-bar-container" id="xp-bar-30-container" style="display:none;">
             <div class="range-bar-labels">
-              <span id="var-bar-30-exit">Sal</span>
-              <span id="var-bar-30-enter">Ent</span>
+              <span id="xp-bar-30-exit">Sal</span>
+              <span id="xp-bar-30-enter">Ent</span>
             </div>
             <div class="range-bar">
               <div class="range-bar-fill"></div>
-              <div class="range-marker" id="var-bar-30-exit-marker" style="left:0%"></div>
-              <div class="range-marker" id="var-bar-30-enter-marker" style="left:100%"></div>
-              <div class="range-marker current" id="var-bar-30-current" style="left:50%"></div>
+              <div class="range-marker" id="xp-bar-30-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="xp-bar-30-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="xp-bar-30-current" style="left:50%"></div>
             </div>
-            <div class="range-current-label" id="var-bar-30-label">Actual: --</div>
+            <div class="range-current-label" id="xp-bar-30-label">Actual: --</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS XAUT vs XAU -->
+      <div class="stats-row">
+        <div class="stats-col">
+          <div class="section-title">—— 7d XAUT/XAU ——</div>
+          <div class="info-grid">
+            <div class="info-item"><div class="label">Rango</div><div class="value" id="xx-range-7">--</div></div>
+            <div class="info-item"><div class="label">Media ± σ</div><div class="value" id="xx-mean-7">--</div></div>
+            <div class="info-item"><div class="label">Z-Score</div><div class="value" id="xx-zscore-7">--</div></div>
+            <div class="info-item"><div class="label">Umbral</div><div class="value" id="xx-umbral-7">--</div></div>
+            <div class="info-item full-width"><div class="label">Falta a Entrada / Salida</div><div class="value" id="xx-dist-7">--</div></div>
+          </div>
+          <div class="range-bar-container" id="xx-bar-7-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="xx-bar-7-exit">Sal</span>
+              <span id="xx-bar-7-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="xx-bar-7-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="xx-bar-7-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="xx-bar-7-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="xx-bar-7-label">Actual: --</div>
+          </div>
+        </div>
+
+        <div class="stats-col">
+          <div class="section-title">—— 30d XAUT/XAU ——</div>
+          <div class="info-grid">
+            <div class="info-item"><div class="label">Rango</div><div class="value" id="xx-range-30">--</div></div>
+            <div class="info-item"><div class="label">Media ± σ</div><div class="value" id="xx-mean-30">--</div></div>
+            <div class="info-item"><div class="label">Z-Score</div><div class="value" id="xx-zscore-30">--</div></div>
+            <div class="info-item"><div class="label">Umbral</div><div class="value" id="xx-umbral-30">--</div></div>
+            <div class="info-item full-width"><div class="label">Falta a Entrada / Salida</div><div class="value" id="xx-dist-30">--</div></div>
+          </div>
+          <div class="range-bar-container" id="xx-bar-30-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="xx-bar-30-exit">Sal</span>
+              <span id="xx-bar-30-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="xx-bar-30-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="xx-bar-30-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="xx-bar-30-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="xx-bar-30-label">Actual: --</div>
           </div>
         </div>
       </div>
 
       <div class="note">
-        <b>Histórico = proxy Binance</b> (XAUTUSDT Spot + XAUUSDT Futures).<br>
-        Variational no expone velas públicas. Los spreads actuales sí son de Variational.<br>
+        <b>Histórico:</b> primero usa datos propios (localStorage). Mientras no haya suficientes puntos usa proxy Binance.<br>
+        Variational no expone velas. Los spreads actuales sí son de Variational.<br>
         Z-Score → Z > +1.5 Estirado · entre -1/+1 Normal · &lt; -1.5 Comprimido
       </div>
     </div>
@@ -402,8 +441,8 @@
   </div>
 
   <script>
-    let ENTER_ABOVE = 0.25;
-    let EXIT_BELOW  = 0.08;
+    const MIN_POINTS = 100; // puntos propios para usar stats propias
+    const MAX_POINTS = 3000; // ~1 mes cada 30s ≈ 86400/30=2880
 
     function calcSpread(a, b) {
       const diff = b - a;
@@ -442,7 +481,7 @@
     }
 
     function updateRangeBar(prefix, current, exit, enter) {
-      const container = document.getElementById(`var-bar-${prefix}-container`);
+      const container = document.getElementById(`${prefix}-bar-container`);
       if (!container) return;
 
       const padding = Math.max((enter - exit) * 0.3, 0.05);
@@ -454,37 +493,14 @@
       const exitPct = ((exit - min) / range) * 100;
       const enterPct = ((enter - min) / range) * 100;
 
-      document.getElementById(`var-bar-${prefix}-exit`).innerText = `Sal ${exit.toFixed(3)}%`;
-      document.getElementById(`var-bar-${prefix}-enter`).innerText = `Ent ${enter.toFixed(3)}%`;
-      document.getElementById(`var-bar-${prefix}-exit-marker`).style.left = exitPct + '%';
-      document.getElementById(`var-bar-${prefix}-enter-marker`).style.left = enterPct + '%';
-      document.getElementById(`var-bar-${prefix}-current`).style.left = pct + '%';
-      document.getElementById(`var-bar-${prefix}-label`).innerText = `Actual: ${current.toFixed(3)}%`;
+      document.getElementById(`${prefix}-bar-exit`).innerText = `Sal ${exit.toFixed(3)}%`;
+      document.getElementById(`${prefix}-bar-enter`).innerText = `Ent ${enter.toFixed(3)}%`;
+      document.getElementById(`${prefix}-bar-exit-marker`).style.left = exitPct + '%';
+      document.getElementById(`${prefix}-bar-enter-marker`).style.left = enterPct + '%';
+      document.getElementById(`${prefix}-bar-current`).style.left = pct + '%';
+      document.getElementById(`${prefix}-bar-label`).innerText = `Actual: ${current.toFixed(3)}%`;
 
       container.style.display = 'block';
-    }
-
-    function loadThresholds() {
-      try {
-        const saved = JSON.parse(localStorage.getItem('var_gold_thresholds') || 'null');
-        if (saved && saved.timestamp) {
-          const hours = (Date.now() - saved.timestamp) / (1000 * 60 * 60);
-          if (hours < 24) {
-            ENTER_ABOVE = saved.enter;
-            EXIT_BELOW = saved.exit;
-            return true;
-          }
-        }
-      } catch {}
-      return false;
-    }
-
-    function saveThresholds(enter, exit) {
-      ENTER_ABOVE = enter;
-      EXIT_BELOW = exit;
-      localStorage.setItem('var_gold_thresholds', JSON.stringify({
-        enter, exit, timestamp: Date.now()
-      }));
     }
 
     function calcThresholds(spreads) {
@@ -498,7 +514,35 @@
       };
     }
 
-    // XAUT → Spot | XAU → Futures
+    // ===== LOCAL STORAGE (datos propios) =====
+    function loadOwnData(key) {
+      try {
+        return JSON.parse(localStorage.getItem(key) || '[]');
+      } catch { return []; }
+    }
+
+    function saveOwnData(key, arr) {
+      // limitar tamaño
+      if (arr.length > MAX_POINTS) arr = arr.slice(-MAX_POINTS);
+      localStorage.setItem(key, JSON.stringify(arr));
+    }
+
+    function addOwnPoint(key, pct) {
+      const arr = loadOwnData(key);
+      const now = Date.now();
+      // evitar duplicados muy cercanos (< 20s)
+      if (arr.length && now - arr[arr.length - 1].t < 20000) return arr;
+      arr.push({ t: now, pct });
+      saveOwnData(key, arr);
+      return arr;
+    }
+
+    function filterByDays(arr, days) {
+      const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+      return arr.filter(p => p.t >= cutoff).map(p => p.pct);
+    }
+
+    // ===== BINANCE (fallback) =====
     async function fetchBinanceKlines(symbol, days = 7, futures = false) {
       try {
         const end = Date.now();
@@ -506,23 +550,86 @@
         const base = futures
           ? 'https://fapi.binance.com/fapi/v1/klines'
           : 'https://api.binance.com/api/v3/klines';
-
         const url = `${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
         const res = await fetch(url);
         const data = await res.json();
-
-        if (!Array.isArray(data)) {
-          console.log('Binance no array', symbol, data);
-          return null;
-        }
-
-        return data.map(c => ({
-          t: c[0],
-          c: parseFloat(c[4])
-        }));
+        if (!Array.isArray(data)) return null;
+        return data.map(c => ({ t: c[0], c: parseFloat(c[4]) }));
       } catch (e) {
         console.log('Error Binance', symbol, e);
         return null;
+      }
+    }
+
+    async function getBinanceSpreads(pair, days) {
+      // pair: 'xaut-paxg' o 'xaut-xau'
+      let kA, kB;
+      if (pair === 'xaut-paxg') {
+        [kA, kB] = await Promise.all([
+          fetchBinanceKlines('XAUTUSDT', days, false),
+          fetchBinanceKlines('PAXGUSDT', days, false)
+        ]);
+      } else {
+        [kA, kB] = await Promise.all([
+          fetchBinanceKlines('XAUTUSDT', days, false),
+          fetchBinanceKlines('XAUUSDT', days, true)
+        ]);
+      }
+      if (!kA?.length || !kB?.length) return null;
+
+      const map = {};
+      kB.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
+      const spreads = [];
+      kA.forEach(c => {
+        if (c?.t && c?.c && map[c.t]) {
+          const a = c.c, b = map[c.t];
+          spreads.push(Math.abs((b - a) / ((b + a) / 2) * 100));
+        }
+      });
+      return spreads.length > 10 ? spreads : null;
+    }
+
+    function renderStats(prefix, currentPct, spreads7, spreads30) {
+      // 7d
+      if (spreads7 && spreads7.length > 10) {
+        const s7 = calcStats(spreads7);
+        document.getElementById(`${prefix}-range-7`).innerText = s7.min.toFixed(3) + '→' + s7.max.toFixed(3);
+        document.getElementById(`${prefix}-mean-7`).innerText = s7.mean.toFixed(3) + '±' + s7.std.toFixed(3);
+
+        if (currentPct > 0 && s7.std > 0) {
+          const z = (currentPct - s7.mean) / s7.std;
+          const el = document.getElementById(`${prefix}-zscore-7`);
+          el.innerText = z.toFixed(2) + 'σ';
+          el.style.color = colorZ(z);
+        }
+
+        const th7 = calcThresholds(spreads7);
+        if (th7) {
+          document.getElementById(`${prefix}-umbral-7`).innerText = th7.exit.toFixed(3) + '–' + th7.enter.toFixed(3);
+          document.getElementById(`${prefix}-dist-7`).innerText = formatDist(currentPct, th7.enter, th7.exit);
+          updateRangeBar(`${prefix}-7`, currentPct, th7.exit, th7.enter);
+        }
+      }
+
+      // 30d
+      if (spreads30 && spreads30.length > 20) {
+        const s30 = calcStats(spreads30);
+        document.getElementById(`${prefix}-range-30`).innerText = s30.min.toFixed(3) + '→' + s30.max.toFixed(3);
+        document.getElementById(`${prefix}-mean-30`).innerText = s30.mean.toFixed(3) + '±' + s30.std.toFixed(3);
+
+        if (currentPct > 0 && s30.std > 0) {
+          const z = (currentPct - s30.mean) / s30.std;
+          const el = document.getElementById(`${prefix}-zscore-30`);
+          el.innerText = z.toFixed(2) + 'σ';
+          el.style.color = colorZ(z);
+        }
+
+        const th30 = calcThresholds(spreads30);
+        if (th30) {
+          document.getElementById(`${prefix}-umbral-30`).innerText = th30.exit.toFixed(3) + '–' + th30.enter.toFixed(3);
+          document.getElementById(`${prefix}-dist-30`).innerText = formatDist(currentPct, th30.enter, th30.exit);
+          updateRangeBar(`${prefix}-30`, currentPct, th30.exit, th30.enter);
+        }
       }
     }
 
@@ -544,7 +651,7 @@
         const varData = await resVar.json();
 
         let xaut = null, paxg = null, xau = null;
-        let currentPct = 0;
+        let pctXP = 0, pctXX = 0;
 
         (varData.listings || []).forEach(item => {
           const ticker = (item.ticker || '').toUpperCase();
@@ -571,21 +678,23 @@
           }
         });
 
-        // Spreads actuales
+        // Spreads actuales + guardar en localStorage
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
+          pctXP = s.pct;
           document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
           document.getElementById('pair1-pct').innerText = s.pct.toFixed(3) + '%';
           document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+          addOwnPoint('own_xaut_paxg', s.pct);
         }
 
-        // XAUT vs XAU → principal (currentPct)
         if (xaut && xau) {
           const s = calcSpread(xaut, xau);
-          currentPct = s.pct;
+          pctXX = s.pct;
           document.getElementById('pair2-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
           document.getElementById('pair2-pct').innerText = s.pct.toFixed(3) + '%';
           document.getElementById('pair2-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+          addOwnPoint('own_xaut_xau', s.pct);
         }
 
         if (paxg && xau) {
@@ -595,85 +704,41 @@
           document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
 
-        // ===== HISTÓRICO BINANCE (XAUT Spot + XAU Futures) =====
-        try {
-          const [klXaut7, klXau7, klXaut30, klXau30] = await Promise.all([
-            fetchBinanceKlines('XAUTUSDT', 7, false),  // Spot
-            fetchBinanceKlines('XAUUSDT', 7, true),    // Futures
-            fetchBinanceKlines('XAUTUSDT', 30, false), // Spot
-            fetchBinanceKlines('XAUUSDT', 30, true)    // Futures
-          ]);
+        // Contador
+        const ownXP = loadOwnData('own_xaut_paxg');
+        const ownXX = loadOwnData('own_xaut_xau');
+        document.getElementById('count-xaut-paxg').innerText = ownXP.length;
+        document.getElementById('count-xaut-xau').innerText = ownXX.length;
 
-          // 7 días
-          if (klXaut7?.length && klXau7?.length) {
-            const map = {};
-            klXau7.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
-            const spreads7 = [];
-            klXaut7.forEach(c => {
-              if (c?.t && c?.c && map[c.t]) {
-                const xautP = c.c, xauP = map[c.t];
-                spreads7.push(Math.abs((xauP - xautP) / ((xauP + xautP) / 2) * 100));
-              }
-            });
+        const enoughXP = ownXP.length >= MIN_POINTS;
+        const enoughXX = ownXX.length >= MIN_POINTS;
+        let status = '';
+        if (enoughXP && enoughXX) status = '✅ Usando datos propios de Variational';
+        else if (enoughXP || enoughXX) status = '⏳ Parcialmente con datos propios + proxy Binance';
+        else status = `Recolectando… (necesita ~${MIN_POINTS} pts para stats propias)`;
+        document.getElementById('counter-status').innerText = status;
 
-            if (spreads7.length > 10) {
-              const stats7 = calcStats(spreads7);
-              document.getElementById('var-range-7').innerText = stats7.min.toFixed(3) + '→' + stats7.max.toFixed(3);
-              document.getElementById('var-mean-7').innerText = stats7.mean.toFixed(3) + '±' + stats7.std.toFixed(3);
-
-              if (currentPct > 0 && stats7.std > 0) {
-                const z7 = (currentPct - stats7.mean) / stats7.std;
-                const el = document.getElementById('var-zscore-7');
-                el.innerText = z7.toFixed(2) + 'σ';
-                el.style.color = colorZ(z7);
-              }
-
-              const th7 = calcThresholds(spreads7);
-              if (th7) {
-                document.getElementById('var-umbral-7').innerText = th7.exit.toFixed(3) + '–' + th7.enter.toFixed(3);
-                document.getElementById('var-dist-7').innerText = formatDist(currentPct, th7.enter, th7.exit);
-                updateRangeBar('7', currentPct, th7.exit, th7.enter);
-              }
-            }
-          }
-
-          // 30 días
-          if (klXaut30?.length && klXau30?.length) {
-            const map30 = {};
-            klXau30.forEach(c => { if (c?.t && c?.c) map30[c.t] = c.c; });
-            const spreads30 = [];
-            klXaut30.forEach(c => {
-              if (c?.t && c?.c && map30[c.t]) {
-                const xautP = c.c, xauP = map30[c.t];
-                spreads30.push(Math.abs((xauP - xautP) / ((xauP + xautP) / 2) * 100));
-              }
-            });
-
-            if (spreads30.length > 50) {
-              const stats30 = calcStats(spreads30);
-              document.getElementById('var-range-30').innerText = stats30.min.toFixed(3) + '→' + stats30.max.toFixed(3);
-              document.getElementById('var-mean-30').innerText = stats30.mean.toFixed(3) + '±' + stats30.std.toFixed(3);
-
-              if (currentPct > 0 && stats30.std > 0) {
-                const z30 = (currentPct - stats30.mean) / stats30.std;
-                const el = document.getElementById('var-zscore-30');
-                el.innerText = z30.toFixed(2) + 'σ';
-                el.style.color = colorZ(z30);
-              }
-
-              if (!loadThresholds()) {
-                const th = calcThresholds(spreads30);
-                if (th) saveThresholds(th.enter, th.exit);
-              }
-
-              document.getElementById('var-umbral-30').innerText = EXIT_BELOW.toFixed(3) + '–' + ENTER_ABOVE.toFixed(3);
-              document.getElementById('var-dist-30').innerText = formatDist(currentPct, ENTER_ABOVE, EXIT_BELOW);
-              updateRangeBar('30', currentPct, EXIT_BELOW, ENTER_ABOVE);
-            }
-          }
-        } catch (e) {
-          console.log('Error histórico Binance', e);
+        // ===== STATS XAUT/PAXG =====
+        let spreadsXP7, spreadsXP30;
+        if (enoughXP) {
+          spreadsXP7 = filterByDays(ownXP, 7);
+          spreadsXP30 = filterByDays(ownXP, 30);
+        } else {
+          spreadsXP7 = await getBinanceSpreads('xaut-paxg', 7);
+          spreadsXP30 = await getBinanceSpreads('xaut-paxg', 30);
         }
+        renderStats('xp', pctXP, spreadsXP7, spreadsXP30);
+
+        // ===== STATS XAUT/XAU =====
+        let spreadsXX7, spreadsXX30;
+        if (enoughXX) {
+          spreadsXX7 = filterByDays(ownXX, 7);
+          spreadsXX30 = filterByDays(ownXX, 30);
+        } else {
+          spreadsXX7 = await getBinanceSpreads('xaut-xau', 7);
+          spreadsXX30 = await getBinanceSpreads('xaut-xau', 30);
+        }
+        renderStats('xx', pctXX, spreadsXX7, spreadsXX30);
 
         // ===== PACIFICA =====
         try {
@@ -736,7 +801,6 @@
       }
     }
 
-    loadThresholds();
     updateGold();
     setInterval(updateGold, 30000);
   </script>
