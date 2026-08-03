@@ -133,6 +133,92 @@
     .info-item .label { color: #848e9c; font-size: 0.68rem; }
     .info-item .value { font-weight: 600; margin-top: 3px; font-size: 0.88rem; }
 
+    /* Stats style (igual que oil) */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    @media (max-width: 700px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+    .stats-col {
+      background: #252a31;
+      border-radius: 12px;
+      padding: 12px 10px;
+    }
+    .stats-col .section-title {
+      font-size: 0.78rem;
+      margin: 0 0 10px;
+    }
+    .full-width { grid-column: 1 / -1; }
+
+    .range-bar-container {
+      margin-top: 10px;
+      padding: 8px 6px 6px;
+      background: #2b3139;
+      border-radius: 8px;
+    }
+    .range-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #848e9c;
+      margin-bottom: 5px;
+    }
+    .range-bar {
+      position: relative;
+      height: 14px;
+      background: #1e2329;
+      border-radius: 7px;
+      overflow: visible;
+    }
+    .range-bar-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #f6465d 0%, #f0b90b 50%, #0ecb81 100%);
+      border-radius: 7px;
+      opacity: 0.4;
+    }
+    .range-marker {
+      position: absolute;
+      top: 50%;
+      width: 3px;
+      height: 22px;
+      background: #eaecef;
+      border-radius: 2px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      box-shadow: 0 0 4px rgba(0,0,0,0.6);
+    }
+    .range-marker.current {
+      width: 5px;
+      height: 26px;
+      background: #f0b90b;
+      box-shadow: 0 0 8px rgba(240,185,11,0.8);
+    }
+    .range-current-label {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #f0b90b;
+      margin-top: 5px;
+    }
+
+    .note {
+      margin-top: 12px;
+      background: #2b3139;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      color: #b7bdc6;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .note b { color: #f0b90b; }
+
     .footer {
       text-align: center;
       margin-top: 10px;
@@ -171,6 +257,7 @@
           <div class="fund" id="fund-xau">Fund: --</div>
         </div>
       </div>
+
       <div class="gold-grid">
         <div class="pair-card">
           <div class="pair-names" id="pair1-names">XAUT vs PAXG</div>
@@ -187,6 +274,93 @@
           <div class="pair-pct" id="pair3-pct">--</div>
           <div class="pair-usd" id="pair3-usd">--</div>
         </div>
+      </div>
+
+      <!-- STATS XAUT vs PAXG (proxy Binance) -->
+      <div class="stats-row">
+        <div class="stats-col">
+          <div class="section-title">—— 7 días (XAUT/PAXG) ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="var-range-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="var-mean-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="var-zscore-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="var-umbral-7">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="var-dist-7">--</div>
+            </div>
+          </div>
+          <div class="range-bar-container" id="var-bar-7-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="var-bar-7-exit">Sal</span>
+              <span id="var-bar-7-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="var-bar-7-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="var-bar-7-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="var-bar-7-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="var-bar-7-label">Actual: --</div>
+          </div>
+        </div>
+
+        <div class="stats-col">
+          <div class="section-title">—— 30 días (XAUT/PAXG) ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="var-range-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="var-mean-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="var-zscore-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="var-umbral-30">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="var-dist-30">--</div>
+            </div>
+          </div>
+          <div class="range-bar-container" id="var-bar-30-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="var-bar-30-exit">Sal</span>
+              <span id="var-bar-30-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="var-bar-30-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="var-bar-30-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="var-bar-30-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="var-bar-30-label">Actual: --</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>Histórico = proxy Binance</b> (XAUTUSDT + PAXGUSDT).<br>
+        Variational no expone velas públicas. Los spreads actuales sí son de Variational.<br>
+        Z-Score → Z > +1.5 Estirado · entre -1/+1 Normal · &lt; -1.5 Comprimido
       </div>
     </div>
 
@@ -225,10 +399,14 @@
       </div>
     </div>
 
-    <div class="footer">Datos en tiempo real</div>
+    <div class="footer">Datos en tiempo real • Umbrales se actualizan 1 vez al día</div>
   </div>
 
   <script>
+    // ===== Thresholds (guardados 24h) =====
+    let ENTER_ABOVE = 0.25;
+    let EXIT_BELOW  = 0.08;
+
     function calcSpread(a, b) {
       const diff = b - a;
       const avg = (a + b) / 2;
@@ -239,6 +417,108 @@
       if (pct >= 0.15) return 'green';
       if (pct <= 0.05) return 'red';
       return 'yellow';
+    }
+
+    function calcStats(spreads) {
+      if (!spreads || spreads.length < 5) return null;
+      const n = spreads.length;
+      const mean = spreads.reduce((a, b) => a + b, 0) / n;
+      const variance = spreads.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+      const std = Math.sqrt(variance);
+      return { mean, std, min: Math.min(...spreads), max: Math.max(...spreads) };
+    }
+
+    function colorZ(z) {
+      if (z >= 1.5) return '#0ecb81';
+      if (z <= -1.5) return '#f6465d';
+      if (Math.abs(z) >= 0.8) return '#f0b90b';
+      return '#b7bdc6';
+    }
+
+    function formatDist(current, enter, exit) {
+      const dEnter = enter - current;
+      const dExit  = exit - current;
+      const eStr = (dEnter > 0 ? '+' : '') + dEnter.toFixed(3) + '%';
+      const xStr = (dExit  > 0 ? '+' : '') + dExit.toFixed(3) + '%';
+      return `Sal ${xStr} · Ent ${eStr}`;
+    }
+
+    function updateRangeBar(prefix, current, exit, enter) {
+      const container = document.getElementById(`var-bar-${prefix}-container`);
+      if (!container) return;
+
+      const padding = Math.max((enter - exit) * 0.3, 0.05);
+      const min = exit - padding;
+      const max = enter + padding;
+      const range = max - min || 1;
+
+      const pct = Math.max(0, Math.min(100, ((current - min) / range) * 100));
+      const exitPct = ((exit - min) / range) * 100;
+      const enterPct = ((enter - min) / range) * 100;
+
+      document.getElementById(`var-bar-${prefix}-exit`).innerText = `Sal ${exit.toFixed(3)}%`;
+      document.getElementById(`var-bar-${prefix}-enter`).innerText = `Ent ${enter.toFixed(3)}%`;
+      document.getElementById(`var-bar-${prefix}-exit-marker`).style.left = exitPct + '%';
+      document.getElementById(`var-bar-${prefix}-enter-marker`).style.left = enterPct + '%';
+      document.getElementById(`var-bar-${prefix}-current`).style.left = pct + '%';
+      document.getElementById(`var-bar-${prefix}-label`).innerText = `Actual: ${current.toFixed(3)}%`;
+
+      container.style.display = 'block';
+    }
+
+    function loadThresholds() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('var_gold_thresholds') || 'null');
+        if (saved && saved.timestamp) {
+          const hours = (Date.now() - saved.timestamp) / (1000 * 60 * 60);
+          if (hours < 24) {
+            ENTER_ABOVE = saved.enter;
+            EXIT_BELOW = saved.exit;
+            return true;
+          }
+        }
+      } catch {}
+      return false;
+    }
+
+    function saveThresholds(enter, exit) {
+      ENTER_ABOVE = enter;
+      EXIT_BELOW = exit;
+      localStorage.setItem('var_gold_thresholds', JSON.stringify({
+        enter, exit, timestamp: Date.now()
+      }));
+    }
+
+    function calcThresholds(spreads) {
+      if (!spreads || spreads.length < 20) return null;
+      const sorted = [...spreads].sort((a, b) => a - b);
+      const p20 = sorted[Math.floor(sorted.length * 0.20)];
+      const p80 = sorted[Math.floor(sorted.length * 0.80)];
+      return {
+        exit: Math.round(p20 * 1000) / 1000,
+        enter: Math.round(p80 * 1000) / 1000
+      };
+    }
+
+    // ===== Binance Klines (proxy) =====
+    async function fetchBinanceKlines(symbol, days = 7) {
+      try {
+        const end = Date.now();
+        const start = end - days * 24 * 60 * 60 * 1000;
+        // limit max 1000 → usamos 1h
+        const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!Array.isArray(data)) return null;
+        // [openTime, open, high, low, close, ...]
+        return data.map(c => ({
+          t: c[0],
+          c: parseFloat(c[4])
+        }));
+      } catch (e) {
+        console.log('Error Binance', symbol, e);
+        return null;
+      }
     }
 
     async function fetchCandlesPac(symbol) {
@@ -254,11 +534,12 @@
 
     async function updateGold() {
       try {
-        // ===== VARIATIONAL (exactamente igual que la versión vieja que funcionaba) =====
+        // ===== VARIATIONAL actual =====
         const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
         const varData = await resVar.json();
 
         let xaut = null, paxg = null, xau = null;
+        let currentPct = 0;
 
         (varData.listings || []).forEach(item => {
           const ticker = (item.ticker || '').toUpperCase();
@@ -285,9 +566,10 @@
           }
         });
 
-        // Gold pairs
+        // Spreads actuales (Variational real)
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
+          currentPct = s.pct;
           document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
           document.getElementById('pair1-pct').innerText = s.pct.toFixed(3) + '%';
           document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
@@ -303,6 +585,86 @@
           document.getElementById('pair3-names').innerHTML = `PAXG (<b>$${paxg.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
           document.getElementById('pair3-pct').innerText = s.pct.toFixed(3) + '%';
           document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+        }
+
+        // ===== HISTÓRICO BINANCE (proxy XAUT vs PAXG) =====
+        try {
+          const [klXaut7, klPaxg7, klXaut30, klPaxg30] = await Promise.all([
+            fetchBinanceKlines('XAUTUSDT', 7),
+            fetchBinanceKlines('PAXGUSDT', 7),
+            fetchBinanceKlines('XAUTUSDT', 30),
+            fetchBinanceKlines('PAXGUSDT', 30)
+          ]);
+
+          // 7 días
+          if (klXaut7?.length && klPaxg7?.length) {
+            const map = {};
+            klPaxg7.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
+            const spreads7 = [];
+            klXaut7.forEach(c => {
+              if (c?.t && c?.c && map[c.t]) {
+                const x = c.c, p = map[c.t];
+                spreads7.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+              }
+            });
+
+            if (spreads7.length > 10) {
+              const stats7 = calcStats(spreads7);
+              document.getElementById('var-range-7').innerText = stats7.min.toFixed(3) + '→' + stats7.max.toFixed(3);
+              document.getElementById('var-mean-7').innerText = stats7.mean.toFixed(3) + '±' + stats7.std.toFixed(3);
+
+              if (currentPct > 0 && stats7.std > 0) {
+                const z7 = (currentPct - stats7.mean) / stats7.std;
+                const el = document.getElementById('var-zscore-7');
+                el.innerText = z7.toFixed(2) + 'σ';
+                el.style.color = colorZ(z7);
+              }
+
+              const th7 = calcThresholds(spreads7);
+              if (th7) {
+                document.getElementById('var-umbral-7').innerText = th7.exit.toFixed(3) + '–' + th7.enter.toFixed(3);
+                document.getElementById('var-dist-7').innerText = formatDist(currentPct, th7.enter, th7.exit);
+                updateRangeBar('7', currentPct, th7.exit, th7.enter);
+              }
+            }
+          }
+
+          // 30 días
+          if (klXaut30?.length && klPaxg30?.length) {
+            const map30 = {};
+            klPaxg30.forEach(c => { if (c?.t && c?.c) map30[c.t] = c.c; });
+            const spreads30 = [];
+            klXaut30.forEach(c => {
+              if (c?.t && c?.c && map30[c.t]) {
+                const x = c.c, p = map30[c.t];
+                spreads30.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+              }
+            });
+
+            if (spreads30.length > 50) {
+              const stats30 = calcStats(spreads30);
+              document.getElementById('var-range-30').innerText = stats30.min.toFixed(3) + '→' + stats30.max.toFixed(3);
+              document.getElementById('var-mean-30').innerText = stats30.mean.toFixed(3) + '±' + stats30.std.toFixed(3);
+
+              if (currentPct > 0 && stats30.std > 0) {
+                const z30 = (currentPct - stats30.mean) / stats30.std;
+                const el = document.getElementById('var-zscore-30');
+                el.innerText = z30.toFixed(2) + 'σ';
+                el.style.color = colorZ(z30);
+              }
+
+              if (!loadThresholds()) {
+                const th = calcThresholds(spreads30);
+                if (th) saveThresholds(th.enter, th.exit);
+              }
+
+              document.getElementById('var-umbral-30').innerText = EXIT_BELOW.toFixed(3) + '–' + ENTER_ABOVE.toFixed(3);
+              document.getElementById('var-dist-30').innerText = formatDist(currentPct, ENTER_ABOVE, EXIT_BELOW);
+              updateRangeBar('30', currentPct, EXIT_BELOW, ENTER_ABOVE);
+            }
+          }
+        } catch (e) {
+          console.log('Error histórico Binance', e);
         }
 
         // ===== PACIFICA =====
@@ -336,7 +698,6 @@
             document.getElementById('pac-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
           }
 
-          // Rango 7 días
           const [cXau, cPaxg] = await Promise.all([fetchCandlesPac('XAU'), fetchCandlesPac('PAXG')]);
           if (cXau?.length && cPaxg?.length) {
             const map = {};
@@ -367,6 +728,7 @@
       }
     }
 
+    loadThresholds();
     updateGold();
     setInterval(updateGold, 30000);
   </script>
