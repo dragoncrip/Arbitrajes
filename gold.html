@@ -100,21 +100,6 @@
     .pair-pct { font-size: 1.35rem; font-weight: 800; color: #f0b90b; }
     .pair-usd { font-size: 0.85rem; color: #848e9c; margin-top: 4px; }
 
-    .pacifica-card { max-width: 520px; margin: 0 auto; }
-
-    .spread {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 800;
-      margin: 10px 0 4px;
-    }
-    .diff-abs {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #b7bdc6;
-      margin-bottom: 14px;
-    }
-
     .green { color: #0ecb81; }
     .red { color: #f6465d; }
     .yellow { color: #f0b90b; }
@@ -135,7 +120,6 @@
     .info-item .value { font-weight: 600; margin-top: 3px; font-size: 0.88rem; }
     .full-width { grid-column: 1 / -1; }
 
-    /* Layout agrupado por par */
     .pair-stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -276,7 +260,6 @@
     <!-- GOLD VARIATIONAL -->
     <div class="section-title">Gold en Variational (XAUT • PAXG • XAU)</div>
     <div class="card">
-      <!-- Precios de los 3 oros -->
       <div class="prices">
         <div class="price-box">
           <div class="label">XAUT</div>
@@ -295,7 +278,6 @@
         </div>
       </div>
 
-      <!-- Spreads rápidos de los 3 pares -->
       <div class="gold-grid">
         <div class="pair-card">
           <div class="pair-names" id="pair1-names">XAUT vs PAXG</div>
@@ -317,13 +299,12 @@
       <!-- STATS AGRUPADAS POR PAR -->
       <div class="pair-stats-grid">
 
-        <!-- ===== CUADRO XAUT vs PAXG ===== -->
+        <!-- XAUT vs PAXG -->
         <div class="pair-stats-card">
           <h3>XAUT vs PAXG</h3>
           <div class="current-spread" id="xp-current-pct">--</div>
           <div class="current-diff" id="xp-current-diff">Diferencia: --</div>
 
-          <!-- 7 días -->
           <div class="period-block">
             <div class="period-title">—— 7 días ——</div>
             <div class="info-grid">
@@ -363,7 +344,6 @@
             </div>
           </div>
 
-          <!-- 30 días -->
           <div class="period-block">
             <div class="period-title">—— 30 días ——</div>
             <div class="info-grid">
@@ -404,13 +384,12 @@
           </div>
         </div>
 
-        <!-- ===== CUADRO XAUT vs XAU ===== -->
+        <!-- XAUT vs XAU -->
         <div class="pair-stats-card">
           <h3>XAUT vs XAU</h3>
           <div class="current-spread" id="xx-current-pct">--</div>
           <div class="current-diff" id="xx-current-diff">Diferencia: --</div>
 
-          <!-- 7 días -->
           <div class="period-block">
             <div class="period-title">—— 7 días ——</div>
             <div class="info-grid">
@@ -450,7 +429,6 @@
             </div>
           </div>
 
-          <!-- 30 días -->
           <div class="period-block">
             <div class="period-title">—— 30 días ——</div>
             <div class="info-grid">
@@ -502,40 +480,111 @@
 
     <!-- PACIFICA -->
     <div class="section-title">Gold en Pacifica</div>
-    <div class="card pacifica-card">
+    <div class="card">
       <div class="prices">
         <div class="price-box">
           <div class="label">XAU (GOLD)</div>
           <div class="value" id="pac-xau">--</div>
+          <div class="fund" id="pac-funding-xau">Fund: --</div>
         </div>
         <div class="price-box">
           <div class="label">PAXG</div>
           <div class="value" id="pac-paxg">--</div>
+          <div class="fund" id="pac-funding-paxg">Fund: --</div>
         </div>
       </div>
-      <div class="spread" id="pac-spread">--</div>
-      <div class="diff-abs" id="pac-diff">Diferencia: --</div>
-      <div class="info-grid">
-        <div class="info-item">
-          <div class="label">Funding XAU</div>
-          <div class="value" id="pac-funding-xau">--</div>
+
+      <div class="pair-stats-card" style="max-width: 520px; margin: 0 auto;">
+        <h3>XAU vs PAXG</h3>
+        <div class="current-spread" id="pac-current-pct">--</div>
+        <div class="current-diff" id="pac-current-diff">Diferencia: --</div>
+
+        <div class="period-block">
+          <div class="period-title">—— 7 días ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="pac-range-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="pac-mean-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="pac-zscore-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="pac-umbral-7">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="pac-dist-7">--</div>
+            </div>
+          </div>
+          <div class="range-bar-container" id="pac-bar-7-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="pac-bar-7-exit">Sal</span>
+              <span id="pac-bar-7-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="pac-bar-7-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="pac-bar-7-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="pac-bar-7-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="pac-bar-7-label">Actual: --</div>
+          </div>
         </div>
-        <div class="info-item">
-          <div class="label">Funding PAXG</div>
-          <div class="value" id="pac-funding-paxg">--</div>
+
+        <div class="period-block">
+          <div class="period-title">—— 30 días ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="pac-range-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="pac-mean-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="pac-zscore-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="pac-umbral-30">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="pac-dist-30">--</div>
+            </div>
+          </div>
+          <div class="range-bar-container" id="pac-bar-30-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="pac-bar-30-exit">Sal</span>
+              <span id="pac-bar-30-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="pac-bar-30-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="pac-bar-30-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="pac-bar-30-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="pac-bar-30-label">Actual: --</div>
+          </div>
         </div>
-        <div class="info-item">
-          <div class="label">Rango 7 días</div>
-          <div class="value" id="pac-range">Calculando...</div>
-        </div>
-        <div class="info-item">
-          <div class="label">—</div>
-          <div class="value">—</div>
-        </div>
+      </div>
+
+      <div class="note">
+        <b>Histórico = velas reales de Pacifica</b> (XAU + PAXG mark, 1h).<br>
+        Z-Score → Z > +1.5 Estirado · entre -1/+1 Normal · &lt; -1.5 Comprimido
       </div>
     </div>
 
-    <div class="footer">Datos en tiempo real • Histórico Binance</div>
+    <div class="footer">Datos en tiempo real • Histórico Binance (Variational) + Pacifica</div>
   </div>
 
   <script>
@@ -609,7 +658,49 @@
       };
     }
 
-    // XAUT → Spot | PAXG → Spot | XAU → Futures
+    function renderStats(prefix, currentPct, spreads7, spreads30) {
+      if (spreads7 && spreads7.length > 10) {
+        const s7 = calcStats(spreads7);
+        document.getElementById(`${prefix}-range-7`).innerText = s7.min.toFixed(3) + '→' + s7.max.toFixed(3);
+        document.getElementById(`${prefix}-mean-7`).innerText = s7.mean.toFixed(3) + '±' + s7.std.toFixed(3);
+
+        if (currentPct > 0 && s7.std > 0) {
+          const z = (currentPct - s7.mean) / s7.std;
+          const el = document.getElementById(`${prefix}-zscore-7`);
+          el.innerText = z.toFixed(2) + 'σ';
+          el.style.color = colorZ(z);
+        }
+
+        const th7 = calcThresholds(spreads7);
+        if (th7) {
+          document.getElementById(`${prefix}-umbral-7`).innerText = th7.exit.toFixed(3) + '–' + th7.enter.toFixed(3);
+          document.getElementById(`${prefix}-dist-7`).innerText = formatDist(currentPct, th7.enter, th7.exit);
+          updateRangeBar(`${prefix}-bar-7`, currentPct, th7.exit, th7.enter);
+        }
+      }
+
+      if (spreads30 && spreads30.length > 20) {
+        const s30 = calcStats(spreads30);
+        document.getElementById(`${prefix}-range-30`).innerText = s30.min.toFixed(3) + '→' + s30.max.toFixed(3);
+        document.getElementById(`${prefix}-mean-30`).innerText = s30.mean.toFixed(3) + '±' + s30.std.toFixed(3);
+
+        if (currentPct > 0 && s30.std > 0) {
+          const z = (currentPct - s30.mean) / s30.std;
+          const el = document.getElementById(`${prefix}-zscore-30`);
+          el.innerText = z.toFixed(2) + 'σ';
+          el.style.color = colorZ(z);
+        }
+
+        const th30 = calcThresholds(spreads30);
+        if (th30) {
+          document.getElementById(`${prefix}-umbral-30`).innerText = th30.exit.toFixed(3) + '–' + th30.enter.toFixed(3);
+          document.getElementById(`${prefix}-dist-30`).innerText = formatDist(currentPct, th30.enter, th30.exit);
+          updateRangeBar(`${prefix}-bar-30`, currentPct, th30.exit, th30.enter);
+        }
+      }
+    }
+
+    // Binance: XAUT/PAXG = Spot | XAU = Futures
     async function fetchBinanceKlines(symbol, days = 7, futures = false) {
       try {
         const end = Date.now();
@@ -636,7 +727,6 @@
           fetchBinanceKlines('PAXGUSDT', days, false)
         ]);
       } else {
-        // xaut-xau
         [kA, kB] = await Promise.all([
           fetchBinanceKlines('XAUTUSDT', days, false),
           fetchBinanceKlines('XAUUSDT', days, true)
@@ -656,54 +746,11 @@
       return spreads.length > 10 ? spreads : null;
     }
 
-    function renderStats(prefix, currentPct, spreads7, spreads30) {
-      // 7d
-      if (spreads7 && spreads7.length > 10) {
-        const s7 = calcStats(spreads7);
-        document.getElementById(`${prefix}-range-7`).innerText = s7.min.toFixed(3) + '→' + s7.max.toFixed(3);
-        document.getElementById(`${prefix}-mean-7`).innerText = s7.mean.toFixed(3) + '±' + s7.std.toFixed(3);
-
-        if (currentPct > 0 && s7.std > 0) {
-          const z = (currentPct - s7.mean) / s7.std;
-          const el = document.getElementById(`${prefix}-zscore-7`);
-          el.innerText = z.toFixed(2) + 'σ';
-          el.style.color = colorZ(z);
-        }
-
-        const th7 = calcThresholds(spreads7);
-        if (th7) {
-          document.getElementById(`${prefix}-umbral-7`).innerText = th7.exit.toFixed(3) + '–' + th7.enter.toFixed(3);
-          document.getElementById(`${prefix}-dist-7`).innerText = formatDist(currentPct, th7.enter, th7.exit);
-          updateRangeBar(`${prefix}-bar-7`, currentPct, th7.exit, th7.enter);
-        }
-      }
-
-      // 30d
-      if (spreads30 && spreads30.length > 20) {
-        const s30 = calcStats(spreads30);
-        document.getElementById(`${prefix}-range-30`).innerText = s30.min.toFixed(3) + '→' + s30.max.toFixed(3);
-        document.getElementById(`${prefix}-mean-30`).innerText = s30.mean.toFixed(3) + '±' + s30.std.toFixed(3);
-
-        if (currentPct > 0 && s30.std > 0) {
-          const z = (currentPct - s30.mean) / s30.std;
-          const el = document.getElementById(`${prefix}-zscore-30`);
-          el.innerText = z.toFixed(2) + 'σ';
-          el.style.color = colorZ(z);
-        }
-
-        const th30 = calcThresholds(spreads30);
-        if (th30) {
-          document.getElementById(`${prefix}-umbral-30`).innerText = th30.exit.toFixed(3) + '–' + th30.enter.toFixed(3);
-          document.getElementById(`${prefix}-dist-30`).innerText = formatDist(currentPct, th30.enter, th30.exit);
-          updateRangeBar(`${prefix}-bar-30`, currentPct, th30.exit, th30.enter);
-        }
-      }
-    }
-
-    async function fetchCandlesPac(symbol) {
+    // Pacifica velas reales
+    async function fetchCandlesPac(symbol, days = 7) {
       try {
         const end = Date.now();
-        const start = end - 7 * 24 * 60 * 60 * 1000;
+        const start = end - days * 24 * 60 * 60 * 1000;
         const url = `https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`;
         const res = await fetch(url);
         const data = await res.json();
@@ -711,9 +758,30 @@
       } catch { return null; }
     }
 
+    async function getPacificaSpreads(days) {
+      const [cXau, cPaxg] = await Promise.all([
+        fetchCandlesPac('XAU', days),
+        fetchCandlesPac('PAXG', days)
+      ]);
+      if (!cXau?.length || !cPaxg?.length) return null;
+
+      const map = {};
+      cPaxg.forEach(c => {
+        if (c?.t && c?.c) map[c.t] = parseFloat(c.c);
+      });
+      const spreads = [];
+      cXau.forEach(c => {
+        if (c?.t && c?.c && map[c.t]) {
+          const x = parseFloat(c.c), p = map[c.t];
+          spreads.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+        }
+      });
+      return spreads.length > 10 ? spreads : null;
+    }
+
     async function updateGold() {
       try {
-        // ===== VARIATIONAL (precios actuales) =====
+        // ===== VARIATIONAL =====
         const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
         const varData = await resVar.json();
 
@@ -745,7 +813,6 @@
           }
         });
 
-        // Spreads actuales
         if (xaut && paxg) {
           const s = calcSpread(xaut, paxg);
           pctXP = s.pct;
@@ -773,14 +840,13 @@
           document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
         }
 
-        // ===== HISTÓRICO SOLO BINANCE =====
+        // Histórico Binance
         const [spreadsXP7, spreadsXP30, spreadsXX7, spreadsXX30] = await Promise.all([
           getBinanceSpreads('xaut-paxg', 7),
           getBinanceSpreads('xaut-paxg', 30),
           getBinanceSpreads('xaut-xau', 7),
           getBinanceSpreads('xaut-xau', 30)
         ]);
-
         renderStats('xp', pctXP, spreadsXP7, spreadsXP30);
         renderStats('xx', pctXX, spreadsXX7, spreadsXX30);
 
@@ -799,45 +865,33 @@
             if (sym === 'XAU' || sym === 'GOLD') {
               pacXau = mark;
               document.getElementById('pac-xau').innerText = '$' + mark.toFixed(2);
-              document.getElementById('pac-funding-xau').innerText = annual;
+              document.getElementById('pac-funding-xau').innerText = 'Fund: ' + annual;
             }
             if (sym === 'PAXG') {
               pacPaxg = mark;
               document.getElementById('pac-paxg').innerText = '$' + mark.toFixed(2);
-              document.getElementById('pac-funding-paxg').innerText = annual;
+              document.getElementById('pac-funding-paxg').innerText = 'Fund: ' + annual;
             }
           });
 
+          let pacPct = 0;
           if (pacXau && pacPaxg) {
             const s = calcSpread(pacXau, pacPaxg);
-            document.getElementById('pac-spread').innerText = s.pct.toFixed(3) + '%';
-            document.getElementById('pac-spread').className = 'spread ' + getColor(s.pct);
-            document.getElementById('pac-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
+            pacPct = s.pct;
+            const el = document.getElementById('pac-current-pct');
+            el.innerText = s.pct.toFixed(3) + '%';
+            el.className = 'current-spread ' + getColor(s.pct);
+            document.getElementById('pac-current-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
           }
 
-          const [cXau, cPaxg] = await Promise.all([fetchCandlesPac('XAU'), fetchCandlesPac('PAXG')]);
-          if (cXau?.length && cPaxg?.length) {
-            const map = {};
-            cPaxg.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
-            const spreads = [];
-            cXau.forEach(c => {
-              if (c?.t && c?.c && map[c.t]) {
-                const x = parseFloat(c.c), p = map[c.t];
-                spreads.push(Math.abs((p - x) / ((p + x) / 2) * 100));
-              }
-            });
-            if (spreads.length > 5) {
-              document.getElementById('pac-range').innerText =
-                Math.min(...spreads).toFixed(2) + '% → ' + Math.max(...spreads).toFixed(2) + '%';
-            } else {
-              document.getElementById('pac-range').innerText = 'Pocos datos';
-            }
-          } else {
-            document.getElementById('pac-range').innerText = 'N/A';
-          }
+          const [spreadsPac7, spreadsPac30] = await Promise.all([
+            getPacificaSpreads(7),
+            getPacificaSpreads(30)
+          ]);
+          renderStats('pac', pacPct, spreadsPac7, spreadsPac30);
+
         } catch (e) {
           console.log('Error Pacifica', e);
-          document.getElementById('pac-range').innerText = 'Error';
         }
 
       } catch (err) {
