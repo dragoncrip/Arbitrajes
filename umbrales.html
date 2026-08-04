@@ -16,10 +16,8 @@
       justify-content: center;
     }
     .container { width: 100%; max-width: 1180px; }
-
     h1 { text-align: center; font-size: 1.45rem; margin-bottom: 2px; }
     .subtitle { text-align: center; color: #848e9c; font-size: 0.8rem; margin-bottom: 14px; }
-
     .nav {
       display: flex;
       justify-content: center;
@@ -42,7 +40,6 @@
       color: #0b0e11;
       border-color: #f0b90b;
     }
-
     .group {
       font-size: 0.78rem;
       color: #f0b90b;
@@ -50,9 +47,7 @@
       margin: 4px 0 10px;
       letter-spacing: 0.3px;
     }
-
     .list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
-
     .row {
       background: #1e2329;
       border: 1px solid #2b3139;
@@ -64,7 +59,6 @@
       align-items: center;
       min-height: 78px;
     }
-
     .left { text-align: center; padding: 4px 6px; }
     .pair {
       font-size: 0.78rem;
@@ -91,7 +85,6 @@
       color: #5e6673;
       margin-top: 4px;
     }
-
     .bar-col {
       display: flex;
       align-items: center;
@@ -106,7 +99,6 @@
       text-align: right;
     }
     .bar-box { flex: 1; min-width: 0; }
-
     .track {
       position: relative;
       height: 14px;
@@ -118,7 +110,6 @@
     .zone.exit { background: #f6465d; opacity: 0.55; border-radius: 7px 0 0 7px; }
     .zone.wait { background: #f0b90b; opacity: 0.35; }
     .zone.enter { background: #0ecb81; opacity: 0.55; border-radius: 0 7px 7px 0; }
-
     .mk {
       position: absolute;
       top: 50%;
@@ -139,7 +130,6 @@
       box-shadow: 0 0 8px rgba(255,255,255,0.55);
       z-index: 3;
     }
-
     .labels {
       display: flex;
       justify-content: space-between;
@@ -148,7 +138,6 @@
       color: #848e9c;
     }
     .labels b { color: #b7bdc6; font-weight: 600; }
-
     .footer {
       text-align: center;
       font-size: 0.68rem;
@@ -167,38 +156,30 @@
   <div class="container">
     <h1>Umbrales</h1>
     <div class="subtitle">Rojo = salir · Amarillo = esperar · Verde = entrar · Actualiza cada 30s</div>
-
     <div class="nav">
       <a href="index.html">Oil Spreads</a>
       <a href="gold.html">Gold Arbitrage</a>
       <a href="umbrales.html" class="active">Umbrales</a>
     </div>
-
     <div class="group">GOLD · VARIATIONAL</div>
     <div class="list" id="list-var"><div class="empty">Cargando…</div></div>
-
     <div class="group">GOLD · PACIFICA</div>
     <div class="list" id="list-pac"><div class="empty">Cargando…</div></div>
-
     <div class="group">OIL · HYPERLIQUID</div>
     <div class="list" id="list-oil"><div class="empty">Cargando…</div></div>
-
     <div class="group">EQUITY · HYPERLIQUID</div>
     <div class="list" id="list-eq"><div class="empty">Cargando…</div></div>
-
     <div class="footer">
       Histórico: Binance (proxy Var) · Pacifica real · Hyperliquid real<br>
       S&amp;P500 vs US500: normalizado US500 × 10 ≈ nivel índice
     </div>
   </div>
-
   <script>
     function calcSpread(a, b) {
       const diff = b - a;
       const avg = (a + b) / 2;
       return { pct: (Math.abs(diff) / avg) * 100, abs: diff };
     }
-
     function calcStats(spreads) {
       if (!spreads || spreads.length < 5) return null;
       const n = spreads.length;
@@ -206,7 +187,6 @@
       const variance = spreads.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n;
       return { mean, std: Math.sqrt(variance), min: Math.min(...spreads), max: Math.max(...spreads) };
     }
-
     function calcThresholds(spreads) {
       if (!spreads || spreads.length < 20) return null;
       const sorted = [...spreads].sort((a, b) => a - b);
@@ -215,32 +195,27 @@
         enter: Math.round(sorted[Math.floor(sorted.length * 0.80)] * 1000) / 1000
       };
     }
-
     function zoneColor(pct, exit, enter) {
       if (pct >= enter) return 'green';
       if (pct <= exit) return 'red';
       return 'yellow';
     }
-
     function pos(val, min, max) {
       if (max <= min) return 50;
       return Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
     }
-
     function renderBar(tag, current, spreads) {
       const st = calcStats(spreads);
       const th = calcThresholds(spreads);
       if (!st || !th) {
         return `<div class="bar-col"><div class="tag">${tag}</div><div class="bar-box"><div class="track"></div><div class="labels"><span>—</span></div></div></div>`;
       }
-
       const pad = Math.max((th.enter - th.exit) * 0.35, 0.04);
       const min = Math.min(st.min, th.exit) - pad;
       const max = Math.max(st.max, th.enter) + pad;
       const exitP = pos(th.exit, min, max);
       const enterP = pos(th.enter, min, max);
       const curP = pos(current, min, max);
-
       return `
         <div class="bar-col">
           <div class="tag">${tag}</div>
@@ -261,13 +236,11 @@
           </div>
         </div>`;
     }
-
     function renderRow(name, current, absLabel, source, s7, s30) {
       const th30 = calcThresholds(s30) || calcThresholds(s7);
       const exit = th30?.exit ?? 0.05;
       const enter = th30?.enter ?? 0.15;
       const color = zoneColor(current, exit, enter);
-
       return `
         <div class="row">
           <div class="left">
@@ -280,7 +253,6 @@
           ${renderBar('30d', current, s30)}
         </div>`;
     }
-
     // ===== FETCHERS =====
     async function fetchBinanceKlines(symbol, days, futures = false) {
       try {
@@ -293,7 +265,6 @@
         return data.map(c => ({ t: c[0], c: parseFloat(c[4]) }));
       } catch { return null; }
     }
-
     async function binanceSpreads(a, b, days, futuresB = false) {
       const [kA, kB] = await Promise.all([
         fetchBinanceKlines(a, days, false),
@@ -311,7 +282,6 @@
       });
       return out.length > 10 ? out : null;
     }
-
     async function fetchCandlesPac(symbol, days) {
       try {
         const end = Date.now();
@@ -321,7 +291,6 @@
         return (data.success && Array.isArray(data.data)) ? data.data : null;
       } catch { return null; }
     }
-
     async function pacSpreads(days) {
       const [cX, cP] = await Promise.all([fetchCandlesPac('XAU', days), fetchCandlesPac('PAXG', days)]);
       if (!cX?.length || !cP?.length) return null;
@@ -336,7 +305,6 @@
       });
       return out.length > 10 ? out : null;
     }
-
     async function fetchCandlesHL(coin, days) {
       try {
         const end = Date.now();
@@ -353,7 +321,6 @@
         return Array.isArray(data) ? data : null;
       } catch { return null; }
     }
-
     async function hlPairSpreads(coinA, coinB, days, multB = 1) {
       const [kA, kB] = await Promise.all([
         fetchCandlesHL(coinA, days),
@@ -371,7 +338,6 @@
       });
       return out.length > 10 ? out : null;
     }
-
     async function hlOilSpreads(days) {
       let wti = null, brent = null;
       for (const n of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
@@ -394,7 +360,6 @@
       });
       return out.length > 10 ? out : null;
     }
-
     async function getHLMids(dex) {
       try {
         const body = dex ? { type: 'allMids', dex } : { type: 'allMids' };
@@ -406,7 +371,6 @@
         return await res.json();
       } catch { return {}; }
     }
-
     function pickMid(mids, names) {
       for (const n of names) {
         const v = parseFloat(mids[n]);
@@ -414,7 +378,6 @@
       }
       return null;
     }
-
     async function resolveHLCoin(candidates) {
       for (const name of candidates) {
         const c = await fetchCandlesHL(name, 1);
@@ -422,7 +385,6 @@
       }
       return candidates[0];
     }
-
     async function updateAll() {
       // ===== GOLD VARIATIONAL =====
       let xaut = null, paxg = null, xau = null;
@@ -437,7 +399,6 @@
           if (t === 'XAU') xau = p;
         });
       } catch (e) { console.log(e); }
-
       let pctXP = 0, absXP = '--', pctXX = 0, absXX = '--';
       if (xaut && paxg) {
         const s = calcSpread(xaut, paxg);
@@ -449,18 +410,15 @@
         pctXX = s.pct;
         absXX = '$' + Math.abs(s.abs).toFixed(2);
       }
-
       const [xp7, xp30, xx7, xx30] = await Promise.all([
         binanceSpreads('XAUTUSDT', 'PAXGUSDT', 7, false),
         binanceSpreads('XAUTUSDT', 'PAXGUSDT', 30, false),
         binanceSpreads('XAUTUSDT', 'XAUUSDT', 7, true),
         binanceSpreads('XAUTUSDT', 'XAUUSDT', 30, true)
       ]);
-
       document.getElementById('list-var').innerHTML =
         renderRow('XAUT vs PAXG', pctXP, absXP, 'Var · Binance', xp7, xp30) +
         renderRow('XAUT vs XAU', pctXX, absXX, 'Var · Binance', xx7, xx30);
-
       // ===== PACIFICA =====
       let pacX = null, pacP = null;
       try {
@@ -473,7 +431,6 @@
           if (sym === 'PAXG') pacP = m;
         });
       } catch (e) { console.log(e); }
-
       let pctPac = 0, absPac = '--';
       if (pacX && pacP) {
         const s = calcSpread(pacX, pacP);
@@ -483,12 +440,10 @@
       const [p7, p30] = await Promise.all([pacSpreads(7), pacSpreads(30)]);
       document.getElementById('list-pac').innerHTML =
         renderRow('XAU vs PAXG', pctPac, absPac, 'Pacifica', p7, p30);
-
       // ===== OIL HL =====
       const midsXyz = await getHLMids('xyz');
       const midsMain = await getHLMids(null);
       const allMids = { ...midsMain, ...midsXyz };
-
       const wtiM = pickMid(allMids, ['WTIOIL', 'xyz:WTIOIL', 'CL', 'xyz:CL']);
       const brentM = pickMid(allMids, ['BRENTOIL', 'xyz:BRENTOIL']);
       let pctOil = 0, absOil = '--';
@@ -500,18 +455,24 @@
       const [o7, o30] = await Promise.all([hlOilSpreads(7), hlOilSpreads(30)]);
       document.getElementById('list-oil').innerHTML =
         renderRow('WTI vs Brent', pctOil, absOil, 'Hyperliquid', o7, o30);
-
       // ===== EQUITY HL: S&P500 vs US500 (US500 × 10) =====
-      const spM = pickMid(allMids, [
-        'SP500', 'S&P500', 'xyz:SP500', 'xyz:S&P500',
-        'SPX', 'xyz:SPX'
+      // SP500 vive en xyz · US500 vive en mkts (y a veces km)
+      const [midsMkts, midsKm] = await Promise.all([
+        getHLMids('mkts'),
+        getHLMids('km')
       ]);
-      const usM = pickMid(allMids, [
-        'US500', 'xyz:US500'
+      const allMidsEq = { ...allMids, ...midsMkts, ...midsKm };
+
+      const spM = pickMid(allMidsEq, [
+        'xyz:SP500', 'SP500'
+      ]);
+      const usM = pickMid(allMidsEq, [
+        'mkts:US500', 'km:US500', 'US500'
       ]);
 
       let pctEq = 0, absEq = '--';
-      let spName = 'SP500', usName = 'US500';
+      let spName = 'xyz:SP500';
+      let usName = 'mkts:US500';
 
       if (spM && usM) {
         const sp = spM.price;
@@ -521,14 +482,14 @@
         absEq = Math.abs(s.abs).toFixed(1) + ' pts';
         spName = spM.name;
         usName = usM.name;
+        console.log('SP500:', sp, 'US500×10:', usNorm, 'spread%:', pctEq.toFixed(3));
+      } else {
+        console.warn('No se encontraron mids:', { spM, usM });
       }
 
-      const spCandle = await resolveHLCoin([
-        spName, 'SP500', 'xyz:SP500', 'S&P500', 'xyz:S&P500', 'SPX', 'xyz:SPX'
-      ]);
-      const usCandle = await resolveHLCoin([
-        usName, 'US500', 'xyz:US500'
-      ]);
+      // Candles: nombres canónicos con prefijo de dex
+      const spCandle = await resolveHLCoin([spName, 'xyz:SP500']);
+      const usCandle = await resolveHLCoin([usName, 'mkts:US500', 'km:US500']);
 
       const [eq7, eq30] = await Promise.all([
         hlPairSpreads(spCandle, usCandle, 7, 10),
@@ -538,7 +499,6 @@
       document.getElementById('list-eq').innerHTML =
         renderRow('S&P500 vs US500', pctEq, absEq, 'HL · US500×10', eq7, eq30);
     }
-
     updateAll();
     setInterval(updateAll, 30000);
   </script>
