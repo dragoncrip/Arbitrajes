@@ -11,28 +11,28 @@
       background: #0b0e11;
       color: #eaecef;
       min-height: 100vh;
-      padding: 24px;
+      padding: 20px 24px;
       display: flex;
       justify-content: center;
     }
-    .container { width: 100%; max-width: 1200px; }
+    .container { width: 100%; max-width: 1180px; }
 
-    h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; letter-spacing: -0.3px; }
-    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 18px; }
+    h1 { text-align: center; font-size: 1.45rem; margin-bottom: 2px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.8rem; margin-bottom: 14px; }
 
     .nav {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 28px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
     .nav a {
       background: #1e2329;
       color: #f0b90b;
-      padding: 8px 18px;
-      border-radius: 20px;
+      padding: 7px 16px;
+      border-radius: 18px;
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       border: 1px solid #2b3139;
       transition: all 0.2s;
@@ -43,172 +43,140 @@
       border-color: #f0b90b;
     }
 
-    .group-title {
-      font-size: 1.05rem;
+    .group {
+      font-size: 0.78rem;
       color: #f0b90b;
       font-weight: 600;
-      margin: 8px 0 14px;
-      letter-spacing: 0.2px;
+      margin: 4px 0 10px;
+      letter-spacing: 0.3px;
     }
 
-    .cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .cards.single { grid-template-columns: 1fr; max-width: 720px; }
+    .list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
 
-    .u-card {
+    .row {
       background: #1e2329;
       border: 1px solid #2b3139;
-      border-radius: 16px;
-      padding: 16px 18px;
+      border-radius: 12px;
+      padding: 10px 14px;
       display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 16px;
-      align-items: stretch;
+      grid-template-columns: 140px 1fr 1fr;
+      gap: 14px;
+      align-items: center;
+      min-height: 78px;
     }
 
-    .u-left {
-      background: #252a31;
-      border-radius: 12px;
-      padding: 14px 12px;
+    .left {
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      padding: 4px 6px;
     }
-    .u-pair {
-      font-size: 0.82rem;
+    .pair {
+      font-size: 0.78rem;
       font-weight: 700;
       color: #f0b90b;
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-    .u-pct {
-      font-size: 1.55rem;
-      font-weight: 800;
-      color: #f0b90b;
-      letter-spacing: -0.5px;
-    }
-    .u-pct.green { color: #0ecb81; }
-    .u-pct.red { color: #f6465d; }
-    .u-pct.yellow { color: #f0b90b; }
-    .u-diff {
-      font-size: 0.78rem;
-      color: #848e9c;
-      margin-top: 6px;
-    }
-    .u-source {
-      font-size: 0.65rem;
-      color: #5e6673;
-      margin-top: 10px;
-    }
-
-    .u-right {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      justify-content: center;
-    }
-
-    .bar-block { }
-    .bar-period {
-      text-align: center;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #b7bdc6;
-      margin-bottom: 6px;
-      letter-spacing: 0.4px;
-    }
-
-    .bar-wrap {
-      background: #252a31;
-      border-radius: 10px;
-      padding: 10px 12px 8px;
-    }
-    .bar-ends {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.62rem;
-      color: #848e9c;
+      line-height: 1.25;
       margin-bottom: 4px;
     }
-    .bar-track {
-      position: relative;
-      height: 16px;
-      border-radius: 8px;
-      background: linear-gradient(90deg, #f6465d 0%, #f0b90b 50%, #0ecb81 100%);
-      opacity: 0.95;
+    .pct {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.4px;
     }
-    .bar-marker {
-      position: absolute;
-      top: 50%;
-      width: 2px;
-      height: 22px;
-      background: #eaecef;
-      border-radius: 1px;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      box-shadow: 0 0 3px rgba(0,0,0,0.5);
-    }
-    .bar-marker.mean {
-      width: 3px;
-      height: 24px;
-      background: #f0b90b;
-      box-shadow: 0 0 6px rgba(240,185,11,0.7);
-    }
-    .bar-marker.current {
-      width: 5px;
-      height: 28px;
-      background: #fff;
-      border-radius: 2px;
-      box-shadow: 0 0 8px rgba(255,255,255,0.5);
-      z-index: 3;
-    }
-    .bar-labels {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 4px;
-      font-size: 0.62rem;
+    .pct.green { color: #0ecb81; }
+    .pct.red { color: #f6465d; }
+    .pct.yellow { color: #f0b90b; }
+    .diff {
+      font-size: 0.7rem;
       color: #848e9c;
+      margin-top: 2px;
     }
-    .bar-labels .umbral { color: #f0b90b; font-weight: 600; }
-    .bar-labels .media { color: #f0b90b; font-weight: 600; text-align: center; flex: 1; }
-    .bar-current {
-      text-align: center;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #f0b90b;
-      margin-top: 4px;
-    }
-    .bar-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.65rem;
+    .src {
+      font-size: 0.58rem;
       color: #5e6673;
       margin-top: 4px;
     }
+
+    .bar-col {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag {
+      flex-shrink: 0;
+      width: 28px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #848e9c;
+      text-align: right;
+    }
+
+    .bar-box { flex: 1; min-width: 0; }
+
+    .track {
+      position: relative;
+      height: 14px;
+      border-radius: 7px;
+      overflow: visible;
+      background: #2b3139;
+    }
+    /* zonas: se posicionan con left/width en % */
+    .zone {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      border-radius: 0;
+    }
+    .zone.exit { background: #f6465d; opacity: 0.55; border-radius: 7px 0 0 7px; }
+    .zone.wait { background: #f0b90b; opacity: 0.35; }
+    .zone.enter { background: #0ecb81; opacity: 0.55; border-radius: 0 7px 7px 0; }
+
+    .mk {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    .mk.th {
+      width: 2px;
+      height: 20px;
+      background: rgba(234,236,239,0.85);
+      border-radius: 1px;
+    }
+    .mk.cur {
+      width: 5px;
+      height: 24px;
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(255,255,255,0.55);
+      z-index: 3;
+    }
+
+    .labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3px;
+      font-size: 0.6rem;
+      color: #848e9c;
+    }
+    .labels b { color: #b7bdc6; font-weight: 600; }
 
     .footer {
       text-align: center;
-      margin-top: 8px;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       color: #5e6673;
+      margin-top: 6px;
     }
-    .loading {
+    .empty {
       text-align: center;
-      color: #848e9c;
-      padding: 40px;
-      font-size: 0.9rem;
+      color: #5e6673;
+      font-size: 0.8rem;
+      padding: 16px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Umbrales</h1>
-    <div class="subtitle">Spreads · 7 días y 30 días · Actualiza cada 30s</div>
+    <div class="subtitle">Rojo = salir · Amarillo = esperar · Verde = entrar · Actualiza cada 30s</div>
 
     <div class="nav">
       <a href="index.html">Oil Spreads</a>
@@ -216,22 +184,16 @@
       <a href="umbrales.html" class="active">Umbrales</a>
     </div>
 
-    <div class="group-title">—— Gold · Variational ——</div>
-    <div class="cards" id="cards-var">
-      <div class="loading">Cargando…</div>
-    </div>
+    <div class="group">GOLD · VARIATIONAL</div>
+    <div class="list" id="list-var"><div class="empty">Cargando…</div></div>
 
-    <div class="group-title">—— Gold · Pacifica ——</div>
-    <div class="cards single" id="cards-pac">
-      <div class="loading">Cargando…</div>
-    </div>
+    <div class="group">GOLD · PACIFICA</div>
+    <div class="list" id="list-pac"><div class="empty">Cargando…</div></div>
 
-    <div class="group-title">—— Oil · Hyperliquid ——</div>
-    <div class="cards single" id="cards-oil">
-      <div class="loading">Cargando…</div>
-    </div>
+    <div class="group">OIL · HYPERLIQUID</div>
+    <div class="list" id="list-oil"><div class="empty">Cargando…</div></div>
 
-    <div class="footer">Histórico: Binance (proxy Variational) · Pacifica real · Hyperliquid real</div>
+    <div class="footer">Histórico: Binance (proxy Var) · Pacifica real · Hyperliquid real</div>
   </div>
 
   <script>
@@ -241,167 +203,146 @@
       return { pct: (Math.abs(diff) / avg) * 100, abs: diff };
     }
 
-    function getColor(pct, enter = 0.15, exit = 0.05) {
-      if (pct >= enter) return 'green';
-      if (pct <= exit) return 'red';
-      return 'yellow';
-    }
-
     function calcStats(spreads) {
       if (!spreads || spreads.length < 5) return null;
       const n = spreads.length;
-      const mean = spreads.reduce((a, b) => a + b, 0) / n;
-      const variance = spreads.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
-      const std = Math.sqrt(variance);
-      return { mean, std, min: Math.min(...spreads), max: Math.max(...spreads) };
+      const mean = spreads.reduce((s, v) => s + v, 0) / n;
+      const variance = spreads.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n;
+      return { mean, std: Math.sqrt(variance), min: Math.min(...spreads), max: Math.max(...spreads) };
     }
 
     function calcThresholds(spreads) {
       if (!spreads || spreads.length < 20) return null;
       const sorted = [...spreads].sort((a, b) => a - b);
-      const p20 = sorted[Math.floor(sorted.length * 0.20)];
-      const p80 = sorted[Math.floor(sorted.length * 0.80)];
       return {
-        exit: Math.round(p20 * 1000) / 1000,
-        enter: Math.round(p80 * 1000) / 1000
+        exit: Math.round(sorted[Math.floor(sorted.length * 0.20)] * 1000) / 1000,
+        enter: Math.round(sorted[Math.floor(sorted.length * 0.80)] * 1000) / 1000
       };
     }
 
-    function pctPos(val, min, max) {
+    function zoneColor(pct, exit, enter) {
+      if (pct >= enter) return 'green';
+      if (pct <= exit) return 'red';
+      return 'yellow';
+    }
+
+    function pos(val, min, max) {
       if (max <= min) return 50;
       return Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
     }
 
-    function renderBar(periodLabel, current, stats, th) {
-      if (!stats || !th) {
-        return `<div class="bar-block"><div class="bar-period">${periodLabel}</div><div class="bar-wrap" style="text-align:center;color:#5e6673;padding:12px;">Sin datos</div></div>`;
+    function renderBar(tag, current, spreads) {
+      const st = calcStats(spreads);
+      const th = calcThresholds(spreads);
+      if (!st || !th) {
+        return `<div class="bar-col"><div class="tag">${tag}</div><div class="bar-box"><div class="track"></div><div class="labels"><span>—</span></div></div></div>`;
       }
 
-      const pad = Math.max((th.enter - th.exit) * 0.35, stats.std * 0.5, 0.03);
-      const min = Math.min(stats.min, th.exit) - pad;
-      const max = Math.max(stats.max, th.enter) + pad;
+      const pad = Math.max((th.enter - th.exit) * 0.35, 0.04);
+      const min = Math.min(st.min, th.exit) - pad;
+      const max = Math.max(st.max, th.enter) + pad;
 
-      const exitP = pctPos(th.exit, min, max);
-      const enterP = pctPos(th.enter, min, max);
-      const meanP = pctPos(stats.mean, min, max);
-      const curP = pctPos(current, min, max);
+      const exitP = pos(th.exit, min, max);
+      const enterP = pos(th.enter, min, max);
+      const curP = pos(current, min, max);
 
       return `
-        <div class="bar-block">
-          <div class="bar-period">${periodLabel}</div>
-          <div class="bar-wrap">
-            <div class="bar-ends">
-              <span>Rango ${stats.min.toFixed(3)}%</span>
-              <span>Rango ${stats.max.toFixed(3)}%</span>
+        <div class="bar-col">
+          <div class="tag">${tag}</div>
+          <div class="bar-box">
+            <div class="track">
+              <div class="zone exit" style="left:0%;width:${exitP}%"></div>
+              <div class="zone wait" style="left:${exitP}%;width:${enterP - exitP}%"></div>
+              <div class="zone enter" style="left:${enterP}%;width:${100 - enterP}%"></div>
+              <div class="mk th" style="left:${exitP}%"></div>
+              <div class="mk th" style="left:${enterP}%"></div>
+              <div class="mk cur" style="left:${curP}%"></div>
             </div>
-            <div class="bar-track">
-              <div class="bar-marker" style="left:${exitP}%" title="Salida ${th.exit.toFixed(3)}%"></div>
-              <div class="bar-marker" style="left:${enterP}%" title="Entrada ${th.enter.toFixed(3)}%"></div>
-              <div class="bar-marker mean" style="left:${meanP}%" title="Media ${stats.mean.toFixed(3)}%"></div>
-              <div class="bar-marker current" style="left:${curP}%" title="Actual ${current.toFixed(3)}%"></div>
-            </div>
-            <div class="bar-labels">
-              <span class="umbral">Sal ${th.exit.toFixed(3)}%</span>
-              <span class="media">Media ${stats.mean.toFixed(3)}%</span>
-              <span class="umbral">Ent ${th.enter.toFixed(3)}%</span>
-            </div>
-            <div class="bar-current">Actual: ${current.toFixed(3)}%</div>
-            <div class="bar-meta">
-              <span>σ ${stats.std.toFixed(3)}</span>
-              <span>Z ${stats.std > 0 ? ((current - stats.mean) / stats.std).toFixed(2) : '--'}σ</span>
+            <div class="labels">
+              <span>Sal <b>${th.exit.toFixed(3)}%</b></span>
+              <span>Actual <b>${current.toFixed(3)}%</b></span>
+              <span>Ent <b>${th.enter.toFixed(3)}%</b></span>
             </div>
           </div>
         </div>`;
     }
 
-    function renderCard(pairName, currentPct, absDiff, source, data7, data30) {
-      const th7 = data7 ? calcThresholds(data7) : null;
-      const th30 = data30 ? calcThresholds(data30) : null;
-      const st7 = data7 ? calcStats(data7) : null;
-      const st30 = data30 ? calcStats(data30) : null;
-      const enterRef = th30?.enter ?? th7?.enter ?? 0.15;
-      const exitRef = th30?.exit ?? th7?.exit ?? 0.05;
-      const color = getColor(currentPct, enterRef, exitRef);
-      const absStr = absDiff != null
-        ? (Math.abs(absDiff) >= 1 ? `$${Math.abs(absDiff).toFixed(2)}` : `$${Math.abs(absDiff).toFixed(3)}`)
+    function renderRow(name, current, abs, source, s7, s30) {
+      const th30 = calcThresholds(s30) || calcThresholds(s7);
+      const exit = th30?.exit ?? 0.05;
+      const enter = th30?.enter ?? 0.15;
+      const color = zoneColor(current, exit, enter);
+      const absStr = abs != null
+        ? (Math.abs(abs) >= 1 ? '$' + Math.abs(abs).toFixed(2) : '$' + Math.abs(abs).toFixed(3))
         : '--';
 
       return `
-        <div class="u-card">
-          <div class="u-left">
-            <div class="u-pair">${pairName}</div>
-            <div class="u-pct ${color}">${currentPct.toFixed(3)}%</div>
-            <div class="u-diff">Diferencia: ${absStr}</div>
-            <div class="u-source">${source}</div>
+        <div class="row">
+          <div class="left">
+            <div class="pair">${name}</div>
+            <div class="pct ${color}">${current.toFixed(3)}%</div>
+            <div class="diff">${absStr}</div>
+            <div class="src">${source}</div>
           </div>
-          <div class="u-right">
-            ${renderBar('7 días', currentPct, st7, th7)}
-            ${renderBar('30 días', currentPct, st30, th30)}
-          </div>
+          ${renderBar('7d', current, s7)}
+          ${renderBar('30d', current, s30)}
         </div>`;
     }
 
-    // ===== FETCHERS =====
+    // ===== DATA =====
     async function fetchBinanceKlines(symbol, days, futures = false) {
       try {
         const end = Date.now();
         const start = end - days * 24 * 60 * 60 * 1000;
-        const base = futures
-          ? 'https://fapi.binance.com/fapi/v1/klines'
-          : 'https://api.binance.com/api/v3/klines';
-        const url = `${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
-        const res = await fetch(url);
+        const base = futures ? 'https://fapi.binance.com/fapi/v1/klines' : 'https://api.binance.com/api/v3/klines';
+        const res = await fetch(`${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`);
         const data = await res.json();
         if (!Array.isArray(data)) return null;
         return data.map(c => ({ t: c[0], c: parseFloat(c[4]) }));
       } catch { return null; }
     }
 
-    async function binanceSpreads(symA, symB, days, futuresB = false) {
+    async function binanceSpreads(a, b, days, futuresB = false) {
       const [kA, kB] = await Promise.all([
-        fetchBinanceKlines(symA, days, false),
-        fetchBinanceKlines(symB, days, futuresB)
+        fetchBinanceKlines(a, days, false),
+        fetchBinanceKlines(b, days, futuresB)
       ]);
       if (!kA?.length || !kB?.length) return null;
       const map = {};
       kB.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
-      const spreads = [];
+      const out = [];
       kA.forEach(c => {
         if (c?.t && c?.c && map[c.t]) {
-          const a = c.c, b = map[c.t];
-          spreads.push(Math.abs((b - a) / ((b + a) / 2) * 100));
+          const x = c.c, y = map[c.t];
+          out.push(Math.abs((y - x) / ((y + x) / 2) * 100));
         }
       });
-      return spreads.length > 10 ? spreads : null;
+      return out.length > 10 ? out : null;
     }
 
     async function fetchCandlesPac(symbol, days) {
       try {
         const end = Date.now();
         const start = end - days * 24 * 60 * 60 * 1000;
-        const url = `https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`;
-        const res = await fetch(url);
+        const res = await fetch(`https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`);
         const data = await res.json();
         return (data.success && Array.isArray(data.data)) ? data.data : null;
       } catch { return null; }
     }
 
     async function pacSpreads(days) {
-      const [cXau, cPaxg] = await Promise.all([
-        fetchCandlesPac('XAU', days),
-        fetchCandlesPac('PAXG', days)
-      ]);
-      if (!cXau?.length || !cPaxg?.length) return null;
+      const [cX, cP] = await Promise.all([fetchCandlesPac('XAU', days), fetchCandlesPac('PAXG', days)]);
+      if (!cX?.length || !cP?.length) return null;
       const map = {};
-      cPaxg.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
-      const spreads = [];
-      cXau.forEach(c => {
+      cP.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
+      const out = [];
+      cX.forEach(c => {
         if (c?.t && c?.c && map[c.t]) {
           const x = parseFloat(c.c), p = map[c.t];
-          spreads.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+          out.push(Math.abs((p - x) / ((p + x) / 2) * 100));
         }
       });
-      return spreads.length > 10 ? spreads : null;
+      return out.length > 10 ? out : null;
     }
 
     async function fetchCandlesHL(coin, days) {
@@ -411,10 +352,7 @@
         const res = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'candleSnapshot',
-            req: { coin, interval: '1h', startTime: start, endTime: end }
-          })
+          body: JSON.stringify({ type: 'candleSnapshot', req: { coin, interval: '1h', startTime: start, endTime: end } })
         });
         const data = await res.json();
         return Array.isArray(data) ? data : null;
@@ -423,47 +361,45 @@
 
     async function hlSpreads(days) {
       let wti = null, brent = null;
-      for (const name of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
-        wti = await fetchCandlesHL(name, days);
+      for (const n of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
+        wti = await fetchCandlesHL(n, days);
         if (wti?.length > 20) break;
       }
-      for (const name of ['xyz:BRENTOIL', 'BRENTOIL']) {
-        brent = await fetchCandlesHL(name, days);
+      for (const n of ['xyz:BRENTOIL', 'BRENTOIL']) {
+        brent = await fetchCandlesHL(n, days);
         if (brent?.length > 20) break;
       }
       if (!wti?.length || !brent?.length) return null;
       const map = {};
       brent.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
-      const spreads = [];
+      const out = [];
       wti.forEach(c => {
         if (c?.T && c?.c && map[c.T]) {
           const w = parseFloat(c.c), b = map[c.T];
-          spreads.push(Math.abs((b - w) / ((b + w) / 2) * 100));
+          out.push(Math.abs((b - w) / ((b + w) / 2) * 100));
         }
       });
-      return spreads.length > 10 ? spreads : null;
+      return out.length > 10 ? out : null;
     }
 
     async function updateAll() {
-      // ----- Variational actual -----
       let xaut = null, paxg = null, xau = null;
       try {
-        const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
-        const varData = await resVar.json();
-        (varData.listings || []).forEach(item => {
+        const res = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
+        const data = await res.json();
+        (data.listings || []).forEach(item => {
           const t = (item.ticker || '').toUpperCase();
           const p = parseFloat(item.mark_price);
           if (t === 'XAUT') xaut = p;
           if (t === 'PAXG') paxg = p;
           if (t === 'XAU') xau = p;
         });
-      } catch (e) { console.log('Var error', e); }
+      } catch (e) { console.log(e); }
 
       let pctXP = 0, absXP = 0, pctXX = 0, absXX = 0;
       if (xaut && paxg) { const s = calcSpread(xaut, paxg); pctXP = s.pct; absXP = s.abs; }
       if (xaut && xau) { const s = calcSpread(xaut, xau); pctXX = s.pct; absXX = s.abs; }
 
-      // ----- Binance hist -----
       const [xp7, xp30, xx7, xx30] = await Promise.all([
         binanceSpreads('XAUTUSDT', 'PAXGUSDT', 7, false),
         binanceSpreads('XAUTUSDT', 'PAXGUSDT', 30, false),
@@ -471,49 +407,47 @@
         binanceSpreads('XAUTUSDT', 'XAUUSDT', 30, true)
       ]);
 
-      document.getElementById('cards-var').innerHTML =
-        renderCard('XAUT vs PAXG', pctXP, absXP, 'Variational · hist Binance', xp7, xp30) +
-        renderCard('XAUT vs XAU', pctXX, absXX, 'Variational · hist Binance', xx7, xx30);
+      document.getElementById('list-var').innerHTML =
+        renderRow('XAUT vs PAXG', pctXP, absXP, 'Var · Binance', xp7, xp30) +
+        renderRow('XAUT vs XAU', pctXX, absXX, 'Var · Binance', xx7, xx30);
 
-      // ----- Pacifica -----
-      let pacXau = null, pacPaxg = null;
+      // Pacifica
+      let pacX = null, pacP = null;
       try {
-        const resPac = await fetch('https://api.pacifica.fi/api/v1/info/prices');
-        const pacData = await resPac.json();
-        (pacData.data || []).forEach(item => {
+        const res = await fetch('https://api.pacifica.fi/api/v1/info/prices');
+        const data = await res.json();
+        (data.data || []).forEach(item => {
           const sym = (item.symbol || '').toUpperCase();
-          const mark = parseFloat(item.mark || item.mid || 0);
-          if (sym === 'XAU' || sym === 'GOLD') pacXau = mark;
-          if (sym === 'PAXG') pacPaxg = mark;
+          const m = parseFloat(item.mark || item.mid || 0);
+          if (sym === 'XAU' || sym === 'GOLD') pacX = m;
+          if (sym === 'PAXG') pacP = m;
         });
-      } catch (e) { console.log('Pac error', e); }
+      } catch (e) { console.log(e); }
 
       let pctPac = 0, absPac = 0;
-      if (pacXau && pacPaxg) { const s = calcSpread(pacXau, pacPaxg); pctPac = s.pct; absPac = s.abs; }
+      if (pacX && pacP) { const s = calcSpread(pacX, pacP); pctPac = s.pct; absPac = s.abs; }
+      const [p7, p30] = await Promise.all([pacSpreads(7), pacSpreads(30)]);
+      document.getElementById('list-pac').innerHTML =
+        renderRow('XAU vs PAXG', pctPac, absPac, 'Pacifica', p7, p30);
 
-      const [pac7, pac30] = await Promise.all([pacSpreads(7), pacSpreads(30)]);
-      document.getElementById('cards-pac').innerHTML =
-        renderCard('XAU vs PAXG', pctPac, absPac, 'Pacifica real', pac7, pac30);
-
-      // ----- Hyperliquid Oil -----
-      let hlWti = null, hlBrent = null;
+      // Oil
+      let wti = null, brent = null;
       try {
-        const resMids = await fetch('https://api.hyperliquid.xyz/info', {
+        const res = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'allMids', dex: 'xyz' })
         });
-        const mids = await resMids.json();
-        hlWti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
-        hlBrent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
-      } catch (e) { console.log('HL mids error', e); }
+        const mids = await res.json();
+        wti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
+        brent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
+      } catch (e) { console.log(e); }
 
       let pctOil = 0, absOil = 0;
-      if (hlWti && hlBrent) { const s = calcSpread(hlWti, hlBrent); pctOil = s.pct; absOil = s.abs; }
-
-      const [oil7, oil30] = await Promise.all([hlSpreads(7), hlSpreads(30)]);
-      document.getElementById('cards-oil').innerHTML =
-        renderCard('WTI vs Brent', pctOil, absOil, 'Hyperliquid real', oil7, oil30);
+      if (wti && brent) { const s = calcSpread(wti, brent); pctOil = s.pct; absOil = s.abs; }
+      const [o7, o30] = await Promise.all([hlSpreads(7), hlSpreads(30)]);
+      document.getElementById('list-oil').innerHTML =
+        renderRow('WTI vs Brent', pctOil, absOil, 'Hyperliquid', o7, o30);
     }
 
     updateAll();
