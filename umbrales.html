@@ -161,19 +161,29 @@
       <a href="gold.html">Gold Arbitrage</a>
       <a href="umbrales.html" class="active">Umbrales</a>
     </div>
+
     <div class="group">GOLD · VARIATIONAL</div>
     <div class="list" id="list-var"><div class="empty">Cargando…</div></div>
+
     <div class="group">GOLD · PACIFICA</div>
     <div class="list" id="list-pac"><div class="empty">Cargando…</div></div>
+
     <div class="group">OIL · HYPERLIQUID</div>
     <div class="list" id="list-oil"><div class="empty">Cargando…</div></div>
+
     <div class="group">EQUITY · HYPERLIQUID</div>
     <div class="list" id="list-eq"><div class="empty">Cargando…</div></div>
+
+    <div class="group">BTC vs ETH · DIVERGENCIA (1h · 12h · 24h)</div>
+    <div class="list" id="list-btceth"><div class="empty">Cargando…</div></div>
+
     <div class="footer">
       Histórico: Binance (proxy Var) · Pacifica real · Hyperliquid real<br>
-      S&amp;P500 vs US500: normalizado US500 × 10 ≈ nivel índice
+      S&amp;P500 vs US500: normalizado US500 × 10 ≈ nivel índice<br>
+      BTC vs ETH: |%BTC − %ETH| ≥ 2% = señal de arbitraje
     </div>
   </div>
+
   <script>
     function calcSpread(a, b) {
       const diff = b - a;
@@ -224,283 +234,4 @@
               <div class="zone exit" style="left:0%;width:${exitP}%"></div>
               <div class="zone wait" style="left:${exitP}%;width:${enterP - exitP}%"></div>
               <div class="zone enter" style="left:${enterP}%;width:${100 - enterP}%"></div>
-              <div class="mk th" style="left:${exitP}%"></div>
-              <div class="mk th" style="left:${enterP}%"></div>
-              <div class="mk cur" style="left:${curP}%"></div>
-            </div>
-            <div class="labels">
-              <span>Sal <b>${th.exit.toFixed(3)}%</b></span>
-              <span>Actual <b>${current.toFixed(3)}%</b></span>
-              <span>Ent <b>${th.enter.toFixed(3)}%</b></span>
-            </div>
-          </div>
-        </div>`;
-    }
-    function renderRow(name, current, absLabel, source, s7, s30) {
-      const th30 = calcThresholds(s30) || calcThresholds(s7);
-      const exit = th30?.exit ?? 0.05;
-      const enter = th30?.enter ?? 0.15;
-      const color = zoneColor(current, exit, enter);
-      return `
-        <div class="row">
-          <div class="left">
-            <div class="pair">${name}</div>
-            <div class="pct ${color}">${current.toFixed(3)}%</div>
-            <div class="diff">${absLabel || '--'}</div>
-            <div class="src">${source}</div>
-          </div>
-          ${renderBar('7d', current, s7)}
-          ${renderBar('30d', current, s30)}
-        </div>`;
-    }
-    // ===== FETCHERS =====
-    async function fetchBinanceKlines(symbol, days, futures = false) {
-      try {
-        const end = Date.now();
-        const start = end - days * 24 * 60 * 60 * 1000;
-        const base = futures ? 'https://fapi.binance.com/fapi/v1/klines' : 'https://api.binance.com/api/v3/klines';
-        const res = await fetch(`${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`);
-        const data = await res.json();
-        if (!Array.isArray(data)) return null;
-        return data.map(c => ({ t: c[0], c: parseFloat(c[4]) }));
-      } catch { return null; }
-    }
-    async function binanceSpreads(a, b, days, futuresB = false) {
-      const [kA, kB] = await Promise.all([
-        fetchBinanceKlines(a, days, false),
-        fetchBinanceKlines(b, days, futuresB)
-      ]);
-      if (!kA?.length || !kB?.length) return null;
-      const map = {};
-      kB.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
-      const out = [];
-      kA.forEach(c => {
-        if (c?.t && c?.c && map[c.t]) {
-          const x = c.c, y = map[c.t];
-          out.push(Math.abs((y - x) / ((y + x) / 2) * 100));
-        }
-      });
-      return out.length > 10 ? out : null;
-    }
-    async function fetchCandlesPac(symbol, days) {
-      try {
-        const end = Date.now();
-        const start = end - days * 24 * 60 * 60 * 1000;
-        const res = await fetch(`https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`);
-        const data = await res.json();
-        return (data.success && Array.isArray(data.data)) ? data.data : null;
-      } catch { return null; }
-    }
-    async function pacSpreads(days) {
-      const [cX, cP] = await Promise.all([fetchCandlesPac('XAU', days), fetchCandlesPac('PAXG', days)]);
-      if (!cX?.length || !cP?.length) return null;
-      const map = {};
-      cP.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
-      const out = [];
-      cX.forEach(c => {
-        if (c?.t && c?.c && map[c.t]) {
-          const x = parseFloat(c.c), p = map[c.t];
-          out.push(Math.abs((p - x) / ((p + x) / 2) * 100));
-        }
-      });
-      return out.length > 10 ? out : null;
-    }
-    async function fetchCandlesHL(coin, days) {
-      try {
-        const end = Date.now();
-        const start = end - days * 24 * 60 * 60 * 1000;
-        const res = await fetch('https://api.hyperliquid.xyz/info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'candleSnapshot',
-            req: { coin, interval: '1h', startTime: start, endTime: end }
-          })
-        });
-        const data = await res.json();
-        return Array.isArray(data) ? data : null;
-      } catch { return null; }
-    }
-    async function hlPairSpreads(coinA, coinB, days, multB = 1) {
-      const [kA, kB] = await Promise.all([
-        fetchCandlesHL(coinA, days),
-        fetchCandlesHL(coinB, days)
-      ]);
-      if (!kA?.length || !kB?.length) return null;
-      const map = {};
-      kB.forEach(c => { if (c?.T && c?.c != null) map[c.T] = parseFloat(c.c) * multB; });
-      const out = [];
-      kA.forEach(c => {
-        if (c?.T && c?.c != null && map[c.T] != null) {
-          const a = parseFloat(c.c), b = map[c.T];
-          out.push(Math.abs((b - a) / ((b + a) / 2) * 100));
-        }
-      });
-      return out.length > 10 ? out : null;
-    }
-    async function hlOilSpreads(days) {
-      let wti = null, brent = null;
-      for (const n of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
-        wti = await fetchCandlesHL(n, days);
-        if (wti?.length > 20) break;
-      }
-      for (const n of ['xyz:BRENTOIL', 'BRENTOIL']) {
-        brent = await fetchCandlesHL(n, days);
-        if (brent?.length > 20) break;
-      }
-      if (!wti?.length || !brent?.length) return null;
-      const map = {};
-      brent.forEach(c => { if (c?.T && c?.c != null) map[c.T] = parseFloat(c.c); });
-      const out = [];
-      wti.forEach(c => {
-        if (c?.T && c?.c != null && map[c.T] != null) {
-          const w = parseFloat(c.c), b = map[c.T];
-          out.push(Math.abs((b - w) / ((b + w) / 2) * 100));
-        }
-      });
-      return out.length > 10 ? out : null;
-    }
-    async function getHLMids(dex) {
-      try {
-        const body = dex ? { type: 'allMids', dex } : { type: 'allMids' };
-        const res = await fetch('https://api.hyperliquid.xyz/info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        return await res.json();
-      } catch { return {}; }
-    }
-    function pickMid(mids, names) {
-      for (const n of names) {
-        const v = parseFloat(mids[n]);
-        if (v && isFinite(v) && v > 0) return { name: n, price: v };
-      }
-      return null;
-    }
-    async function resolveHLCoin(candidates) {
-      for (const name of candidates) {
-        const c = await fetchCandlesHL(name, 1);
-        if (c?.length > 5) return name;
-      }
-      return candidates[0];
-    }
-    async function updateAll() {
-      // ===== GOLD VARIATIONAL =====
-      let xaut = null, paxg = null, xau = null;
-      try {
-        const res = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
-        const data = await res.json();
-        (data.listings || []).forEach(item => {
-          const t = (item.ticker || '').toUpperCase();
-          const p = parseFloat(item.mark_price);
-          if (t === 'XAUT') xaut = p;
-          if (t === 'PAXG') paxg = p;
-          if (t === 'XAU') xau = p;
-        });
-      } catch (e) { console.log(e); }
-      let pctXP = 0, absXP = '--', pctXX = 0, absXX = '--';
-      if (xaut && paxg) {
-        const s = calcSpread(xaut, paxg);
-        pctXP = s.pct;
-        absXP = '$' + Math.abs(s.abs).toFixed(2);
-      }
-      if (xaut && xau) {
-        const s = calcSpread(xaut, xau);
-        pctXX = s.pct;
-        absXX = '$' + Math.abs(s.abs).toFixed(2);
-      }
-      const [xp7, xp30, xx7, xx30] = await Promise.all([
-        binanceSpreads('XAUTUSDT', 'PAXGUSDT', 7, false),
-        binanceSpreads('XAUTUSDT', 'PAXGUSDT', 30, false),
-        binanceSpreads('XAUTUSDT', 'XAUUSDT', 7, true),
-        binanceSpreads('XAUTUSDT', 'XAUUSDT', 30, true)
-      ]);
-      document.getElementById('list-var').innerHTML =
-        renderRow('XAUT vs PAXG', pctXP, absXP, 'Var · Binance', xp7, xp30) +
-        renderRow('XAUT vs XAU', pctXX, absXX, 'Var · Binance', xx7, xx30);
-      // ===== PACIFICA =====
-      let pacX = null, pacP = null;
-      try {
-        const res = await fetch('https://api.pacifica.fi/api/v1/info/prices');
-        const data = await res.json();
-        (data.data || []).forEach(item => {
-          const sym = (item.symbol || '').toUpperCase();
-          const m = parseFloat(item.mark || item.mid || 0);
-          if (sym === 'XAU' || sym === 'GOLD') pacX = m;
-          if (sym === 'PAXG') pacP = m;
-        });
-      } catch (e) { console.log(e); }
-      let pctPac = 0, absPac = '--';
-      if (pacX && pacP) {
-        const s = calcSpread(pacX, pacP);
-        pctPac = s.pct;
-        absPac = '$' + Math.abs(s.abs).toFixed(2);
-      }
-      const [p7, p30] = await Promise.all([pacSpreads(7), pacSpreads(30)]);
-      document.getElementById('list-pac').innerHTML =
-        renderRow('XAU vs PAXG', pctPac, absPac, 'Pacifica', p7, p30);
-      // ===== OIL HL =====
-      const midsXyz = await getHLMids('xyz');
-      const midsMain = await getHLMids(null);
-      const allMids = { ...midsMain, ...midsXyz };
-      const wtiM = pickMid(allMids, ['WTIOIL', 'xyz:WTIOIL', 'CL', 'xyz:CL']);
-      const brentM = pickMid(allMids, ['BRENTOIL', 'xyz:BRENTOIL']);
-      let pctOil = 0, absOil = '--';
-      if (wtiM && brentM) {
-        const s = calcSpread(wtiM.price, brentM.price);
-        pctOil = s.pct;
-        absOil = '$' + Math.abs(s.abs).toFixed(2);
-      }
-      const [o7, o30] = await Promise.all([hlOilSpreads(7), hlOilSpreads(30)]);
-      document.getElementById('list-oil').innerHTML =
-        renderRow('WTI vs Brent', pctOil, absOil, 'Hyperliquid', o7, o30);
-      // ===== EQUITY HL: S&P500 vs US500 (US500 × 10) =====
-      // SP500 vive en xyz · US500 vive en mkts (y a veces km)
-      const [midsMkts, midsKm] = await Promise.all([
-        getHLMids('mkts'),
-        getHLMids('km')
-      ]);
-      const allMidsEq = { ...allMids, ...midsMkts, ...midsKm };
-
-      const spM = pickMid(allMidsEq, [
-        'xyz:SP500', 'SP500'
-      ]);
-      const usM = pickMid(allMidsEq, [
-        'mkts:US500', 'km:US500', 'US500'
-      ]);
-
-      let pctEq = 0, absEq = '--';
-      let spName = 'xyz:SP500';
-      let usName = 'mkts:US500';
-
-      if (spM && usM) {
-        const sp = spM.price;
-        const usNorm = usM.price * 10; // US500 ≈ 1/10 del índice
-        const s = calcSpread(sp, usNorm);
-        pctEq = s.pct;
-        absEq = Math.abs(s.abs).toFixed(1) + ' pts';
-        spName = spM.name;
-        usName = usM.name;
-        console.log('SP500:', sp, 'US500×10:', usNorm, 'spread%:', pctEq.toFixed(3));
-      } else {
-        console.warn('No se encontraron mids:', { spM, usM });
-      }
-
-      // Candles: nombres canónicos con prefijo de dex
-      const spCandle = await resolveHLCoin([spName, 'xyz:SP500']);
-      const usCandle = await resolveHLCoin([usName, 'mkts:US500', 'km:US500']);
-
-      const [eq7, eq30] = await Promise.all([
-        hlPairSpreads(spCandle, usCandle, 7, 10),
-        hlPairSpreads(spCandle, usCandle, 30, 10)
-      ]);
-
-      document.getElementById('list-eq').innerHTML =
-        renderRow('S&P500 vs US500', pctEq, absEq, 'HL · US500×10', eq7, eq30);
-    }
-    updateAll();
-    setInterval(updateAll, 30000);
-  </script>
-</body>
-</html>
+              <div class="mk th" style
