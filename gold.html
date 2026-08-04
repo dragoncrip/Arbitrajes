@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Umbrales | Arbitrajes</title>
+  <title>Gold Arbitrage | Multi-DEX</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -11,28 +11,28 @@
       background: #0b0e11;
       color: #eaecef;
       min-height: 100vh;
-      padding: 20px 24px;
+      padding: 20px;
       display: flex;
       justify-content: center;
     }
-    .container { width: 100%; max-width: 1180px; }
+    .container { width: 100%; max-width: 1100px; }
 
-    h1 { text-align: center; font-size: 1.45rem; margin-bottom: 2px; }
-    .subtitle { text-align: center; color: #848e9c; font-size: 0.8rem; margin-bottom: 14px; }
+    h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 18px; }
 
     .nav {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 24px;
     }
     .nav a {
       background: #1e2329;
       color: #f0b90b;
-      padding: 7px 16px;
-      border-radius: 18px;
+      padding: 8px 18px;
+      border-radius: 20px;
       text-decoration: none;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 600;
       border: 1px solid #2b3139;
       transition: all 0.2s;
@@ -43,157 +43,549 @@
       border-color: #f0b90b;
     }
 
-    .group {
-      font-size: 0.78rem;
+    .section-title {
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 8px 0 14px;
       color: #f0b90b;
       font-weight: 600;
-      margin: 4px 0 10px;
+    }
+
+    .card {
+      background: #1e2329;
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid #2b3139;
+      margin-bottom: 20px;
+    }
+
+    .prices {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .price-box {
+      flex: 1;
+      background: #2b3139;
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+    }
+    .price-box .label { font-size: 0.75rem; color: #848e9c; }
+    .price-box .value { font-size: 1.2rem; font-weight: 700; margin-top: 4px; }
+    .price-box .fund { font-size: 0.7rem; color: #848e9c; margin-top: 6px; }
+
+    .gold-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 800px) {
+      .gold-grid { grid-template-columns: 1fr; }
+    }
+    .pair-card {
+      background: #2b3139;
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .pair-names {
+      font-size: 0.82rem;
+      color: #b7bdc6;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .pair-names b { color: #eaecef; }
+    .pair-pct { font-size: 1.35rem; font-weight: 800; color: #f0b90b; }
+    .pair-usd { font-size: 0.85rem; color: #848e9c; margin-top: 4px; }
+
+    .green { color: #0ecb81; }
+    .red { color: #f6465d; }
+    .yellow { color: #f0b90b; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+    .info-item {
+      background: #2b3139;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .info-item .label { color: #848e9c; font-size: 0.68rem; }
+    .info-item .value { font-weight: 600; margin-top: 3px; font-size: 0.88rem; }
+    .full-width { grid-column: 1 / -1; }
+
+    .pair-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    @media (max-width: 800px) {
+      .pair-stats-grid { grid-template-columns: 1fr; }
+    }
+
+    .pair-stats-card {
+      background: #252a31;
+      border-radius: 16px;
+      padding: 16px 14px;
+      border: 1px solid #2b3139;
+    }
+    .pair-stats-card h3 {
+      text-align: center;
+      font-size: 1rem;
+      color: #f0b90b;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .pair-stats-card .current-spread {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #f0b90b;
+      margin-bottom: 4px;
+    }
+    .pair-stats-card .current-diff {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #848e9c;
+      margin-bottom: 14px;
+    }
+
+    .period-block {
+      background: #1e2329;
+      border-radius: 12px;
+      padding: 12px 10px;
+      margin-bottom: 12px;
+    }
+    .period-block:last-child { margin-bottom: 0; }
+    .period-title {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #f0b90b;
+      font-weight: 600;
+      margin-bottom: 10px;
       letter-spacing: 0.3px;
     }
 
-    .list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
-
-    .row {
-      background: #1e2329;
-      border: 1px solid #2b3139;
-      border-radius: 12px;
-      padding: 10px 14px;
-      display: grid;
-      grid-template-columns: 140px 1fr 1fr;
-      gap: 14px;
-      align-items: center;
-      min-height: 78px;
-    }
-
-    .left {
-      text-align: center;
-      padding: 4px 6px;
-    }
-    .pair {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #f0b90b;
-      line-height: 1.25;
-      margin-bottom: 4px;
-    }
-    .pct {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: -0.4px;
-    }
-    .pct.green { color: #0ecb81; }
-    .pct.red { color: #f6465d; }
-    .pct.yellow { color: #f0b90b; }
-    .diff {
-      font-size: 0.7rem;
-      color: #848e9c;
-      margin-top: 2px;
-    }
-    .src {
-      font-size: 0.58rem;
-      color: #5e6673;
-      margin-top: 4px;
-    }
-
-    .bar-col {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tag {
-      flex-shrink: 0;
-      width: 28px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #848e9c;
-      text-align: right;
-    }
-
-    .bar-box { flex: 1; min-width: 0; }
-
-    .track {
-      position: relative;
-      height: 14px;
-      border-radius: 7px;
-      overflow: visible;
+    .range-bar-container {
+      margin-top: 10px;
+      padding: 8px 6px 6px;
       background: #2b3139;
+      border-radius: 8px;
     }
-    /* zonas: se posicionan con left/width en % */
-    .zone {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      border-radius: 0;
-    }
-    .zone.exit { background: #f6465d; opacity: 0.55; border-radius: 7px 0 0 7px; }
-    .zone.wait { background: #f0b90b; opacity: 0.35; }
-    .zone.enter { background: #0ecb81; opacity: 0.55; border-radius: 0 7px 7px 0; }
-
-    .mk {
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-    }
-    .mk.th {
-      width: 2px;
-      height: 20px;
-      background: rgba(234,236,239,0.85);
-      border-radius: 1px;
-    }
-    .mk.cur {
-      width: 5px;
-      height: 24px;
-      background: #fff;
-      border-radius: 2px;
-      box-shadow: 0 0 8px rgba(255,255,255,0.55);
-      z-index: 3;
-    }
-
-    .labels {
+    .range-bar-labels {
       display: flex;
       justify-content: space-between;
-      margin-top: 3px;
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       color: #848e9c;
+      margin-bottom: 5px;
     }
-    .labels b { color: #b7bdc6; font-weight: 600; }
+    .range-bar {
+      position: relative;
+      height: 14px;
+      background: #1e2329;
+      border-radius: 7px;
+      overflow: visible;
+    }
+    .range-bar-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #f6465d 0%, #f0b90b 50%, #0ecb81 100%);
+      border-radius: 7px;
+      opacity: 0.4;
+    }
+    .range-marker {
+      position: absolute;
+      top: 50%;
+      width: 3px;
+      height: 22px;
+      background: #eaecef;
+      border-radius: 2px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      box-shadow: 0 0 4px rgba(0,0,0,0.6);
+    }
+    .range-marker.current {
+      width: 5px;
+      height: 26px;
+      background: #f0b90b;
+      box-shadow: 0 0 8px rgba(240,185,11,0.8);
+    }
+    .range-current-label {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #f0b90b;
+      margin-top: 5px;
+    }
+
+    .note {
+      margin-top: 14px;
+      background: #2b3139;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.7rem;
+      color: #b7bdc6;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .note b { color: #f0b90b; }
 
     .footer {
       text-align: center;
-      font-size: 0.68rem;
+      margin-top: 10px;
+      font-size: 0.75rem;
       color: #5e6673;
-      margin-top: 6px;
-    }
-    .empty {
-      text-align: center;
-      color: #5e6673;
-      font-size: 0.8rem;
-      padding: 16px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Umbrales</h1>
-    <div class="subtitle">Rojo = salir · Amarillo = esperar · Verde = entrar · Actualiza cada 30s</div>
+    <h1>Gold Arbitrage</h1>
+    <div class="subtitle">Variational + Pacifica • Actualiza cada 30s</div>
 
     <div class="nav">
       <a href="index.html">Oil Spreads</a>
-      <a href="gold.html">Gold Arbitrage</a>
-      <a href="umbrales.html" class="active">Umbrales</a>
+      <a href="gold.html" class="active">Gold Arbitrage</a>
+      <a href="umbrales.html">Umbrales</a>
     </div>
 
-    <div class="group">GOLD · VARIATIONAL</div>
-    <div class="list" id="list-var"><div class="empty">Cargando…</div></div>
+    <!-- GOLD VARIATIONAL -->
+    <div class="section-title">Gold en Variational (XAUT • PAXG • XAU)</div>
+    <div class="card">
+      <div class="prices">
+        <div class="price-box">
+          <div class="label">XAUT</div>
+          <div class="value" id="gold-xaut">--</div>
+          <div class="fund" id="fund-xaut">Fund: --</div>
+        </div>
+        <div class="price-box">
+          <div class="label">PAXG</div>
+          <div class="value" id="gold-paxg">--</div>
+          <div class="fund" id="fund-paxg">Fund: --</div>
+        </div>
+        <div class="price-box">
+          <div class="label">XAU</div>
+          <div class="value" id="gold-xau">--</div>
+          <div class="fund" id="fund-xau">Fund: --</div>
+        </div>
+      </div>
 
-    <div class="group">GOLD · PACIFICA</div>
-    <div class="list" id="list-pac"><div class="empty">Cargando…</div></div>
+      <div class="gold-grid">
+        <div class="pair-card">
+          <div class="pair-names" id="pair1-names">XAUT vs PAXG</div>
+          <div class="pair-pct" id="pair1-pct">--</div>
+          <div class="pair-usd" id="pair1-usd">--</div>
+        </div>
+        <div class="pair-card">
+          <div class="pair-names" id="pair2-names">XAUT vs XAU</div>
+          <div class="pair-pct" id="pair2-pct">--</div>
+          <div class="pair-usd" id="pair2-usd">--</div>
+        </div>
+        <div class="pair-card">
+          <div class="pair-names" id="pair3-names">PAXG vs XAU</div>
+          <div class="pair-pct" id="pair3-pct">--</div>
+          <div class="pair-usd" id="pair3-usd">--</div>
+        </div>
+      </div>
 
-    <div class="group">OIL · HYPERLIQUID</div>
-    <div class="list" id="list-oil"><div class="empty">Cargando…</div></div>
+      <!-- STATS AGRUPADAS POR PAR -->
+      <div class="pair-stats-grid">
 
-    <div class="footer">Histórico: Binance (proxy Var) · Pacifica real · Hyperliquid real</div>
+        <!-- XAUT vs PAXG -->
+        <div class="pair-stats-card">
+          <h3>XAUT vs PAXG</h3>
+          <div class="current-spread" id="xp-current-pct">--</div>
+          <div class="current-diff" id="xp-current-diff">Diferencia: --</div>
+
+          <div class="period-block">
+            <div class="period-title">—— 7 días ——</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="label">Rango</div>
+                <div class="value" id="xp-range-7">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Media ± σ</div>
+                <div class="value" id="xp-mean-7">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Z-Score</div>
+                <div class="value" id="xp-zscore-7">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Umbral</div>
+                <div class="value" id="xp-umbral-7">--</div>
+              </div>
+              <div class="info-item full-width">
+                <div class="label">Falta a Entrada / Salida</div>
+                <div class="value" id="xp-dist-7">--</div>
+              </div>
+            </div>
+            <div class="range-bar-container" id="xp-bar-7-container" style="display:none;">
+              <div class="range-bar-labels">
+                <span id="xp-bar-7-exit">Sal</span>
+                <span id="xp-bar-7-enter">Ent</span>
+              </div>
+              <div class="range-bar">
+                <div class="range-bar-fill"></div>
+                <div class="range-marker" id="xp-bar-7-exit-marker" style="left:0%"></div>
+                <div class="range-marker" id="xp-bar-7-enter-marker" style="left:100%"></div>
+                <div class="range-marker current" id="xp-bar-7-current" style="left:50%"></div>
+              </div>
+              <div class="range-current-label" id="xp-bar-7-label">Actual: --</div>
+            </div>
+          </div>
+
+          <div class="period-block">
+            <div class="period-title">—— 30 días ——</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="label">Rango</div>
+                <div class="value" id="xp-range-30">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Media ± σ</div>
+                <div class="value" id="xp-mean-30">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Z-Score</div>
+                <div class="value" id="xp-zscore-30">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Umbral</div>
+                <div class="value" id="xp-umbral-30">--</div>
+              </div>
+              <div class="info-item full-width">
+                <div class="label">Falta a Entrada / Salida</div>
+                <div class="value" id="xp-dist-30">--</div>
+              </div>
+            </div>
+            <div class="range-bar-container" id="xp-bar-30-container" style="display:none;">
+              <div class="range-bar-labels">
+                <span id="xp-bar-30-exit">Sal</span>
+                <span id="xp-bar-30-enter">Ent</span>
+              </div>
+              <div class="range-bar">
+                <div class="range-bar-fill"></div>
+                <div class="range-marker" id="xp-bar-30-exit-marker" style="left:0%"></div>
+                <div class="range-marker" id="xp-bar-30-enter-marker" style="left:100%"></div>
+                <div class="range-marker current" id="xp-bar-30-current" style="left:50%"></div>
+              </div>
+              <div class="range-current-label" id="xp-bar-30-label">Actual: --</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- XAUT vs XAU -->
+        <div class="pair-stats-card">
+          <h3>XAUT vs XAU</h3>
+          <div class="current-spread" id="xx-current-pct">--</div>
+          <div class="current-diff" id="xx-current-diff">Diferencia: --</div>
+
+          <div class="period-block">
+            <div class="period-title">—— 7 días ——</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="label">Rango</div>
+                <div class="value" id="xx-range-7">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Media ± σ</div>
+                <div class="value" id="xx-mean-7">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Z-Score</div>
+                <div class="value" id="xx-zscore-7">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Umbral</div>
+                <div class="value" id="xx-umbral-7">--</div>
+              </div>
+              <div class="info-item full-width">
+                <div class="label">Falta a Entrada / Salida</div>
+                <div class="value" id="xx-dist-7">--</div>
+              </div>
+            </div>
+            <div class="range-bar-container" id="xx-bar-7-container" style="display:none;">
+              <div class="range-bar-labels">
+                <span id="xx-bar-7-exit">Sal</span>
+                <span id="xx-bar-7-enter">Ent</span>
+              </div>
+              <div class="range-bar">
+                <div class="range-bar-fill"></div>
+                <div class="range-marker" id="xx-bar-7-exit-marker" style="left:0%"></div>
+                <div class="range-marker" id="xx-bar-7-enter-marker" style="left:100%"></div>
+                <div class="range-marker current" id="xx-bar-7-current" style="left:50%"></div>
+              </div>
+              <div class="range-current-label" id="xx-bar-7-label">Actual: --</div>
+            </div>
+          </div>
+
+          <div class="period-block">
+            <div class="period-title">—— 30 días ——</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="label">Rango</div>
+                <div class="value" id="xx-range-30">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Media ± σ</div>
+                <div class="value" id="xx-mean-30">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Z-Score</div>
+                <div class="value" id="xx-zscore-30">--</div>
+              </div>
+              <div class="info-item">
+                <div class="label">Umbral</div>
+                <div class="value" id="xx-umbral-30">--</div>
+              </div>
+              <div class="info-item full-width">
+                <div class="label">Falta a Entrada / Salida</div>
+                <div class="value" id="xx-dist-30">--</div>
+              </div>
+            </div>
+            <div class="range-bar-container" id="xx-bar-30-container" style="display:none;">
+              <div class="range-bar-labels">
+                <span id="xx-bar-30-exit">Sal</span>
+                <span id="xx-bar-30-enter">Ent</span>
+              </div>
+              <div class="range-bar">
+                <div class="range-bar-fill"></div>
+                <div class="range-marker" id="xx-bar-30-exit-marker" style="left:0%"></div>
+                <div class="range-marker" id="xx-bar-30-enter-marker" style="left:100%"></div>
+                <div class="range-marker current" id="xx-bar-30-current" style="left:50%"></div>
+              </div>
+              <div class="range-current-label" id="xx-bar-30-label">Actual: --</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="note">
+        <b>Histórico = proxy Binance</b> (XAUTUSDT Spot + PAXGUSDT Spot + XAUUSDT Futures).<br>
+        Variational no expone velas públicas. Los spreads actuales sí son de Variational.<br>
+        Z-Score → Z > +1.5 Estirado · entre -1/+1 Normal · &lt; -1.5 Comprimido
+      </div>
+    </div>
+
+    <!-- PACIFICA -->
+    <div class="section-title">Gold en Pacifica</div>
+    <div class="card">
+      <div class="prices">
+        <div class="price-box">
+          <div class="label">XAU (GOLD)</div>
+          <div class="value" id="pac-xau">--</div>
+          <div class="fund" id="pac-funding-xau">Fund: --</div>
+        </div>
+        <div class="price-box">
+          <div class="label">PAXG</div>
+          <div class="value" id="pac-paxg">--</div>
+          <div class="fund" id="pac-funding-paxg">Fund: --</div>
+        </div>
+      </div>
+
+      <div class="pair-stats-card" style="max-width: 520px; margin: 0 auto;">
+        <h3>XAU vs PAXG</h3>
+        <div class="current-spread" id="pac-current-pct">--</div>
+        <div class="current-diff" id="pac-current-diff">Diferencia: --</div>
+
+        <div class="period-block">
+          <div class="period-title">—— 7 días ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="pac-range-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="pac-mean-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="pac-zscore-7">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="pac-umbral-7">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="pac-dist-7">--</div>
+            </div>
+          </div>
+          <div class="range-bar-container" id="pac-bar-7-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="pac-bar-7-exit">Sal</span>
+              <span id="pac-bar-7-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="pac-bar-7-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="pac-bar-7-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="pac-bar-7-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="pac-bar-7-label">Actual: --</div>
+          </div>
+        </div>
+
+        <div class="period-block">
+          <div class="period-title">—— 30 días ——</div>
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="label">Rango</div>
+              <div class="value" id="pac-range-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Media ± σ</div>
+              <div class="value" id="pac-mean-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Z-Score</div>
+              <div class="value" id="pac-zscore-30">--</div>
+            </div>
+            <div class="info-item">
+              <div class="label">Umbral</div>
+              <div class="value" id="pac-umbral-30">--</div>
+            </div>
+            <div class="info-item full-width">
+              <div class="label">Falta a Entrada / Salida</div>
+              <div class="value" id="pac-dist-30">--</div>
+            </div>
+          </div>
+          <div class="range-bar-container" id="pac-bar-30-container" style="display:none;">
+            <div class="range-bar-labels">
+              <span id="pac-bar-30-exit">Sal</span>
+              <span id="pac-bar-30-enter">Ent</span>
+            </div>
+            <div class="range-bar">
+              <div class="range-bar-fill"></div>
+              <div class="range-marker" id="pac-bar-30-exit-marker" style="left:0%"></div>
+              <div class="range-marker" id="pac-bar-30-enter-marker" style="left:100%"></div>
+              <div class="range-marker current" id="pac-bar-30-current" style="left:50%"></div>
+            </div>
+            <div class="range-current-label" id="pac-bar-30-label">Actual: --</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>Histórico = velas reales de Pacifica</b> (XAU + PAXG mark, 1h).<br>
+        Z-Score → Z > +1.5 Estirado · entre -1/+1 Normal · &lt; -1.5 Comprimido
+      </div>
+    </div>
+
+    <div class="footer">Datos en tiempo real • Histórico Binance (Variational) + Pacifica</div>
   </div>
 
   <script>
@@ -203,255 +595,313 @@
       return { pct: (Math.abs(diff) / avg) * 100, abs: diff };
     }
 
+    function getColor(pct) {
+      if (pct >= 0.15) return 'green';
+      if (pct <= 0.05) return 'red';
+      return 'yellow';
+    }
+
     function calcStats(spreads) {
       if (!spreads || spreads.length < 5) return null;
       const n = spreads.length;
-      const mean = spreads.reduce((s, v) => s + v, 0) / n;
-      const variance = spreads.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n;
-      return { mean, std: Math.sqrt(variance), min: Math.min(...spreads), max: Math.max(...spreads) };
+      const mean = spreads.reduce((a, b) => a + b, 0) / n;
+      const variance = spreads.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+      const std = Math.sqrt(variance);
+      return { mean, std, min: Math.min(...spreads), max: Math.max(...spreads) };
+    }
+
+    function colorZ(z) {
+      if (z >= 1.5) return '#0ecb81';
+      if (z <= -1.5) return '#f6465d';
+      if (Math.abs(z) >= 0.8) return '#f0b90b';
+      return '#b7bdc6';
+    }
+
+    function formatDist(current, enter, exit) {
+      const dEnter = enter - current;
+      const dExit  = exit - current;
+      const eStr = (dEnter > 0 ? '+' : '') + dEnter.toFixed(3) + '%';
+      const xStr = (dExit  > 0 ? '+' : '') + dExit.toFixed(3) + '%';
+      return `Sal ${xStr} · Ent ${eStr}`;
+    }
+
+    function updateRangeBar(prefix, current, exit, enter) {
+      const container = document.getElementById(`${prefix}-container`);
+      if (!container) return;
+
+      const padding = Math.max((enter - exit) * 0.3, 0.05);
+      const min = exit - padding;
+      const max = enter + padding;
+      const range = max - min || 1;
+
+      const pct = Math.max(0, Math.min(100, ((current - min) / range) * 100));
+      const exitPct = ((exit - min) / range) * 100;
+      const enterPct = ((enter - min) / range) * 100;
+
+      document.getElementById(`${prefix}-exit`).innerText = `Sal ${exit.toFixed(3)}%`;
+      document.getElementById(`${prefix}-enter`).innerText = `Ent ${enter.toFixed(3)}%`;
+      document.getElementById(`${prefix}-exit-marker`).style.left = exitPct + '%';
+      document.getElementById(`${prefix}-enter-marker`).style.left = enterPct + '%';
+      document.getElementById(`${prefix}-current`).style.left = pct + '%';
+      document.getElementById(`${prefix}-label`).innerText = `Actual: ${current.toFixed(3)}%`;
+
+      container.style.display = 'block';
     }
 
     function calcThresholds(spreads) {
       if (!spreads || spreads.length < 20) return null;
       const sorted = [...spreads].sort((a, b) => a - b);
+      const p20 = sorted[Math.floor(sorted.length * 0.20)];
+      const p80 = sorted[Math.floor(sorted.length * 0.80)];
       return {
-        exit: Math.round(sorted[Math.floor(sorted.length * 0.20)] * 1000) / 1000,
-        enter: Math.round(sorted[Math.floor(sorted.length * 0.80)] * 1000) / 1000
+        exit: Math.round(p20 * 1000) / 1000,
+        enter: Math.round(p80 * 1000) / 1000
       };
     }
 
-    function zoneColor(pct, exit, enter) {
-      if (pct >= enter) return 'green';
-      if (pct <= exit) return 'red';
-      return 'yellow';
-    }
+    function renderStats(prefix, currentPct, spreads7, spreads30) {
+      if (spreads7 && spreads7.length > 10) {
+        const s7 = calcStats(spreads7);
+        document.getElementById(`${prefix}-range-7`).innerText = s7.min.toFixed(3) + '→' + s7.max.toFixed(3);
+        document.getElementById(`${prefix}-mean-7`).innerText = s7.mean.toFixed(3) + '±' + s7.std.toFixed(3);
 
-    function pos(val, min, max) {
-      if (max <= min) return 50;
-      return Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
-    }
+        if (currentPct > 0 && s7.std > 0) {
+          const z = (currentPct - s7.mean) / s7.std;
+          const el = document.getElementById(`${prefix}-zscore-7`);
+          el.innerText = z.toFixed(2) + 'σ';
+          el.style.color = colorZ(z);
+        }
 
-    function renderBar(tag, current, spreads) {
-      const st = calcStats(spreads);
-      const th = calcThresholds(spreads);
-      if (!st || !th) {
-        return `<div class="bar-col"><div class="tag">${tag}</div><div class="bar-box"><div class="track"></div><div class="labels"><span>—</span></div></div></div>`;
+        const th7 = calcThresholds(spreads7);
+        if (th7) {
+          document.getElementById(`${prefix}-umbral-7`).innerText = th7.exit.toFixed(3) + '–' + th7.enter.toFixed(3);
+          document.getElementById(`${prefix}-dist-7`).innerText = formatDist(currentPct, th7.enter, th7.exit);
+          updateRangeBar(`${prefix}-bar-7`, currentPct, th7.exit, th7.enter);
+        }
       }
 
-      const pad = Math.max((th.enter - th.exit) * 0.35, 0.04);
-      const min = Math.min(st.min, th.exit) - pad;
-      const max = Math.max(st.max, th.enter) + pad;
+      if (spreads30 && spreads30.length > 20) {
+        const s30 = calcStats(spreads30);
+        document.getElementById(`${prefix}-range-30`).innerText = s30.min.toFixed(3) + '→' + s30.max.toFixed(3);
+        document.getElementById(`${prefix}-mean-30`).innerText = s30.mean.toFixed(3) + '±' + s30.std.toFixed(3);
 
-      const exitP = pos(th.exit, min, max);
-      const enterP = pos(th.enter, min, max);
-      const curP = pos(current, min, max);
+        if (currentPct > 0 && s30.std > 0) {
+          const z = (currentPct - s30.mean) / s30.std;
+          const el = document.getElementById(`${prefix}-zscore-30`);
+          el.innerText = z.toFixed(2) + 'σ';
+          el.style.color = colorZ(z);
+        }
 
-      return `
-        <div class="bar-col">
-          <div class="tag">${tag}</div>
-          <div class="bar-box">
-            <div class="track">
-              <div class="zone exit" style="left:0%;width:${exitP}%"></div>
-              <div class="zone wait" style="left:${exitP}%;width:${enterP - exitP}%"></div>
-              <div class="zone enter" style="left:${enterP}%;width:${100 - enterP}%"></div>
-              <div class="mk th" style="left:${exitP}%"></div>
-              <div class="mk th" style="left:${enterP}%"></div>
-              <div class="mk cur" style="left:${curP}%"></div>
-            </div>
-            <div class="labels">
-              <span>Sal <b>${th.exit.toFixed(3)}%</b></span>
-              <span>Actual <b>${current.toFixed(3)}%</b></span>
-              <span>Ent <b>${th.enter.toFixed(3)}%</b></span>
-            </div>
-          </div>
-        </div>`;
+        const th30 = calcThresholds(spreads30);
+        if (th30) {
+          document.getElementById(`${prefix}-umbral-30`).innerText = th30.exit.toFixed(3) + '–' + th30.enter.toFixed(3);
+          document.getElementById(`${prefix}-dist-30`).innerText = formatDist(currentPct, th30.enter, th30.exit);
+          updateRangeBar(`${prefix}-bar-30`, currentPct, th30.exit, th30.enter);
+        }
+      }
     }
 
-    function renderRow(name, current, abs, source, s7, s30) {
-      const th30 = calcThresholds(s30) || calcThresholds(s7);
-      const exit = th30?.exit ?? 0.05;
-      const enter = th30?.enter ?? 0.15;
-      const color = zoneColor(current, exit, enter);
-      const absStr = abs != null
-        ? (Math.abs(abs) >= 1 ? '$' + Math.abs(abs).toFixed(2) : '$' + Math.abs(abs).toFixed(3))
-        : '--';
-
-      return `
-        <div class="row">
-          <div class="left">
-            <div class="pair">${name}</div>
-            <div class="pct ${color}">${current.toFixed(3)}%</div>
-            <div class="diff">${absStr}</div>
-            <div class="src">${source}</div>
-          </div>
-          ${renderBar('7d', current, s7)}
-          ${renderBar('30d', current, s30)}
-        </div>`;
-    }
-
-    // ===== DATA =====
-    async function fetchBinanceKlines(symbol, days, futures = false) {
+    // Binance: XAUT/PAXG = Spot | XAU = Futures
+    async function fetchBinanceKlines(symbol, days = 7, futures = false) {
       try {
         const end = Date.now();
         const start = end - days * 24 * 60 * 60 * 1000;
-        const base = futures ? 'https://fapi.binance.com/fapi/v1/klines' : 'https://api.binance.com/api/v3/klines';
-        const res = await fetch(`${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`);
+        const base = futures
+          ? 'https://fapi.binance.com/fapi/v1/klines'
+          : 'https://api.binance.com/api/v3/klines';
+        const url = `${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
+        const res = await fetch(url);
         const data = await res.json();
         if (!Array.isArray(data)) return null;
         return data.map(c => ({ t: c[0], c: parseFloat(c[4]) }));
-      } catch { return null; }
+      } catch (e) {
+        console.log('Error Binance', symbol, e);
+        return null;
+      }
     }
 
-    async function binanceSpreads(a, b, days, futuresB = false) {
-      const [kA, kB] = await Promise.all([
-        fetchBinanceKlines(a, days, false),
-        fetchBinanceKlines(b, days, futuresB)
-      ]);
+    async function getBinanceSpreads(pair, days) {
+      let kA, kB;
+      if (pair === 'xaut-paxg') {
+        [kA, kB] = await Promise.all([
+          fetchBinanceKlines('XAUTUSDT', days, false),
+          fetchBinanceKlines('PAXGUSDT', days, false)
+        ]);
+      } else {
+        [kA, kB] = await Promise.all([
+          fetchBinanceKlines('XAUTUSDT', days, false),
+          fetchBinanceKlines('XAUUSDT', days, true)
+        ]);
+      }
       if (!kA?.length || !kB?.length) return null;
+
       const map = {};
       kB.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
-      const out = [];
+      const spreads = [];
       kA.forEach(c => {
         if (c?.t && c?.c && map[c.t]) {
-          const x = c.c, y = map[c.t];
-          out.push(Math.abs((y - x) / ((y + x) / 2) * 100));
+          const a = c.c, b = map[c.t];
+          spreads.push(Math.abs((b - a) / ((b + a) / 2) * 100));
         }
       });
-      return out.length > 10 ? out : null;
+      return spreads.length > 10 ? spreads : null;
     }
 
-    async function fetchCandlesPac(symbol, days) {
+    // Pacifica velas reales
+    async function fetchCandlesPac(symbol, days = 7) {
       try {
         const end = Date.now();
         const start = end - days * 24 * 60 * 60 * 1000;
-        const res = await fetch(`https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`);
+        const url = `https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`;
+        const res = await fetch(url);
         const data = await res.json();
         return (data.success && Array.isArray(data.data)) ? data.data : null;
       } catch { return null; }
     }
 
-    async function pacSpreads(days) {
-      const [cX, cP] = await Promise.all([fetchCandlesPac('XAU', days), fetchCandlesPac('PAXG', days)]);
-      if (!cX?.length || !cP?.length) return null;
+    async function getPacificaSpreads(days) {
+      const [cXau, cPaxg] = await Promise.all([
+        fetchCandlesPac('XAU', days),
+        fetchCandlesPac('PAXG', days)
+      ]);
+      if (!cXau?.length || !cPaxg?.length) return null;
+
       const map = {};
-      cP.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
-      const out = [];
-      cX.forEach(c => {
+      cPaxg.forEach(c => {
+        if (c?.t && c?.c) map[c.t] = parseFloat(c.c);
+      });
+      const spreads = [];
+      cXau.forEach(c => {
         if (c?.t && c?.c && map[c.t]) {
           const x = parseFloat(c.c), p = map[c.t];
-          out.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+          spreads.push(Math.abs((p - x) / ((p + x) / 2) * 100));
         }
       });
-      return out.length > 10 ? out : null;
+      return spreads.length > 10 ? spreads : null;
     }
 
-    async function fetchCandlesHL(coin, days) {
+    async function updateGold() {
       try {
-        const end = Date.now();
-        const start = end - days * 24 * 60 * 60 * 1000;
-        const res = await fetch('https://api.hyperliquid.xyz/info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'candleSnapshot', req: { coin, interval: '1h', startTime: start, endTime: end } })
-        });
-        const data = await res.json();
-        return Array.isArray(data) ? data : null;
-      } catch { return null; }
-    }
+        // ===== VARIATIONAL =====
+        const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
+        const varData = await resVar.json();
 
-    async function hlSpreads(days) {
-      let wti = null, brent = null;
-      for (const n of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
-        wti = await fetchCandlesHL(n, days);
-        if (wti?.length > 20) break;
-      }
-      for (const n of ['xyz:BRENTOIL', 'BRENTOIL']) {
-        brent = await fetchCandlesHL(n, days);
-        if (brent?.length > 20) break;
-      }
-      if (!wti?.length || !brent?.length) return null;
-      const map = {};
-      brent.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
-      const out = [];
-      wti.forEach(c => {
-        if (c?.T && c?.c && map[c.T]) {
-          const w = parseFloat(c.c), b = map[c.T];
-          out.push(Math.abs((b - w) / ((b + w) / 2) * 100));
+        let xaut = null, paxg = null, xau = null;
+        let pctXP = 0, pctXX = 0;
+
+        (varData.listings || []).forEach(item => {
+          const ticker = (item.ticker || '').toUpperCase();
+          const price = parseFloat(item.mark_price);
+          const rawFunding = parseFloat(item.funding_rate || 0);
+          const intervalSec = parseFloat(item.funding_interval_s || 14400);
+          const hours = intervalSec / 3600;
+          const annual = (rawFunding * (24 / hours) * 365 / 22).toFixed(2) + '%';
+
+          if (ticker === 'XAUT') {
+            xaut = price;
+            document.getElementById('gold-xaut').innerText = '$' + price.toFixed(2);
+            document.getElementById('fund-xaut').innerText = 'Fund: ' + annual;
+          }
+          if (ticker === 'PAXG') {
+            paxg = price;
+            document.getElementById('gold-paxg').innerText = '$' + price.toFixed(2);
+            document.getElementById('fund-paxg').innerText = 'Fund: ' + annual;
+          }
+          if (ticker === 'XAU') {
+            xau = price;
+            document.getElementById('gold-xau').innerText = '$' + price.toFixed(2);
+            document.getElementById('fund-xau').innerText = 'Fund: ' + annual;
+          }
+        });
+
+        if (xaut && paxg) {
+          const s = calcSpread(xaut, paxg);
+          pctXP = s.pct;
+          document.getElementById('pair1-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs PAXG (<b>$${paxg.toFixed(2)}</b>)`;
+          document.getElementById('pair1-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair1-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+          document.getElementById('xp-current-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('xp-current-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
         }
-      });
-      return out.length > 10 ? out : null;
+
+        if (xaut && xau) {
+          const s = calcSpread(xaut, xau);
+          pctXX = s.pct;
+          document.getElementById('pair2-names').innerHTML = `XAUT (<b>$${xaut.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
+          document.getElementById('pair2-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair2-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+          document.getElementById('xx-current-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('xx-current-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
+        }
+
+        if (paxg && xau) {
+          const s = calcSpread(paxg, xau);
+          document.getElementById('pair3-names').innerHTML = `PAXG (<b>$${paxg.toFixed(2)}</b>)<br>vs XAU (<b>$${xau.toFixed(2)}</b>)`;
+          document.getElementById('pair3-pct').innerText = s.pct.toFixed(3) + '%';
+          document.getElementById('pair3-usd').innerText = '$' + Math.abs(s.abs).toFixed(2);
+        }
+
+        // Histórico Binance
+        const [spreadsXP7, spreadsXP30, spreadsXX7, spreadsXX30] = await Promise.all([
+          getBinanceSpreads('xaut-paxg', 7),
+          getBinanceSpreads('xaut-paxg', 30),
+          getBinanceSpreads('xaut-xau', 7),
+          getBinanceSpreads('xaut-xau', 30)
+        ]);
+        renderStats('xp', pctXP, spreadsXP7, spreadsXP30);
+        renderStats('xx', pctXX, spreadsXX7, spreadsXX30);
+
+        // ===== PACIFICA =====
+        try {
+          const resPac = await fetch('https://api.pacifica.fi/api/v1/info/prices');
+          const pacData = await resPac.json();
+          const list = pacData.data || [];
+
+          let pacXau = null, pacPaxg = null;
+          list.forEach(item => {
+            const sym = (item.symbol || '').toUpperCase();
+            const mark = parseFloat(item.mark || item.mid || 0);
+            const funding = parseFloat(item.funding || 0);
+            const annual = (funding * 24 * 365 * 100).toFixed(2) + '%';
+            if (sym === 'XAU' || sym === 'GOLD') {
+              pacXau = mark;
+              document.getElementById('pac-xau').innerText = '$' + mark.toFixed(2);
+              document.getElementById('pac-funding-xau').innerText = 'Fund: ' + annual;
+            }
+            if (sym === 'PAXG') {
+              pacPaxg = mark;
+              document.getElementById('pac-paxg').innerText = '$' + mark.toFixed(2);
+              document.getElementById('pac-funding-paxg').innerText = 'Fund: ' + annual;
+            }
+          });
+
+          let pacPct = 0;
+          if (pacXau && pacPaxg) {
+            const s = calcSpread(pacXau, pacPaxg);
+            pacPct = s.pct;
+            const el = document.getElementById('pac-current-pct');
+            el.innerText = s.pct.toFixed(3) + '%';
+            el.className = 'current-spread ' + getColor(s.pct);
+            document.getElementById('pac-current-diff').innerText = `Diferencia: $${Math.abs(s.abs).toFixed(2)}`;
+          }
+
+          const [spreadsPac7, spreadsPac30] = await Promise.all([
+            getPacificaSpreads(7),
+            getPacificaSpreads(30)
+          ]);
+          renderStats('pac', pacPct, spreadsPac7, spreadsPac30);
+
+        } catch (e) {
+          console.log('Error Pacifica', e);
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
     }
 
-    async function updateAll() {
-      let xaut = null, paxg = null, xau = null;
-      try {
-        const res = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
-        const data = await res.json();
-        (data.listings || []).forEach(item => {
-          const t = (item.ticker || '').toUpperCase();
-          const p = parseFloat(item.mark_price);
-          if (t === 'XAUT') xaut = p;
-          if (t === 'PAXG') paxg = p;
-          if (t === 'XAU') xau = p;
-        });
-      } catch (e) { console.log(e); }
-
-      let pctXP = 0, absXP = 0, pctXX = 0, absXX = 0;
-      if (xaut && paxg) { const s = calcSpread(xaut, paxg); pctXP = s.pct; absXP = s.abs; }
-      if (xaut && xau) { const s = calcSpread(xaut, xau); pctXX = s.pct; absXX = s.abs; }
-
-      const [xp7, xp30, xx7, xx30] = await Promise.all([
-        binanceSpreads('XAUTUSDT', 'PAXGUSDT', 7, false),
-        binanceSpreads('XAUTUSDT', 'PAXGUSDT', 30, false),
-        binanceSpreads('XAUTUSDT', 'XAUUSDT', 7, true),
-        binanceSpreads('XAUTUSDT', 'XAUUSDT', 30, true)
-      ]);
-
-      document.getElementById('list-var').innerHTML =
-        renderRow('XAUT vs PAXG', pctXP, absXP, 'Var · Binance', xp7, xp30) +
-        renderRow('XAUT vs XAU', pctXX, absXX, 'Var · Binance', xx7, xx30);
-
-      // Pacifica
-      let pacX = null, pacP = null;
-      try {
-        const res = await fetch('https://api.pacifica.fi/api/v1/info/prices');
-        const data = await res.json();
-        (data.data || []).forEach(item => {
-          const sym = (item.symbol || '').toUpperCase();
-          const m = parseFloat(item.mark || item.mid || 0);
-          if (sym === 'XAU' || sym === 'GOLD') pacX = m;
-          if (sym === 'PAXG') pacP = m;
-        });
-      } catch (e) { console.log(e); }
-
-      let pctPac = 0, absPac = 0;
-      if (pacX && pacP) { const s = calcSpread(pacX, pacP); pctPac = s.pct; absPac = s.abs; }
-      const [p7, p30] = await Promise.all([pacSpreads(7), pacSpreads(30)]);
-      document.getElementById('list-pac').innerHTML =
-        renderRow('XAU vs PAXG', pctPac, absPac, 'Pacifica', p7, p30);
-
-      // Oil
-      let wti = null, brent = null;
-      try {
-        const res = await fetch('https://api.hyperliquid.xyz/info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'allMids', dex: 'xyz' })
-        });
-        const mids = await res.json();
-        wti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
-        brent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
-      } catch (e) { console.log(e); }
-
-      let pctOil = 0, absOil = 0;
-      if (wti && brent) { const s = calcSpread(wti, brent); pctOil = s.pct; absOil = s.abs; }
-      const [o7, o30] = await Promise.all([hlSpreads(7), hlSpreads(30)]);
-      document.getElementById('list-oil').innerHTML =
-        renderRow('WTI vs Brent', pctOil, absOil, 'Hyperliquid', o7, o30);
-    }
-
-    updateAll();
-    setInterval(updateAll, 30000);
+    updateGold();
+    setInterval(updateGold, 30000);
   </script>
 </body>
 </html>
