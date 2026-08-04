@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Umbrales | Arbitrajes</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0b0e11;
+      color: #eaecef;
+      min-height: 100vh;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .container { width: 100%; max-width: 1200px; }
+
+    h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .subtitle { text-align: center; color: #848e9c; font-size: 0.85rem; margin-bottom: 18px; }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .nav a {
+      background: #1e2329;
+      color: #f0b90b;
+      padding: 8px 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid #2b3139;
+      transition: all 0.2s;
+    }
+    .nav a:hover, .nav a.active {
+      background: #f0b90b;
+      color: #0b0e11;
+      border-color: #f0b90b;
+    }
+
+    .group-title {
+      font-size: 1.05rem;
+      color: #f0b90b;
+      font-weight: 600;
+      margin: 8px 0 14px;
+      letter-spacing: 0.2px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .cards.single { grid-template-columns: 1fr; max-width: 720px; }
+
+    .u-card {
+      background: #1e2329;
+      border: 1px solid #2b3139;
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .u-left {
+      background: #252a31;
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .u-pair {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #f0b90b;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .u-pct {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #f0b90b;
+      letter-spacing: -0.5px;
+    }
+    .u-pct.green { color: #0ecb81; }
+    .u-pct.red { color: #f6465d; }
+    .u-pct.yellow { color: #f0b90b; }
+    .u-diff {
+      font-size: 0.78rem;
+      color: #848e9c;
+      margin-top: 6px;
+    }
+    .u-source {
+      font-size: 0.65rem;
+      color: #5e6673;
+      margin-top: 10px;
+    }
+
+    .u-right {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .bar-block { }
+    .bar-period {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #b7bdc6;
+      margin-bottom: 6px;
+      letter-spacing: 0.4px;
+    }
+
+    .bar-wrap {
+      background: #252a31;
+      border-radius: 10px;
+      padding: 10px 12px 8px;
+    }
+    .bar-ends {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.62rem;
+      color: #848e9c;
+      margin-bottom: 4px;
+    }
+    .bar-track {
+      position: relative;
+      height: 16px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #f6465d 0%, #f0b90b 50%, #0ecb81 100%);
+      opacity: 0.95;
+    }
+    .bar-marker {
+      position: absolute;
+      top: 50%;
+      width: 2px;
+      height: 22px;
+      background: #eaecef;
+      border-radius: 1px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      box-shadow: 0 0 3px rgba(0,0,0,0.5);
+    }
+    .bar-marker.mean {
+      width: 3px;
+      height: 24px;
+      background: #f0b90b;
+      box-shadow: 0 0 6px rgba(240,185,11,0.7);
+    }
+    .bar-marker.current {
+      width: 5px;
+      height: 28px;
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(255,255,255,0.5);
+      z-index: 3;
+    }
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 0.62rem;
+      color: #848e9c;
+    }
+    .bar-labels .umbral { color: #f0b90b; font-weight: 600; }
+    .bar-labels .media { color: #f0b90b; font-weight: 600; text-align: center; flex: 1; }
+    .bar-current {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #f0b90b;
+      margin-top: 4px;
+    }
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #5e6673;
+      margin-top: 4px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #5e6673;
+    }
+    .loading {
+      text-align: center;
+      color: #848e9c;
+      padding: 40px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Umbrales</h1>
+    <div class="subtitle">Spreads · 7 días y 30 días · Actualiza cada 30s</div>
+
+    <div class="nav">
+      <a href="index.html">Oil Spreads</a>
+      <a href="gold.html">Gold Arbitrage</a>
+      <a href="umbrales.html" class="active">Umbrales</a>
+    </div>
+
+    <div class="group-title">—— Gold · Variational ——</div>
+    <div class="cards" id="cards-var">
+      <div class="loading">Cargando…</div>
+    </div>
+
+    <div class="group-title">—— Gold · Pacifica ——</div>
+    <div class="cards single" id="cards-pac">
+      <div class="loading">Cargando…</div>
+    </div>
+
+    <div class="group-title">—— Oil · Hyperliquid ——</div>
+    <div class="cards single" id="cards-oil">
+      <div class="loading">Cargando…</div>
+    </div>
+
+    <div class="footer">Histórico: Binance (proxy Variational) · Pacifica real · Hyperliquid real</div>
+  </div>
+
+  <script>
+    function calcSpread(a, b) {
+      const diff = b - a;
+      const avg = (a + b) / 2;
+      return { pct: (Math.abs(diff) / avg) * 100, abs: diff };
+    }
+
+    function getColor(pct, enter = 0.15, exit = 0.05) {
+      if (pct >= enter) return 'green';
+      if (pct <= exit) return 'red';
+      return 'yellow';
+    }
+
+    function calcStats(spreads) {
+      if (!spreads || spreads.length < 5) return null;
+      const n = spreads.length;
+      const mean = spreads.reduce((a, b) => a + b, 0) / n;
+      const variance = spreads.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+      const std = Math.sqrt(variance);
+      return { mean, std, min: Math.min(...spreads), max: Math.max(...spreads) };
+    }
+
+    function calcThresholds(spreads) {
+      if (!spreads || spreads.length < 20) return null;
+      const sorted = [...spreads].sort((a, b) => a - b);
+      const p20 = sorted[Math.floor(sorted.length * 0.20)];
+      const p80 = sorted[Math.floor(sorted.length * 0.80)];
+      return {
+        exit: Math.round(p20 * 1000) / 1000,
+        enter: Math.round(p80 * 1000) / 1000
+      };
+    }
+
+    function pctPos(val, min, max) {
+      if (max <= min) return 50;
+      return Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
+    }
+
+    function renderBar(periodLabel, current, stats, th) {
+      if (!stats || !th) {
+        return `<div class="bar-block"><div class="bar-period">${periodLabel}</div><div class="bar-wrap" style="text-align:center;color:#5e6673;padding:12px;">Sin datos</div></div>`;
+      }
+
+      const pad = Math.max((th.enter - th.exit) * 0.35, stats.std * 0.5, 0.03);
+      const min = Math.min(stats.min, th.exit) - pad;
+      const max = Math.max(stats.max, th.enter) + pad;
+
+      const exitP = pctPos(th.exit, min, max);
+      const enterP = pctPos(th.enter, min, max);
+      const meanP = pctPos(stats.mean, min, max);
+      const curP = pctPos(current, min, max);
+
+      return `
+        <div class="bar-block">
+          <div class="bar-period">${periodLabel}</div>
+          <div class="bar-wrap">
+            <div class="bar-ends">
+              <span>Rango ${stats.min.toFixed(3)}%</span>
+              <span>Rango ${stats.max.toFixed(3)}%</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-marker" style="left:${exitP}%" title="Salida ${th.exit.toFixed(3)}%"></div>
+              <div class="bar-marker" style="left:${enterP}%" title="Entrada ${th.enter.toFixed(3)}%"></div>
+              <div class="bar-marker mean" style="left:${meanP}%" title="Media ${stats.mean.toFixed(3)}%"></div>
+              <div class="bar-marker current" style="left:${curP}%" title="Actual ${current.toFixed(3)}%"></div>
+            </div>
+            <div class="bar-labels">
+              <span class="umbral">Sal ${th.exit.toFixed(3)}%</span>
+              <span class="media">Media ${stats.mean.toFixed(3)}%</span>
+              <span class="umbral">Ent ${th.enter.toFixed(3)}%</span>
+            </div>
+            <div class="bar-current">Actual: ${current.toFixed(3)}%</div>
+            <div class="bar-meta">
+              <span>σ ${stats.std.toFixed(3)}</span>
+              <span>Z ${stats.std > 0 ? ((current - stats.mean) / stats.std).toFixed(2) : '--'}σ</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderCard(pairName, currentPct, absDiff, source, data7, data30) {
+      const th7 = data7 ? calcThresholds(data7) : null;
+      const th30 = data30 ? calcThresholds(data30) : null;
+      const st7 = data7 ? calcStats(data7) : null;
+      const st30 = data30 ? calcStats(data30) : null;
+      const enterRef = th30?.enter ?? th7?.enter ?? 0.15;
+      const exitRef = th30?.exit ?? th7?.exit ?? 0.05;
+      const color = getColor(currentPct, enterRef, exitRef);
+      const absStr = absDiff != null
+        ? (Math.abs(absDiff) >= 1 ? `$${Math.abs(absDiff).toFixed(2)}` : `$${Math.abs(absDiff).toFixed(3)}`)
+        : '--';
+
+      return `
+        <div class="u-card">
+          <div class="u-left">
+            <div class="u-pair">${pairName}</div>
+            <div class="u-pct ${color}">${currentPct.toFixed(3)}%</div>
+            <div class="u-diff">Diferencia: ${absStr}</div>
+            <div class="u-source">${source}</div>
+          </div>
+          <div class="u-right">
+            ${renderBar('7 días', currentPct, st7, th7)}
+            ${renderBar('30 días', currentPct, st30, th30)}
+          </div>
+        </div>`;
+    }
+
+    // ===== FETCHERS =====
+    async function fetchBinanceKlines(symbol, days, futures = false) {
+      try {
+        const end = Date.now();
+        const start = end - days * 24 * 60 * 60 * 1000;
+        const base = futures
+          ? 'https://fapi.binance.com/fapi/v1/klines'
+          : 'https://api.binance.com/api/v3/klines';
+        const url = `${base}?symbol=${symbol}&interval=1h&startTime=${start}&endTime=${end}&limit=1000`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!Array.isArray(data)) return null;
+        return data.map(c => ({ t: c[0], c: parseFloat(c[4]) }));
+      } catch { return null; }
+    }
+
+    async function binanceSpreads(symA, symB, days, futuresB = false) {
+      const [kA, kB] = await Promise.all([
+        fetchBinanceKlines(symA, days, false),
+        fetchBinanceKlines(symB, days, futuresB)
+      ]);
+      if (!kA?.length || !kB?.length) return null;
+      const map = {};
+      kB.forEach(c => { if (c?.t && c?.c) map[c.t] = c.c; });
+      const spreads = [];
+      kA.forEach(c => {
+        if (c?.t && c?.c && map[c.t]) {
+          const a = c.c, b = map[c.t];
+          spreads.push(Math.abs((b - a) / ((b + a) / 2) * 100));
+        }
+      });
+      return spreads.length > 10 ? spreads : null;
+    }
+
+    async function fetchCandlesPac(symbol, days) {
+      try {
+        const end = Date.now();
+        const start = end - days * 24 * 60 * 60 * 1000;
+        const url = `https://api.pacifica.fi/api/v1/kline/mark?symbol=${symbol}&interval=1h&start_time=${start}&end_time=${end}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return (data.success && Array.isArray(data.data)) ? data.data : null;
+      } catch { return null; }
+    }
+
+    async function pacSpreads(days) {
+      const [cXau, cPaxg] = await Promise.all([
+        fetchCandlesPac('XAU', days),
+        fetchCandlesPac('PAXG', days)
+      ]);
+      if (!cXau?.length || !cPaxg?.length) return null;
+      const map = {};
+      cPaxg.forEach(c => { if (c?.t && c?.c) map[c.t] = parseFloat(c.c); });
+      const spreads = [];
+      cXau.forEach(c => {
+        if (c?.t && c?.c && map[c.t]) {
+          const x = parseFloat(c.c), p = map[c.t];
+          spreads.push(Math.abs((p - x) / ((p + x) / 2) * 100));
+        }
+      });
+      return spreads.length > 10 ? spreads : null;
+    }
+
+    async function fetchCandlesHL(coin, days) {
+      try {
+        const end = Date.now();
+        const start = end - days * 24 * 60 * 60 * 1000;
+        const res = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'candleSnapshot',
+            req: { coin, interval: '1h', startTime: start, endTime: end }
+          })
+        });
+        const data = await res.json();
+        return Array.isArray(data) ? data : null;
+      } catch { return null; }
+    }
+
+    async function hlSpreads(days) {
+      let wti = null, brent = null;
+      for (const name of ['xyz:WTIOIL', 'WTIOIL', 'xyz:CL', 'CL']) {
+        wti = await fetchCandlesHL(name, days);
+        if (wti?.length > 20) break;
+      }
+      for (const name of ['xyz:BRENTOIL', 'BRENTOIL']) {
+        brent = await fetchCandlesHL(name, days);
+        if (brent?.length > 20) break;
+      }
+      if (!wti?.length || !brent?.length) return null;
+      const map = {};
+      brent.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
+      const spreads = [];
+      wti.forEach(c => {
+        if (c?.T && c?.c && map[c.T]) {
+          const w = parseFloat(c.c), b = map[c.T];
+          spreads.push(Math.abs((b - w) / ((b + w) / 2) * 100));
+        }
+      });
+      return spreads.length > 10 ? spreads : null;
+    }
+
+    async function updateAll() {
+      // ----- Variational actual -----
+      let xaut = null, paxg = null, xau = null;
+      try {
+        const resVar = await fetch('https://omni-client-api.prod.ap-northeast-1.variational.io/metadata/stats');
+        const varData = await resVar.json();
+        (varData.listings || []).forEach(item => {
+          const t = (item.ticker || '').toUpperCase();
+          const p = parseFloat(item.mark_price);
+          if (t === 'XAUT') xaut = p;
+          if (t === 'PAXG') paxg = p;
+          if (t === 'XAU') xau = p;
+        });
+      } catch (e) { console.log('Var error', e); }
+
+      let pctXP = 0, absXP = 0, pctXX = 0, absXX = 0;
+      if (xaut && paxg) { const s = calcSpread(xaut, paxg); pctXP = s.pct; absXP = s.abs; }
+      if (xaut && xau) { const s = calcSpread(xaut, xau); pctXX = s.pct; absXX = s.abs; }
+
+      // ----- Binance hist -----
+      const [xp7, xp30, xx7, xx30] = await Promise.all([
+        binanceSpreads('XAUTUSDT', 'PAXGUSDT', 7, false),
+        binanceSpreads('XAUTUSDT', 'PAXGUSDT', 30, false),
+        binanceSpreads('XAUTUSDT', 'XAUUSDT', 7, true),
+        binanceSpreads('XAUTUSDT', 'XAUUSDT', 30, true)
+      ]);
+
+      document.getElementById('cards-var').innerHTML =
+        renderCard('XAUT vs PAXG', pctXP, absXP, 'Variational · hist Binance', xp7, xp30) +
+        renderCard('XAUT vs XAU', pctXX, absXX, 'Variational · hist Binance', xx7, xx30);
+
+      // ----- Pacifica -----
+      let pacXau = null, pacPaxg = null;
+      try {
+        const resPac = await fetch('https://api.pacifica.fi/api/v1/info/prices');
+        const pacData = await resPac.json();
+        (pacData.data || []).forEach(item => {
+          const sym = (item.symbol || '').toUpperCase();
+          const mark = parseFloat(item.mark || item.mid || 0);
+          if (sym === 'XAU' || sym === 'GOLD') pacXau = mark;
+          if (sym === 'PAXG') pacPaxg = mark;
+        });
+      } catch (e) { console.log('Pac error', e); }
+
+      let pctPac = 0, absPac = 0;
+      if (pacXau && pacPaxg) { const s = calcSpread(pacXau, pacPaxg); pctPac = s.pct; absPac = s.abs; }
+
+      const [pac7, pac30] = await Promise.all([pacSpreads(7), pacSpreads(30)]);
+      document.getElementById('cards-pac').innerHTML =
+        renderCard('XAU vs PAXG', pctPac, absPac, 'Pacifica real', pac7, pac30);
+
+      // ----- Hyperliquid Oil -----
+      let hlWti = null, hlBrent = null;
+      try {
+        const resMids = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'allMids', dex: 'xyz' })
+        });
+        const mids = await resMids.json();
+        hlWti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
+        hlBrent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
+      } catch (e) { console.log('HL mids error', e); }
+
+      let pctOil = 0, absOil = 0;
+      if (hlWti && hlBrent) { const s = calcSpread(hlWti, hlBrent); pctOil = s.pct; absOil = s.abs; }
+
+      const [oil7, oil30] = await Promise.all([hlSpreads(7), hlSpreads(30)]);
+      document.getElementById('cards-oil').innerHTML =
+        renderCard('WTI vs Brent', pctOil, absOil, 'Hyperliquid real', oil7, oil30);
+    }
+
+    updateAll();
+    setInterval(updateAll, 30000);
+  </script>
+</body>
+</html>
