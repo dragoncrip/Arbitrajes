@@ -74,16 +74,17 @@
 
     .spread {
       text-align: center;
-      font-size: 2rem;
+      font-size: 2.1rem;
       font-weight: 800;
-      margin: 2px 0 0;
+      margin: 4px 0 0;
       letter-spacing: -0.5px;
     }
-    .diff-abs {
+    .diff-pct {
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #b7bdc6;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      font-weight: 500;
     }
 
     .green { color: #0ecb81; }
@@ -191,6 +192,38 @@
       margin-top: 5px;
     }
 
+    /* ===== HISTÓRICO 5 AÑOS ===== */
+    .hist-block {
+      margin-top: 12px;
+      background: #252a31;
+      border-radius: 12px;
+      padding: 12px 10px;
+    }
+    .hist-block .section-title {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #f0b90b;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .hist-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 480px) {
+      .hist-stats { grid-template-columns: 1fr 1fr; }
+    }
+    .hist-item {
+      background: #2b3139;
+      border-radius: 8px;
+      padding: 7px 4px;
+      text-align: center;
+    }
+    .hist-item .label { color: #848e9c; font-size: 0.6rem; }
+    .hist-item .value { font-weight: 600; margin-top: 2px; font-size: 0.82rem; }
+
     .note {
       margin-top: 10px;
       background: #2b3139;
@@ -202,7 +235,6 @@
       text-align: center;
     }
 
-    /* ===== SEÑAL DE TRADING ===== */
     .signal {
       margin-top: 12px;
       border-radius: 12px;
@@ -267,8 +299,9 @@
         </div>
       </div>
 
+      <!-- GRANDE = $   |   ABAJO = % -->
       <div class="spread" id="hl-spread">--</div>
-      <div class="diff-abs" id="hl-diff">Diferencia: --</div>
+      <div class="diff-pct" id="hl-pct">--</div>
 
       <div class="fundings">
         <div class="info-item">
@@ -365,8 +398,46 @@
         </div>
       </div>
 
+      <!-- ===== HISTÓRICO 5 AÑOS ===== -->
+      <div class="hist-block">
+        <div class="section-title">—— Histórico (5 años) ——</div>
+        <div class="hist-stats">
+          <div class="hist-item">
+            <div class="label">Rango</div>
+            <div class="value">2.00→8.50</div>
+          </div>
+          <div class="hist-item">
+            <div class="label">Media ± σ</div>
+            <div class="value">4.28±2.15</div>
+          </div>
+          <div class="hist-item">
+            <div class="label">Z-Score</div>
+            <div class="value" id="hl-zscore-5y">--</div>
+          </div>
+          <div class="hist-item">
+            <div class="label">Umbral</div>
+            <div class="value">2.13–6.43</div>
+          </div>
+        </div>
+
+        <div class="range-bar-container" id="bar-5y-container">
+          <div class="range-bar-labels">
+            <span>Sal 2.13$</span>
+            <span>Ent 6.43$</span>
+          </div>
+          <div class="range-bar">
+            <div class="range-bar-fill"></div>
+            <div class="range-marker" style="left: 18%"></div>
+            <div class="range-marker" style="left: 82%"></div>
+            <div class="range-marker current" id="bar-5y-current" style="left:50%"></div>
+          </div>
+          <div class="range-current-label" id="bar-5y-label">Actual: --</div>
+        </div>
+      </div>
+
       <div class="note">
-        <b>Z-Score</b> → Z > +1.5 Estirado · entre -1/+1 Normal · < -1.5 Comprimido
+        <b>Z-Score</b> → Z > +1.5 Estirado · entre -1/+1 Normal · < -1.5 Comprimido<br>
+        Histórico basado en promedios spot EIA 2021-2025 (referencia de largo plazo)
       </div>
     </div>
 
@@ -380,18 +451,26 @@
   </div>
 
   <script>
-    let ENTER_ABOVE = 3.80;
-    let EXIT_BELOW  = 2.30;
+    // Umbrales iniciales en DÓLARES
+    let ENTER_ABOVE = 5.50;
+    let EXIT_BELOW  = 3.20;
+
+    // Histórico 5 años (fijo)
+    const HIST_MEAN = 4.28;
+    const HIST_STD  = 2.15;
+    const HIST_EXIT = 2.13;
+    const HIST_ENTER = 6.43;
 
     function calcSpread(a, b) {
-      const diff = b - a;
+      const diff = b - a;                    // diferencia en $
       const avg = (a + b) / 2;
-      return { pct: (Math.abs(diff) / avg) * 100, abs: diff };
+      const pct = (Math.abs(diff) / avg) * 100;
+      return { abs: diff, pct: pct };
     }
 
-    function getColor(pct) {
-      if (pct >= ENTER_ABOVE) return 'green';
-      if (pct <= EXIT_BELOW) return 'red';
+    function getColor(abs) {
+      if (abs >= ENTER_ABOVE) return 'green';
+      if (abs <= EXIT_BELOW) return 'red';
       return 'yellow';
     }
 
@@ -414,8 +493,8 @@
     function formatDist(current, enter, exit) {
       const dEnter = enter - current;
       const dExit  = exit - current;
-      const eStr = (dEnter > 0 ? '+' : '') + dEnter.toFixed(2) + '%';
-      const xStr = (dExit  > 0 ? '+' : '') + dExit.toFixed(2) + '%';
+      const eStr = (dEnter > 0 ? '+' : '') + dEnter.toFixed(2) + '$';
+      const xStr = (dExit  > 0 ? '+' : '') + dExit.toFixed(2) + '$';
       return `Sal ${xStr} · Ent ${eStr}`;
     }
 
@@ -423,7 +502,7 @@
       const container = document.getElementById(`bar-${prefix}-container`);
       if (!container) return;
 
-      const padding = (enter - exit) * 0.3;
+      const padding = (enter - exit) * 0.35;
       const min = exit - padding;
       const max = enter + padding;
       const range = max - min;
@@ -432,14 +511,33 @@
       const exitPct = ((exit - min) / range) * 100;
       const enterPct = ((enter - min) / range) * 100;
 
-      document.getElementById(`bar-${prefix}-exit`).innerText = `Sal ${exit.toFixed(2)}%`;
-      document.getElementById(`bar-${prefix}-enter`).innerText = `Ent ${enter.toFixed(2)}%`;
+      document.getElementById(`bar-${prefix}-exit`).innerText = `Sal ${exit.toFixed(2)}$`;
+      document.getElementById(`bar-${prefix}-enter`).innerText = `Ent ${enter.toFixed(2)}$`;
       document.getElementById(`bar-${prefix}-exit-marker`).style.left = exitPct + '%';
       document.getElementById(`bar-${prefix}-enter-marker`).style.left = enterPct + '%';
       document.getElementById(`bar-${prefix}-current`).style.left = pct + '%';
-      document.getElementById(`bar-${prefix}-label`).innerText = `Actual: ${current.toFixed(2)}%`;
+      document.getElementById(`bar-${prefix}-label`).innerText = `Actual: $${current.toFixed(2)}`;
 
       container.style.display = 'block';
+    }
+
+    function updateHistBar(current) {
+      const padding = (HIST_ENTER - HIST_EXIT) * 0.25;
+      const min = HIST_EXIT - padding;
+      const max = HIST_ENTER + padding;
+      const range = max - min;
+      const pct = Math.max(0, Math.min(100, ((current - min) / range) * 100));
+
+      document.getElementById('bar-5y-current').style.left = pct + '%';
+      document.getElementById('bar-5y-label').innerText = `Actual: $${current.toFixed(2)}`;
+
+      // Z-Score histórico
+      if (HIST_STD > 0) {
+        const z = (current - HIST_MEAN) / HIST_STD;
+        const el = document.getElementById('hl-zscore-5y');
+        el.innerText = z.toFixed(2) + 'σ';
+        el.style.color = colorZ(z);
+      }
     }
 
     async function fetchCandlesHL(coin, days = 7) {
@@ -461,7 +559,7 @@
 
     function loadThresholds() {
       try {
-        const saved = JSON.parse(localStorage.getItem('hl_thresholds') || 'null');
+        const saved = JSON.parse(localStorage.getItem('hl_thresholds_usd') || 'null');
         if (saved && saved.timestamp) {
           const hours = (Date.now() - saved.timestamp) / (1000 * 60 * 60);
           if (hours < 24) {
@@ -477,7 +575,7 @@
     function saveThresholds(enter, exit) {
       ENTER_ABOVE = enter;
       EXIT_BELOW = exit;
-      localStorage.setItem('hl_thresholds', JSON.stringify({
+      localStorage.setItem('hl_thresholds_usd', JSON.stringify({
         enter, exit, timestamp: Date.now()
       }));
     }
@@ -505,17 +603,27 @@
         const hlWti = parseFloat(mids['WTIOIL'] || mids['xyz:WTIOIL'] || mids['CL'] || mids['xyz:CL']);
         const hlBrent = parseFloat(mids['BRENTOIL'] || mids['xyz:BRENTOIL']);
 
+        let currentAbs = 0;
         let currentPct = 0;
+
         if (hlWti && hlBrent) {
           const s = calcSpread(hlWti, hlBrent);
+          currentAbs = s.abs;
           currentPct = s.pct;
+
           document.getElementById('hl-wti').innerText = '$' + hlWti.toFixed(3);
           document.getElementById('hl-brent').innerText = '$' + hlBrent.toFixed(3);
-          document.getElementById('hl-spread').innerText = s.pct.toFixed(3) + '%';
-          document.getElementById('hl-spread').className = 'spread ' + getColor(s.pct);
-          document.getElementById('hl-diff').innerText = `Diferencia: $${s.abs.toFixed(3)}`;
+
+          // GRANDE = $   |   ABAJO = %
+          document.getElementById('hl-spread').innerText = '$' + s.abs.toFixed(3);
+          document.getElementById('hl-spread').className = 'spread ' + getColor(s.abs);
+          document.getElementById('hl-pct').innerText = s.pct.toFixed(3) + '%';
+
+          // Actualizar barra histórica
+          updateHistBar(currentAbs);
         }
 
+        // Funding
         try {
           const resCtx = await fetch('https://api.hyperliquid.xyz/info', {
             method: 'POST',
@@ -534,6 +642,7 @@
           });
         } catch {}
 
+        // Velas y estadísticas
         try {
           let candlesWti7 = null, candlesBrent7 = null;
           let candlesWti30 = null, candlesBrent30 = null;
@@ -555,7 +664,7 @@
             if (candlesBrent30?.length > 50) break;
           }
 
-          // 7 días
+          // ===== 7 DÍAS (en $) =====
           if (candlesWti7 && candlesBrent7) {
             const map = {};
             candlesBrent7.forEach(c => { if (c?.T && c?.c) map[c.T] = parseFloat(c.c); });
@@ -563,7 +672,7 @@
             candlesWti7.forEach(c => {
               if (c?.T && c?.c && map[c.T]) {
                 const w = parseFloat(c.c), b = map[c.T];
-                spreads7.push(((b - w) / ((b + w) / 2)) * 100);
+                spreads7.push(b - w);           // ← ahora en $
               }
             });
 
@@ -572,8 +681,8 @@
               document.getElementById('hl-range-7').innerText = stats7.min.toFixed(2) + '→' + stats7.max.toFixed(2);
               document.getElementById('hl-mean-7').innerText = stats7.mean.toFixed(2) + '±' + stats7.std.toFixed(2);
 
-              if (currentPct > 0 && stats7.std > 0) {
-                const z7 = (currentPct - stats7.mean) / stats7.std;
+              if (currentAbs !== 0 && stats7.std > 0) {
+                const z7 = (currentAbs - stats7.mean) / stats7.std;
                 const el = document.getElementById('hl-zscore-7');
                 el.innerText = z7.toFixed(2) + 'σ';
                 el.style.color = colorZ(z7);
@@ -582,13 +691,13 @@
               const th7 = calcThresholds(spreads7);
               if (th7) {
                 document.getElementById('hl-umbral-7').innerText = th7.exit.toFixed(2) + '–' + th7.enter.toFixed(2);
-                document.getElementById('hl-dist-7').innerText = formatDist(currentPct, th7.enter, th7.exit);
-                updateRangeBar('7', currentPct, th7.exit, th7.enter);
+                document.getElementById('hl-dist-7').innerText = formatDist(currentAbs, th7.enter, th7.exit);
+                updateRangeBar('7', currentAbs, th7.exit, th7.enter);
               }
             }
           }
 
-          // 30 días
+          // ===== 30 DÍAS (en $) =====
           if (candlesWti30 && candlesBrent30) {
             const map30 = {};
             candlesBrent30.forEach(c => { if (c?.T && c?.c) map30[c.T] = parseFloat(c.c); });
@@ -596,7 +705,7 @@
             candlesWti30.forEach(c => {
               if (c?.T && c?.c && map30[c.T]) {
                 const w = parseFloat(c.c), b = map30[c.T];
-                spreads30.push(((b - w) / ((b + w) / 2)) * 100);
+                spreads30.push(b - w);          // ← ahora en $
               }
             });
 
@@ -605,8 +714,8 @@
               document.getElementById('hl-range-30').innerText = stats30.min.toFixed(2) + '→' + stats30.max.toFixed(2);
               document.getElementById('hl-mean-30').innerText = stats30.mean.toFixed(2) + '±' + stats30.std.toFixed(2);
 
-              if (currentPct > 0 && stats30.std > 0) {
-                const z30 = (currentPct - stats30.mean) / stats30.std;
+              if (currentAbs !== 0 && stats30.std > 0) {
+                const z30 = (currentAbs - stats30.mean) / stats30.std;
                 const el = document.getElementById('hl-zscore-30');
                 el.innerText = z30.toFixed(2) + 'σ';
                 el.style.color = colorZ(z30);
@@ -618,37 +727,36 @@
               }
 
               document.getElementById('hl-umbral-30').innerText = EXIT_BELOW.toFixed(2) + '–' + ENTER_ABOVE.toFixed(2);
-              document.getElementById('hl-dist-30').innerText = formatDist(currentPct, ENTER_ABOVE, EXIT_BELOW);
-              updateRangeBar('30', currentPct, EXIT_BELOW, ENTER_ABOVE);
+              document.getElementById('hl-dist-30').innerText = formatDist(currentAbs, ENTER_ABOVE, EXIT_BELOW);
+              updateRangeBar('30', currentAbs, EXIT_BELOW, ENTER_ABOVE);
             }
           }
         } catch (e) {
           console.log('Error histórico HL', e);
         }
 
-        // ===== SEÑAL SHORT / LONG =====
+        // ===== SEÑAL =====
         const signalEl = document.getElementById('signal');
         const titleEl = document.getElementById('signal-title');
         const legsEl = document.getElementById('signal-legs');
 
-        if (currentPct >= ENTER_ABOVE) {
-          // Spread alto → SHORT
+        if (currentAbs >= ENTER_ABOVE) {
           signalEl.className = 'signal short';
           titleEl.innerHTML = '🔴 SHORT SPREAD';
           titleEl.style.color = '#f6465d';
-          legsEl.innerHTML = `Vender <b>BRENTOIL</b> + Comprar <b>WTIOIL</b><br><span style="font-size:0.75rem;opacity:0.8">Spread estirado (${currentPct.toFixed(2)}%)</span>`;
-        } else if (currentPct <= EXIT_BELOW) {
-          // Spread bajo → LONG
+          legsEl.innerHTML = `Vender <b>BRENTOIL</b> + Comprar <b>WTIOIL</b><br>
+            <span style="font-size:0.75rem;opacity:0.8">Spread estirado ($${currentAbs.toFixed(2)})</span>`;
+        } else if (currentAbs <= EXIT_BELOW) {
           signalEl.className = 'signal long';
           titleEl.innerHTML = '🟢 LONG SPREAD';
           titleEl.style.color = '#0ecb81';
-          legsEl.innerHTML = `Comprar <b>BRENTOIL</b> + Vender <b>WTIOIL</b><br><span style="font-size:0.75rem;opacity:0.8">Spread comprimido (${currentPct.toFixed(2)}%)</span>`;
+          legsEl.innerHTML = `Comprar <b>BRENTOIL</b> + Vender <b>WTIOIL</b><br>
+            <span style="font-size:0.75rem;opacity:0.8">Spread comprimido ($${currentAbs.toFixed(2)})</span>`;
         } else {
-          // Zona media
           signalEl.className = 'signal wait';
           titleEl.innerHTML = '🟡 ESPERAR';
           titleEl.style.color = '#f0b90b';
-          legsEl.innerHTML = `Spread en zona neutral (${currentPct.toFixed(2)}%)`;
+          legsEl.innerHTML = `Spread en zona neutral ($${currentAbs.toFixed(2)})`;
         }
 
       } catch (err) {
